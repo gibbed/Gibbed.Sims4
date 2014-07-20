@@ -44,7 +44,7 @@ namespace Gibbed.Sims4.TextureFormats.DDS
         public int Height;
         public int Width;
         public uint PitchOrLinearSize;
-        public uint Depth;
+        public int Depth;
         public uint MipMapCount;
         public byte[] Reserved1 = new byte[11 * 4];
         public PixelFormat PixelFormat;
@@ -59,7 +59,7 @@ namespace Gibbed.Sims4.TextureFormats.DDS
             output.WriteValueS32(this.Height, endian);
             output.WriteValueS32(this.Width, endian);
             output.WriteValueU32(this.PitchOrLinearSize, endian);
-            output.WriteValueU32(this.Depth, endian);
+            output.WriteValueS32(this.Depth, endian);
             output.WriteValueU32(this.MipMapCount, endian);
             output.Write(this.Reserved1, 0, this.Reserved1.Length);
             this.PixelFormat.Serialize(output, endian);
@@ -75,7 +75,7 @@ namespace Gibbed.Sims4.TextureFormats.DDS
             this.Height = input.ReadValueS32(endian);
             this.Width = input.ReadValueS32(endian);
             this.PitchOrLinearSize = input.ReadValueU32(endian);
-            this.Depth = input.ReadValueU32(endian);
+            this.Depth = input.ReadValueS32(endian);
             this.MipMapCount = input.ReadValueU32(endian);
             if (input.Read(this.Reserved1, 0, this.Reserved1.Length) != this.Reserved1.Length)
             {
