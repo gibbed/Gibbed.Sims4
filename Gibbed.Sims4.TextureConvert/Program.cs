@@ -291,9 +291,15 @@ namespace Gibbed.Sims4.TextureConvert
                 throw new NotSupportedException("texture has too many mipmaps");
             }
 
-            if (header.Depth != 1)
+            if (header.Depth != 1 &&
+                header.Depth != 0)
             {
                 throw new NotSupportedException();
+            }
+
+            if (header.Depth == 0)
+            {
+                header.Depth = 1;
             }
 
             output.WriteValueU32(DDS.FourCC.DXT5, endian);
