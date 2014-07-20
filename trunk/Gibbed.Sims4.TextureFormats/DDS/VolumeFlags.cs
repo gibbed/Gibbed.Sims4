@@ -20,7 +20,7 @@
  *    distribution.
  */
 
-namespace Gibbed.Sims4.TextureShuffle.DDS
+namespace Gibbed.Sims4.TextureFormats.DDS
 {
     public enum VolumeFlags
     {

@@ -20,12 +20,16 @@
  *    distribution.
  */
 
-namespace Gibbed.Sims4.TextureShuffle.DDS
+using System;
+
+namespace Gibbed.Sims4.TextureFormats.DDS
 {
-    public enum SurfaceFlags
+    [Flags]
+    public enum PixelFormatFlags : uint
     {
-        Texture = 0x00001000, // DDSCAPS_TEXTURE
-        Mipmap = 0x00400008, // DDSCAPS_COMPLEX | DDSCAPS_MIPMAP
-        Cubemap = 0x00000008, // DDSCAPS_COMPLEX
+        FourCC = 0x00000004,
+        RGB = 0x00000040,
+        RGBA = 0x00000041,
+        Luminance = 0x00020000,
     }
 }

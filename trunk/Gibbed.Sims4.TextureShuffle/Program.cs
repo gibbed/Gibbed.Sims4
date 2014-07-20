@@ -24,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Gibbed.IO;
+using DDS = Gibbed.Sims4.TextureFormats.DDS;
 using NDesk.Options;
 
 namespace Gibbed.Sims4.TextureShuffle
@@ -60,9 +61,9 @@ namespace Gibbed.Sims4.TextureShuffle
 
             if (extras.Count < 1 || extras.Count > 2 || showHelp == true)
             {
-                Console.WriteLine("Usage: {0} [OPTIONS]+ input_fat [output_dir]", GetExecutableName());
+                Console.WriteLine("Usage: {0} [OPTIONS]+ input_dds [output_dds]", GetExecutableName());
                 Console.WriteLine();
-                Console.WriteLine("Unpack files from a Big File (FAT/DAT pair).");
+                Console.WriteLine("Shuffle or unshuffle DDS files.");
                 Console.WriteLine();
                 Console.WriteLine("Options:");
                 options.WriteOptionDescriptions(Console.Out);
