@@ -107,23 +107,25 @@ namespace Gibbed.Sims4.TextureConvert
                 var mipHeaders = new MipHeader[mipCount + 1];
                 for (var i = 0; i < mipCount; i++)
                 {
-                    var mipHeader = new MipHeader();
-                    mipHeader.CommandOffset = input.ReadValueS32(endian);
-                    mipHeader.Offset2 = input.ReadValueS32(endian);
-                    mipHeader.Offset3 = input.ReadValueS32(endian);
-                    mipHeader.Offset0 = input.ReadValueS32(endian);
-                    mipHeader.Offset1 = input.ReadValueS32(endian);
-                    mipHeader.Offset4 = hasSpecular == false ? 0 : input.ReadValueS32(endian);
-                    mipHeaders[i] = mipHeader;
+                    mipHeaders[i] = new MipHeader
+                    {
+                        CommandOffset = input.ReadValueS32(endian),
+                        Offset2 = input.ReadValueS32(endian),
+                        Offset3 = input.ReadValueS32(endian),
+                        Offset0 = input.ReadValueS32(endian),
+                        Offset1 = input.ReadValueS32(endian),
+                        Offset4 = hasSpecular == false ? 0 : input.ReadValueS32(endian),
+                    };
                 }
-                var dummy = new MipHeader();
-                dummy.CommandOffset = mipHeaders[0].Offset2;
-                dummy.Offset2 = mipHeaders[0].Offset3;
-                dummy.Offset3 = mipHeaders[0].Offset0;
-                dummy.Offset0 = mipHeaders[0].Offset1;
-                dummy.Offset1 = hasSpecular == false ? (int)input.Length : mipHeaders[0].Offset4;
-                dummy.Offset4 = (int)input.Length;
-                mipHeaders[mipCount] = dummy;
+                mipHeaders[mipCount] = new MipHeader
+                {
+                    CommandOffset = mipHeaders[0].Offset2,
+                    Offset2 = mipHeaders[0].Offset3,
+                    Offset3 = mipHeaders[0].Offset0,
+                    Offset0 = mipHeaders[0].Offset1,
+                    Offset1 = hasSpecular == false ? (int)input.Length : mipHeaders[0].Offset4,
+                    Offset4 = (int)input.Length,
+                };
 
                 input.Position = 0;
                 var temp = input.ReadBytes((int)input.Length);
@@ -137,7 +139,7 @@ namespace Gibbed.Sims4.TextureConvert
                     header.Width = width;
                     header.Height = height;
                     header.Depth = 1;
-                    header.MipMapCount = 1; //mipCount;
+                    header.MipMapCount = mipCount;
                     header.PixelFormat.Size = DDS.PixelFormat.StructureSize;
                     header.PixelFormat.Flags = DDS.PixelFormatFlags.FourCC;
                     header.PixelFormat.FourCC = DDS.FourCC.DXT5;
