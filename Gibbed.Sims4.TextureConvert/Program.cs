@@ -69,7 +69,7 @@ namespace Gibbed.Sims4.TextureConvert
             }
 
             string inputPath = extras[0];
-            string outputPath = Path.ChangeExtension(inputPath, ".dds");
+            string outputPath = extras.Count > 1 ? extras[1] : Path.ChangeExtension(inputPath, ".dds");
 
             using (var input = File.OpenRead(inputPath))
             {
