@@ -28,49 +28,21 @@ namespace Gibbed.Sims4.TextureConvert
     internal struct MipHeader
     {
         public int CommandOffset;
-        public int OffsetB;
-        public int OffsetC;
-        public int OffsetD;
-        public int OffsetE;
-
-        public void Serialize(Stream output, Endian endian)
-        {
-            output.WriteValueS32(this.CommandOffset, endian);
-            output.WriteValueS32(this.OffsetB, endian);
-            output.WriteValueS32(this.OffsetC, endian);
-            output.WriteValueS32(this.OffsetD, endian);
-            output.WriteValueS32(this.OffsetE, endian);
-        }
-
-        public void Deserialize(Stream input, Endian endian)
-        {
-            this.CommandOffset = input.ReadValueS32(endian);
-            this.OffsetB = input.ReadValueS32(endian);
-            this.OffsetC = input.ReadValueS32(endian);
-            this.OffsetD = input.ReadValueS32(endian);
-            this.OffsetE = input.ReadValueS32(endian);
-        }
-
-        public static MipHeader Read(Stream input, Endian endian)
-        {
-            var header = new MipHeader();
-            header.Deserialize(input, endian);
-            return header;
-        }
-
-        public static void Write(Stream output, MipHeader header, Endian endian)
-        {
-            header.Serialize(output, endian);
-        }
+        public int Offset2;
+        public int Offset3;
+        public int Offset0;
+        public int Offset1;
+        public int Offset4;
 
         public override string ToString()
         {
-            return string.Format("{0}, {1}, {2}, {3}, {4}",
+            return string.Format("{0}, {1}, {2}, {3}, {4}, {5}",
                                  this.CommandOffset,
-                                 this.OffsetB,
-                                 this.OffsetC,
-                                 this.OffsetD,
-                                 this.OffsetE);
+                                 this.Offset2,
+                                 this.Offset3,
+                                 this.Offset0,
+                                 this.Offset1,
+                                 this.Offset4);
         }
     }
 }
