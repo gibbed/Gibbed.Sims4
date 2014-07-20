@@ -133,16 +133,23 @@ namespace Gibbed.Sims4.TextureConvert
                     header.PixelFormat.FourCC = DDS.FourCC.DXT5;
                     header.Serialize(output, endian);
 
+                    var emptyTexel = new byte[16];
+
                     for (int i = 0; i < mipCount && i < 1; i++)
                     {
-                        int blockOffset2, blockOffset3, blockOffset0, blockOffset1;
-                        blockOffset2 = mipHeaders[i].OffsetB;
-                        blockOffset3 = mipHeaders[i].OffsetC;
-                        blockOffset0 = mipHeaders[i].OffsetD;
-                        blockOffset1 = mipHeaders[i].OffsetE;
+                        var mipHeader = mipHeaders[i];
+                        var nextMipHeader = mipHeaders[i + 1];
 
-                        for (int commandOffset = mipHeaders[i].CommandOffset;
-                            commandOffset < mipHeaders[i + 1].CommandOffset;
+                        int blockOffset2, blockOffset3, blockOffset0, blockOffset1;
+                        blockOffset2 = mipHeader.OffsetB;
+                        blockOffset3 = mipHeader.OffsetC;
+                        blockOffset0 = mipHeader.OffsetD;
+                        blockOffset1 = mipHeader.OffsetE;
+
+                        int op2s = 0;
+
+                        for (int commandOffset = mipHeader.CommandOffset;
+                            commandOffset < nextMipHeader.CommandOffset;
                             commandOffset += 2)
                         {
                             var command = BitConverter.ToUInt16(temp, commandOffset);
@@ -181,20 +188,37 @@ namespace Gibbed.Sims4.TextureConvert
                             }
                             else if (op == 2)
                             {
-                                // todo: me
+                                op2s += count;
+
+                                var localBlockOffset0 = blockOffset0 - (2 * count);
+                                var localBlockOffset1 = blockOffset1 - (6 * count);
 
                                 for (int j = 0; j < count; j++)
                                 {
-                                    output.WriteValueU16(0xFFFF);
+                                    output.WriteValueU64(0xFFFFFFFFFFFF0500ul, endian);
+                                    //output.Write(temp, localBlockOffset0, 2);
+                                    //output.Write(temp, localBlockOffset1, 6);
+                                    output.Write(temp, blockOffset2, 4);
+                                    output.Write(temp, blockOffset3, 4);
 
-                                    output.WriteValueU16(0xFFFF);
-                                    output.WriteValueU16(0xFFFF);
-                                    output.WriteValueU16(0xFFFF);
-
-                                    output.WriteValueU32(0xFFFFFFFF);
-                                    output.WriteValueU32(0xFFFFFFFF);
+                                    blockOffset2 += 4;
+                                    blockOffset3 += 4;
+                                    localBlockOffset0 += 2;
+                                    localBlockOffset1 += 6;
                                 }
                             }
+                            else
+                            {
+                                throw new NotSupportedException();
+                            }
+                        }
+
+                        if (blockOffset0 != nextMipHeader.OffsetD ||
+                            blockOffset1 != nextMipHeader.OffsetE ||
+                            blockOffset2 != nextMipHeader.OffsetB ||
+                            blockOffset3 != nextMipHeader.OffsetC)
+                        {
+                            throw new InvalidOperationException();
                         }
                     }
                 }
