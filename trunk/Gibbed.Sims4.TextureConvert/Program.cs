@@ -156,8 +156,6 @@ namespace Gibbed.Sims4.TextureConvert
                         blockOffset0 = mipHeader.Offset0;
                         blockOffset1 = mipHeader.Offset1;
 
-                        int op2s = 0;
-
                         for (int commandOffset = mipHeader.CommandOffset;
                             commandOffset < nextMipHeader.CommandOffset;
                             commandOffset += 2)
@@ -197,12 +195,11 @@ namespace Gibbed.Sims4.TextureConvert
                             }
                             else if (op == 2)
                             {
-                                op2s += count;
-
                                 for (int j = 0; j < count; j++)
                                 {
                                     if (hasSpecular == false)
                                     {
+                                        // TODO: fix me
                                         output.WriteValueU64(0xFFFFFFFFFFFF0500ul, endian);
                                     }
                                     else
