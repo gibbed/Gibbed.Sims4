@@ -135,11 +135,11 @@ namespace Gibbed.Sims4.TextureConvert
 
                     for (int i = 0; i < mipCount && i < 1; i++)
                     {
-                        int b, c, d, e;
-                        b = mipHeaders[i].OffsetB;
-                        c = mipHeaders[i].OffsetC;
-                        d = mipHeaders[i].OffsetD;
-                        e = mipHeaders[i].OffsetE;
+                        int blockOffset2, blockOffset3, blockOffset0, blockOffset1;
+                        blockOffset2 = mipHeaders[i].OffsetB;
+                        blockOffset3 = mipHeaders[i].OffsetC;
+                        blockOffset0 = mipHeaders[i].OffsetD;
+                        blockOffset1 = mipHeaders[i].OffsetE;
 
                         for (int commandOffset = mipHeaders[i].CommandOffset;
                             commandOffset < mipHeaders[i + 1].CommandOffset;
@@ -168,19 +168,21 @@ namespace Gibbed.Sims4.TextureConvert
                             {
                                 for (int j = 0; j < count; j++)
                                 {
-                                    output.Write(temp, d, 2);
-                                    output.Write(temp, e, 6);
-                                    output.Write(temp, b, 4);
-                                    output.Write(temp, c, 4);
+                                    output.Write(temp, blockOffset0, 2);
+                                    output.Write(temp, blockOffset1, 6);
+                                    output.Write(temp, blockOffset2, 4);
+                                    output.Write(temp, blockOffset3, 4);
 
-                                    b += 4;
-                                    c += 4;
-                                    d += 2;
-                                    e += 6;
+                                    blockOffset2 += 4;
+                                    blockOffset3 += 4;
+                                    blockOffset0 += 2;
+                                    blockOffset1 += 6;
                                 }
                             }
                             else if (op == 2)
                             {
+                                // todo: me
+
                                 for (int j = 0; j < count; j++)
                                 {
                                     output.WriteValueU16(0xFFFF);
