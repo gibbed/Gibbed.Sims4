@@ -87,10 +87,12 @@ namespace Gibbed.Sims4.TextureConvert
                 var endian = pixelFormat == DDS.FourCC.DXT5 ? Endian.Little : Endian.Big;
 
                 var version = input.ReadValueU32(endian);
-                if (version != 0x32454C52) // RLE2
+                if (version != 0x32454C52 && // RLE2
+                    version != 0x53454C52) // RLES
                 {
                     throw new FormatException("unsupported version");
                 }
+                bool hasSpecular = version == 0x53454C52;
 
                 var width = input.ReadValueU16(endian);
                 var height = input.ReadValueU16(endian);
@@ -105,14 +107,22 @@ namespace Gibbed.Sims4.TextureConvert
                 var mipHeaders = new MipHeader[mipCount + 1];
                 for (var i = 0; i < mipCount; i++)
                 {
-                    mipHeaders[i] = MipHeader.Read(input, endian);
+                    var mipHeader = new MipHeader();
+                    mipHeader.CommandOffset = input.ReadValueS32(endian);
+                    mipHeader.Offset2 = input.ReadValueS32(endian);
+                    mipHeader.Offset3 = input.ReadValueS32(endian);
+                    mipHeader.Offset0 = input.ReadValueS32(endian);
+                    mipHeader.Offset1 = input.ReadValueS32(endian);
+                    mipHeader.Offset4 = hasSpecular == false ? 0 : input.ReadValueS32(endian);
+                    mipHeaders[i] = mipHeader;
                 }
                 var dummy = new MipHeader();
-                dummy.CommandOffset = mipHeaders[0].OffsetB;
-                dummy.OffsetB = mipHeaders[0].OffsetC;
-                dummy.OffsetC = mipHeaders[0].OffsetD;
-                dummy.OffsetD = mipHeaders[0].OffsetE;
-                dummy.OffsetE = (int)input.Length;
+                dummy.CommandOffset = mipHeaders[0].Offset2;
+                dummy.Offset2 = mipHeaders[0].Offset3;
+                dummy.Offset3 = mipHeaders[0].Offset0;
+                dummy.Offset0 = mipHeaders[0].Offset1;
+                dummy.Offset1 = hasSpecular == false ? (int)input.Length : mipHeaders[0].Offset4;
+                dummy.Offset4 = (int)input.Length;
                 mipHeaders[mipCount] = dummy;
 
                 input.Position = 0;
@@ -127,7 +137,7 @@ namespace Gibbed.Sims4.TextureConvert
                     header.Width = width;
                     header.Height = height;
                     header.Depth = 1;
-                    header.MipMapCount = mipCount;
+                    header.MipMapCount = 1; //mipCount;
                     header.PixelFormat.Size = DDS.PixelFormat.StructureSize;
                     header.PixelFormat.Flags = DDS.PixelFormatFlags.FourCC;
                     header.PixelFormat.FourCC = DDS.FourCC.DXT5;
@@ -139,10 +149,10 @@ namespace Gibbed.Sims4.TextureConvert
                         var nextMipHeader = mipHeaders[i + 1];
 
                         int blockOffset2, blockOffset3, blockOffset0, blockOffset1;
-                        blockOffset2 = mipHeader.OffsetB;
-                        blockOffset3 = mipHeader.OffsetC;
-                        blockOffset0 = mipHeader.OffsetD;
-                        blockOffset1 = mipHeader.OffsetE;
+                        blockOffset2 = mipHeader.Offset2;
+                        blockOffset3 = mipHeader.Offset3;
+                        blockOffset0 = mipHeader.Offset0;
+                        blockOffset1 = mipHeader.Offset1;
 
                         int op2s = 0;
 
@@ -164,7 +174,7 @@ namespace Gibbed.Sims4.TextureConvert
                                     output.WriteValueU16(0);
                                     output.WriteValueU16(0);
                                     output.WriteValueU16(0);
-                                    
+
                                     output.WriteValueU32(0);
                                     output.WriteValueU32(0);
                                 }
@@ -177,7 +187,6 @@ namespace Gibbed.Sims4.TextureConvert
                                     output.Write(temp, blockOffset1, 6);
                                     output.Write(temp, blockOffset2, 4);
                                     output.Write(temp, blockOffset3, 4);
-
                                     blockOffset2 += 4;
                                     blockOffset3 += 4;
                                     blockOffset0 += 2;
@@ -188,21 +197,24 @@ namespace Gibbed.Sims4.TextureConvert
                             {
                                 op2s += count;
 
-                                var localBlockOffset0 = blockOffset0 - (2 * count);
-                                var localBlockOffset1 = blockOffset1 - (6 * count);
-
                                 for (int j = 0; j < count; j++)
                                 {
-                                    output.WriteValueU64(0xFFFFFFFFFFFF0500ul, endian);
-                                    //output.Write(temp, localBlockOffset0, 2);
-                                    //output.Write(temp, localBlockOffset1, 6);
+                                    if (hasSpecular == false)
+                                    {
+                                        output.WriteValueU64(0xFFFFFFFFFFFF0500ul, endian);
+                                    }
+                                    else
+                                    {
+                                        output.Write(temp, blockOffset0, 2);
+                                        output.Write(temp, blockOffset1, 6);
+                                        blockOffset0 += 2;
+                                        blockOffset1 += 6;
+                                    }
+
                                     output.Write(temp, blockOffset2, 4);
                                     output.Write(temp, blockOffset3, 4);
-
                                     blockOffset2 += 4;
                                     blockOffset3 += 4;
-                                    localBlockOffset0 += 2;
-                                    localBlockOffset1 += 6;
                                 }
                             }
                             else
@@ -211,10 +223,10 @@ namespace Gibbed.Sims4.TextureConvert
                             }
                         }
 
-                        if (blockOffset0 != nextMipHeader.OffsetD ||
-                            blockOffset1 != nextMipHeader.OffsetE ||
-                            blockOffset2 != nextMipHeader.OffsetB ||
-                            blockOffset3 != nextMipHeader.OffsetC)
+                        if (blockOffset0 != nextMipHeader.Offset0 ||
+                            blockOffset1 != nextMipHeader.Offset1 ||
+                            blockOffset2 != nextMipHeader.Offset2 ||
+                            blockOffset3 != nextMipHeader.Offset3)
                         {
                             throw new InvalidOperationException();
                         }
