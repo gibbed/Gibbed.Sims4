@@ -15,6 +15,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.Sims4.TextureShuffle", "Gibbed.Sims4.TextureShuffle\Gibbed.Sims4.TextureShuffle.csproj", "{66FDC2BC-D915-4A3C-B91E-D3E263C132CB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.Sims4.TextureConvert", "Gibbed.Sims4.TextureConvert\Gibbed.Sims4.TextureConvert.csproj", "{3836D232-CB41-4206-B83D-E7D6F6181A3F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.Sims4.TextureFormats", "Gibbed.Sims4.TextureFormats\Gibbed.Sims4.TextureFormats.csproj", "{2C8EEEC2-50AE-47B1-8298-C663BFC34292}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,6 +89,26 @@ Global
 		{66FDC2BC-D915-4A3C-B91E-D3E263C132CB}.Release|Mixed Platforms.Build.0 = Release|x86
 		{66FDC2BC-D915-4A3C-B91E-D3E263C132CB}.Release|x86.ActiveCfg = Release|x86
 		{66FDC2BC-D915-4A3C-B91E-D3E263C132CB}.Release|x86.Build.0 = Release|x86
+		{3836D232-CB41-4206-B83D-E7D6F6181A3F}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{3836D232-CB41-4206-B83D-E7D6F6181A3F}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{3836D232-CB41-4206-B83D-E7D6F6181A3F}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{3836D232-CB41-4206-B83D-E7D6F6181A3F}.Debug|x86.ActiveCfg = Debug|x86
+		{3836D232-CB41-4206-B83D-E7D6F6181A3F}.Debug|x86.Build.0 = Debug|x86
+		{3836D232-CB41-4206-B83D-E7D6F6181A3F}.Release|Any CPU.ActiveCfg = Release|x86
+		{3836D232-CB41-4206-B83D-E7D6F6181A3F}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{3836D232-CB41-4206-B83D-E7D6F6181A3F}.Release|Mixed Platforms.Build.0 = Release|x86
+		{3836D232-CB41-4206-B83D-E7D6F6181A3F}.Release|x86.ActiveCfg = Release|x86
+		{3836D232-CB41-4206-B83D-E7D6F6181A3F}.Release|x86.Build.0 = Release|x86
+		{2C8EEEC2-50AE-47B1-8298-C663BFC34292}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C8EEEC2-50AE-47B1-8298-C663BFC34292}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C8EEEC2-50AE-47B1-8298-C663BFC34292}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{2C8EEEC2-50AE-47B1-8298-C663BFC34292}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{2C8EEEC2-50AE-47B1-8298-C663BFC34292}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2C8EEEC2-50AE-47B1-8298-C663BFC34292}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C8EEEC2-50AE-47B1-8298-C663BFC34292}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C8EEEC2-50AE-47B1-8298-C663BFC34292}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{2C8EEEC2-50AE-47B1-8298-C663BFC34292}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{2C8EEEC2-50AE-47B1-8298-C663BFC34292}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

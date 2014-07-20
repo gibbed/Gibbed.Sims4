@@ -20,9 +20,9 @@
  *    distribution.
  */
 
-namespace Gibbed.Sims4.TextureShuffle.DDS
+namespace Gibbed.Sims4.TextureFormats.DDS
 {
-    internal static class FourCC
+    public static class FourCC
     {
         public const uint DST1 = 0x31545344;
         public const uint DST3 = 0x33545344;

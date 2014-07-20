@@ -23,7 +23,7 @@
 using System.IO;
 using Gibbed.IO;
 
-namespace Gibbed.Sims4.TextureShuffle.DDS
+namespace Gibbed.Sims4.TextureFormats.DDS
 {
     public class PixelFormat
     {
