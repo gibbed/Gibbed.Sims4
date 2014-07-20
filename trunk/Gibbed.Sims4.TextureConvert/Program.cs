@@ -150,25 +150,48 @@ namespace Gibbed.Sims4.TextureConvert
                             var op = command & 3;
                             var count = command >> 2;
 
-                            if (op == 1)
+                            if (op == 0)
+                            {
+                                for (int j = 0; j < count; j++)
+                                {
+                                    output.WriteValueU16(0);
+
+                                    output.WriteValueU16(0);
+                                    output.WriteValueU16(0);
+                                    output.WriteValueU16(0);
+                                    
+                                    output.WriteValueU32(0);
+                                    output.WriteValueU32(0);
+                                }
+                            }
+                            else if (op == 1)
                             {
                                 for (int j = 0; j < count; j++)
                                 {
                                     output.Write(temp, d, 2);
-                                    output.WriteValueU16(0);
-                                    output.WriteValueU16(0);
-                                    output.WriteValueU16(0);
+                                    output.Write(temp, e, 6);
                                     output.Write(temp, b, 4);
                                     output.Write(temp, c, 4);
 
                                     b += 4;
                                     c += 4;
                                     d += 2;
+                                    e += 6;
                                 }
                             }
-                            else
+                            else if (op == 2)
                             {
-                                throw new NotImplementedException();
+                                for (int j = 0; j < count; j++)
+                                {
+                                    output.WriteValueU16(0xFFFF);
+
+                                    output.WriteValueU16(0xFFFF);
+                                    output.WriteValueU16(0xFFFF);
+                                    output.WriteValueU16(0xFFFF);
+
+                                    output.WriteValueU32(0xFFFFFFFF);
+                                    output.WriteValueU32(0xFFFFFFFF);
+                                }
                             }
                         }
                     }
