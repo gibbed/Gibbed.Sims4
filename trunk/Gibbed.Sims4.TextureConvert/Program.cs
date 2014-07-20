@@ -108,10 +108,10 @@ namespace Gibbed.Sims4.TextureConvert
                     mipHeaders[i] = MipHeader.Read(input, endian);
                 }
                 var dummy = new MipHeader();
-                dummy.CommandOffset = mipHeaders[mipCount - 1].OffsetB;
-                dummy.OffsetB = mipHeaders[mipCount - 1].OffsetC;
-                dummy.OffsetC = mipHeaders[mipCount - 1].OffsetD;
-                dummy.OffsetD = mipHeaders[mipCount - 1].OffsetE;
+                dummy.CommandOffset = mipHeaders[0].OffsetB;
+                dummy.OffsetB = mipHeaders[0].OffsetC;
+                dummy.OffsetC = mipHeaders[0].OffsetD;
+                dummy.OffsetD = mipHeaders[0].OffsetE;
                 dummy.OffsetE = (int)input.Length;
                 mipHeaders[mipCount] = dummy;
 
@@ -127,15 +127,13 @@ namespace Gibbed.Sims4.TextureConvert
                     header.Width = width;
                     header.Height = height;
                     header.Depth = 1;
-                    header.MipMapCount = 1; //mipCount;
+                    header.MipMapCount = mipCount;
                     header.PixelFormat.Size = DDS.PixelFormat.StructureSize;
                     header.PixelFormat.Flags = DDS.PixelFormatFlags.FourCC;
                     header.PixelFormat.FourCC = DDS.FourCC.DXT5;
                     header.Serialize(output, endian);
 
-                    var emptyTexel = new byte[16];
-
-                    for (int i = 0; i < mipCount && i < 1; i++)
+                    for (int i = 0; i < mipCount; i++)
                     {
                         var mipHeader = mipHeaders[i];
                         var nextMipHeader = mipHeaders[i + 1];
