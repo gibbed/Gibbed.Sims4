@@ -42,6 +42,44 @@
   <ItemGroup>
     <Compile Include="DataFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SwarmBinaryFile.cs" />
+    <Compile Include="Swarm\AuxiliaryTable.cs" />
+    <Compile Include="Swarm\Components\CameraComponent.cs" />
+    <Compile Include="Swarm\Components\DecalComponent.cs" />
+    <Compile Include="Swarm\Components\DistributeComponent.cs" />
+    <Compile Include="Swarm\Misc\BoundingBox.cs" />
+    <Compile Include="Swarm\ComponentTable.cs" />
+    <Compile Include="Swarm\Binary.cs" />
+    <Compile Include="Swarm\ISerializable.cs" />
+    <Compile Include="Swarm\IVersionedSerializable.cs" />
+    <Compile Include="Swarm\Misc\Matrix33.cs" />
+    <Compile Include="Swarm\Auxiliaries\MapsAuxiliary.cs" />
+    <Compile Include="Swarm\Components\FastParticlesComponent.cs" />
+    <Compile Include="Swarm\Components\GameComponent.cs" />
+    <Compile Include="Swarm\Auxiliaries\MaterialAuxiliary.cs" />
+    <Compile Include="Swarm\Components\MetaParticlesComponent.cs" />
+    <Compile Include="Swarm\Components\ModelComponent.cs" />
+    <Compile Include="Swarm\Components\ParticlesComponent.cs" />
+    <Compile Include="Swarm\Components\RibbonComponent.cs" />
+    <Compile Include="Swarm\Components\ScreenComponent.cs" />
+    <Compile Include="Swarm\Components\SequenceComponent.cs" />
+    <Compile Include="Swarm\Components\ShakeComponent.cs" />
+    <Compile Include="Swarm\Components\SoundComponent.cs" />
+    <Compile Include="Swarm\IComponent.cs" />
+    <Compile Include="Swarm\IFormat.cs" />
+    <Compile Include="Swarm\IAuxiliary.cs" />
+    <Compile Include="Swarm\Misc\Transform.cs" />
+    <Compile Include="Swarm\TypeVersionGroup.cs" />
+    <Compile Include="Swarm\Misc\DrawInfo.cs" />
+    <Compile Include="Swarm\Misc\SurfaceInfo.cs" />
+    <Compile Include="Swarm\Misc\Attractor.cs" />
+    <Compile Include="Swarm\Misc\PathPoint.cs" />
+    <Compile Include="Swarm\Misc\RandomWalk.cs" />
+    <Compile Include="Swarm\Misc\Wiggle.cs" />
+    <Compile Include="Swarm\Misc\Vector2.cs" />
+    <Compile Include="Swarm\Misc\Vector3.cs" />
+    <Compile Include="Swarm\VersionGroup.cs" />
+    <Compile Include="Swarm\VisualEffect.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Gibbed.IO\Gibbed.IO.csproj">
