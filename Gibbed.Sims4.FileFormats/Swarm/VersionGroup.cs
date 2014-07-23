@@ -48,5 +48,10 @@ namespace Gibbed.Sims4.FileFormats.Swarm
         {
             this._Items = new List<TType>();
         }
+
+        public override string ToString()
+        {
+            return string.Format("version {0}, {1} items", this._Version, this.Items.Count);
+        }
     }
 }

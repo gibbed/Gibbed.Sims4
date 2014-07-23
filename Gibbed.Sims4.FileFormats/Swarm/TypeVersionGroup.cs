@@ -35,5 +35,10 @@ namespace Gibbed.Sims4.FileFormats.Swarm
         #region Fields
         private short _Type;
         #endregion
+
+        public override string ToString()
+        {
+            return string.Format("type {0}, {1}", this._Type, base.ToString());
+        }
     }
 }
