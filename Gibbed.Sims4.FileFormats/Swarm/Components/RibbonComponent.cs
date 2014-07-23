@@ -119,10 +119,10 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Components
             get { return this._EndEdgeAlphaCurve; }
         }
 
-        public int NumSegments
+        public int SegmentCount
         {
-            get { return this._NumSegments; }
-            set { this._NumSegments = value; }
+            get { return this._SegmentCount; }
+            set { this._SegmentCount = value; }
         }
 
         public float SegmentLength
@@ -137,7 +137,7 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Components
             set { this._DrawInfo = value; }
         }
 
-        public int TileUv
+        public int TileUV
         {
             get { return this._TileUV; }
             set { this._TileUV = value; }
@@ -149,13 +149,13 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Components
             set { this._SlipCurveSpeed = value; }
         }
 
-        public float SlipUvSpeed
+        public float SlipUVSpeed
         {
             get { return this._SlipUVSpeed; }
             set { this._SlipUVSpeed = value; }
         }
 
-        public float UvRepeat
+        public float UVRepeat
         {
             get { return this._UVRepeat; }
             set { this._UVRepeat = value; }
@@ -214,7 +214,7 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Components
         private readonly List<float> _EdgeAlphaCurve;
         private readonly List<float> _StartEdgeAlphaCurve;
         private readonly List<float> _EndEdgeAlphaCurve;
-        private int _NumSegments;
+        private int _SegmentCount;
         private float _SegmentLength;
         private DrawInfo _DrawInfo;
         private int _TileUV;
@@ -267,7 +267,7 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Components
             Binary.Read____(input, this._EdgeAlphaCurve);
             Binary.Read____(input, this._StartEdgeAlphaCurve);
             Binary.Read____(input, this._EndEdgeAlphaCurve);
-            Binary.Read(input, out this._NumSegments);
+            Binary.Read(input, out this._SegmentCount);
             Binary.Read(input, out this._SegmentLength);
             Binary.Read(input, out this._DrawInfo);
             Binary.Read(input, out this._TileUV);
@@ -280,7 +280,7 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Components
             }
             else
             {
-                this.UvRepeat = 1.0f;
+                this.UVRepeat = 1.0f;
             }
 
             Binary.Read(input, out this._DirectionalForcesSum);
