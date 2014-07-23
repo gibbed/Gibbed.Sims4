@@ -32,7 +32,7 @@ namespace Gibbed.Sims4.FileFormats
     public class SwarmBinaryFile
     {
         #region Properties
-        public ushort Version
+        public short Version
         {
             get { return this._Version; }
             set { this._Version = value; }
@@ -66,7 +66,7 @@ namespace Gibbed.Sims4.FileFormats
         #endregion
 
         #region Fields
-        private ushort _Version;
+        private short _Version;
         private readonly List<TypeVersionGroup<IComponent>> _Components;
         private readonly List<TypeVersionGroup<IAuxiliary>> _Auxiliaries;
         private VersionGroup<VisualEffect> _VisualEffects;
@@ -90,7 +90,7 @@ namespace Gibbed.Sims4.FileFormats
 
         public void Deserialize(Stream input)
         {
-            var version = input.ReadValueU16(Endian.Big);
+            var version = input.ReadValueS16(Endian.Big);
             if (version != 2)
             {
                 throw new FormatException("not version 2");
