@@ -150,16 +150,21 @@ namespace Gibbed.Sims4.TextureConvert
             var temp = input.ReadBytes((int)input.Length);
 
             output.WriteValueU32(DDS.Header.Signature, endian);
-            var header = new DDS.Header();
-            header.Size = DDS.Header.StructureSize;
-            header.Flags = DDS.HeaderFlags.Texture;
-            header.Width = width;
-            header.Height = height;
-            header.Depth = 1;
-            header.MipMapCount = mipCount;
-            header.PixelFormat.Size = DDS.PixelFormat.StructureSize;
-            header.PixelFormat.Flags = DDS.PixelFormatFlags.FourCC;
-            header.PixelFormat.FourCC = DDS.FourCC.DXT5;
+            var header = new DDS.Header()
+            {
+                Size = DDS.Header.StructureSize,
+                Flags = DDS.HeaderFlags.Texture,
+                Width = width,
+                Height = height,
+                Depth = 1,
+                MipMapCount = mipCount,
+                PixelFormat =
+                {
+                    Size = DDS.PixelFormat.StructureSize,
+                    Flags = DDS.PixelFormatFlags.FourCC,
+                    FourCC = DDS.FourCC.DXT5,
+                },
+            };
             header.Serialize(output, endian);
 
             for (int i = 0; i < mipCount; i++)
