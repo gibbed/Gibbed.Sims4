@@ -338,15 +338,15 @@ namespace Gibbed.Sims4.TextureConvert
                     var mipSize = Math.Max(1, (mipWidth + 3) / 4) * Math.Max(1, (mipHeight + 3) / 4) * 16;
                     var mipData = input.ReadBytes(mipSize);
 
-                    for (int j = 0; j < mipSize;)
+                    for (int offset = 0; offset < mipSize;)
                     {
                         ushort nullCount = 0;
                         while (nullCount < 0x3FFF &&
-                               j < mipSize &&
-                               TrueForAll(mipData, j, 16, b => b == 0) == true)
+                               offset < mipSize &&
+                               TrueForAll(mipData, offset, 16, b => b == 0) == true)
                         {
                             nullCount++;
-                            j += 16;
+                            offset += 16;
                         }
 
                         if (nullCount > 0)
@@ -357,24 +357,24 @@ namespace Gibbed.Sims4.TextureConvert
                             continue;
                         }
 
-                        var start = j;
+                        var startOffset = offset;
                         ushort fullCount = 0;
                         while (fullCount < 0x3FFF &&
-                               j < mipSize &&
-                               TrueForAny(mipData, j, 16, b => b != 0) == true)
+                               offset < mipSize &&
+                               TrueForAny(mipData, offset, 16, b => b != 0) == true)
                         {
                             fullCount++;
-                            j += 16;
+                            offset += 16;
                         }
 
                         if (fullCount > 0)
                         {
-                            for (int k = 0; k < fullCount; k++, start += 16)
+                            for (int j = 0; j < fullCount; j++, startOffset += 16)
                             {
-                                block0Data.Write(mipData, start + 0, 2);
-                                block1Data.Write(mipData, start + 2, 6);
-                                block2Data.Write(mipData, start + 8, 4);
-                                block3Data.Write(mipData, start + 12, 4);
+                                block0Data.Write(mipData, startOffset + 0, 2);
+                                block1Data.Write(mipData, startOffset + 2, 6);
+                                block2Data.Write(mipData, startOffset + 8, 4);
+                                block3Data.Write(mipData, startOffset + 12, 4);
                             }
 
                             fullCount <<= 2;

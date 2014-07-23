@@ -20,9 +20,6 @@
  *    distribution.
  */
 
-using System.IO;
-using Gibbed.IO;
-
 namespace Gibbed.Sims4.TextureConvert
 {
     internal struct MipHeader
