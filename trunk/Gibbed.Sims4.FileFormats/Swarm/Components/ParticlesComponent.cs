@@ -413,10 +413,10 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Components
             set { this._MapRepulseKillHeight = value; }
         }
 
-        public float ProbDeath
+        public float ProbabilityDeath
         {
-            get { return this._ProbDeath; }
-            set { this._ProbDeath = value; }
+            get { return this._ProbabilityDeath; }
+            set { this._ProbabilityDeath = value; }
         }
 
         public Vector2 AltitudeRange
@@ -663,7 +663,7 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Components
         private float _MapRepulseScoutDistance;
         private float _MapRepulseVertical;
         private float _MapRepulseKillHeight;
-        private float _ProbDeath;
+        private float _ProbabilityDeath;
         private Vector2 _AltitudeRange;
         private ulong _ForceMapId;
         private ulong _EmitRateMapId;
@@ -775,7 +775,7 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Components
             Binary.Read(input, out this._MapRepulseScoutDistance);
             Binary.Read(input, out this._MapRepulseVertical);
             Binary.Read(input, out this._MapRepulseKillHeight);
-            Binary.Read(input, out this._ProbDeath);
+            Binary.Read(input, out this._ProbabilityDeath);
             Binary.Read(input, out this._AltitudeRange);
             Binary.Read(input, out this._ForceMapId);
             Binary.Read(input, out this._EmitRateMapId);
