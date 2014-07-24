@@ -106,7 +106,7 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Components
         public void Deserialize(Stream input, short version)
         {
             Binary.Read(input, out this._Flags);
-            this.Flags &= 3;
+            this._Flags &= 3;
 
             Binary.Read(input, out this._ResourceId);
             Binary.Read(input, out this._Size);

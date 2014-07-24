@@ -21,30 +21,40 @@
  */
 
 using System;
+using System.IO;
 
 namespace Gibbed.Sims4.FileFormats.Swarm
 {
-    internal static class AuxiliaryTable
+    public class FilterTemporaryBuffer : ISerializable
     {
-        private static readonly Func<IAuxiliary>[] _Factories;
-
-        static AuxiliaryTable()
+        #region Properties
+        public int ScreenRatio
         {
-            _Factories = new Func<IAuxiliary>[]
-            {
-                () => new Auxiliaries.MapsAuxiliary(), // unverified
-                () => new Auxiliaries.MaterialAuxiliary(), // unverified
-            };
+            get { return this._ScreenRatio; }
+            set { this._ScreenRatio = value; }
         }
 
-        public static Func<IAuxiliary> GetFactory(int index)
+        public int Size
         {
-            if (index < 0 || index >= _Factories.Length)
-            {
-                return null;
-            }
+            get { return this._Size; }
+            set { this._Size = value; }
+        }        
+        #endregion
 
-            return _Factories[index];
+        #region Fields
+        private int _ScreenRatio;
+        private int _Size;
+        #endregion
+
+        public void Serialize(Stream output)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Deserialize(Stream input)
+        {
+            Binary.Read(input, out this._ScreenRatio);
+            Binary.Read(input, out this._Size);
         }
     }
 }

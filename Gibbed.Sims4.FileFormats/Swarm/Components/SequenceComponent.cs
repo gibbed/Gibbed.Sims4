@@ -71,7 +71,7 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Components
             Binary.Read____(input, this._Items);
 
             Binary.Read(input, out this._Flags);
-            this.Flags &= 0xF;
+            this._Flags &= 0xF;
         }
 
         public class Item : ISerializable

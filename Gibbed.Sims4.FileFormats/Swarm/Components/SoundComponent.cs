@@ -92,7 +92,7 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Components
         public void Deserialize(Stream input, short version)
         {
             Binary.Read(input, out this._Flags);
-            this.Flags &= 0xF;
+            this._Flags &= 0xF;
 
             Binary.Read(input, out this._SoundId);
             Binary.Read(input, out this._LocationUpdateDelta);

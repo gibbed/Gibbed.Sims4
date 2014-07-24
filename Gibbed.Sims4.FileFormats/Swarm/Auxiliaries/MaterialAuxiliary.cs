@@ -21,6 +21,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Gibbed.Sims4.FileFormats.Swarm.Auxiliaries
@@ -30,14 +31,42 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Auxiliaries
         #region Properties
         public short MinimumVersion
         {
-            get { throw new NotImplementedException(); }
+            get { return 0; }
         }
 
         public short MaximumVersion
         {
-            get { throw new NotImplementedException(); }
+            get { return 0; }
+        }
+
+        public ulong MaterialId
+        {
+            get { return this._MaterialId; }
+            set { this._MaterialId = value; }
+        }
+
+        public ulong ShaderId
+        {
+            get { return this._ShaderId; }
+            set { this._ShaderId = value; }
+        }
+
+        public List<Parameter> Parameters
+        {
+            get { return this._Parameters; }
         }
         #endregion
+
+        #region Fields
+        private ulong _MaterialId;
+        private ulong _ShaderId;
+        private readonly List<Parameter> _Parameters;
+        #endregion
+
+        public MaterialAuxiliary()
+        {
+            this._Parameters = new List<Parameter>();
+        }
 
         public void Serialize(Stream output, short version)
         {
@@ -46,7 +75,156 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Auxiliaries
 
         public void Deserialize(Stream input, short version)
         {
-            throw new NotImplementedException();
+            Binary.Read(input, out this._MaterialId);
+            Binary.Read(input, out this._ShaderId);
+            Binary.Read____(input, this._Parameters);
+        }
+
+        public enum ParameterType : byte
+        {
+            Float = 0,
+            Int = 1,
+            Bool = 2,
+            Floats = 3,
+            Ints = 4,
+            Bools = 5,
+            TextureId = 6,
+        }
+
+        public class Parameter : ISerializable
+        {
+            #region Properties
+            public ulong Id
+            {
+                get { return this._Id; }
+                set { this._Id = value; }
+            }
+
+            public ParameterType Type
+            {
+                get { return (ParameterType)this._Type; }
+                set { this._Type = (byte)value; }
+            }
+
+            public ulong TextureId
+            {
+                get { return this._TextureId; }
+                set { this._TextureId = value; }
+            }
+
+            public float Float
+            {
+                get { return this._Float; }
+                set { this._Float = value; }
+            }
+
+            public int Int
+            {
+                get { return this._Int; }
+                set { this._Int = value; }
+            }
+
+            public bool Bool
+            {
+                get { return this._Bool; }
+                set { this._Bool = value; }
+            }
+
+            public List<float> Floats
+            {
+                get { return this._Floats; }
+            }
+
+            public List<int> Ints
+            {
+                get { return this._Ints; }
+            }
+
+            public List<bool> Bools
+            {
+                get { return this._Bools; }
+            }
+            #endregion
+
+            #region Fields
+            private ulong _Id;
+            private byte _Type;
+            private ulong _TextureId;
+            private float _Float;
+            private int _Int;
+            private bool _Bool;
+            private readonly List<float> _Floats;
+            private readonly List<int> _Ints;
+            private readonly List<bool> _Bools;
+            #endregion
+
+            public Parameter()
+            {
+                this._Floats = new List<float>();
+                this._Ints = new List<int>();
+                this._Bools = new List<bool>();
+            }
+
+            public void Serialize(Stream output)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Deserialize(Stream input)
+            {
+                Binary.Read(input, out this._Id);
+                Binary.Read(input, out this._Type);
+
+                switch (this.Type)
+                {
+                    case ParameterType.Float:
+                    {
+                        Binary.Read(input, out this._Float);
+                        break;
+                    }
+
+                    case ParameterType.Int:
+                    {
+                        Binary.Read(input, out this._Int);
+                        break;
+                    }
+
+                    case ParameterType.Bool:
+                    {
+                        Binary.Read(input, out this._Bool);
+                        break;
+                    }
+
+                    case ParameterType.Floats:
+                    {
+                        Binary.Read_s__(input, this._Floats);
+                        break;
+                    }
+
+                    case ParameterType.Ints:
+                    {
+                        Binary.Read_s__(input, this._Ints);
+                        break;
+                    }
+
+                    case ParameterType.Bools:
+                    {
+                        Binary.Read_s__(input, this._Bools);
+                        break;
+                    }
+
+                    case ParameterType.TextureId:
+                    {
+                        Binary.Read(input, out this._TextureId);
+                        break;
+                    }
+
+                    default:
+                    {
+                        throw new NotSupportedException();
+                    }
+                }
+            }
         }
     }
 }

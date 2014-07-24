@@ -53,6 +53,10 @@
     <Compile Include="Swarm\Binary.cs" />
     <Compile Include="Swarm\ISerializable.cs" />
     <Compile Include="Swarm\IVersionedSerializable.cs" />
+    <Compile Include="Swarm\Misc\Rectangle.cs" />
+    <Compile Include="Swarm\Misc\Filter.cs" />
+    <Compile Include="Swarm\Misc\FilterChain.cs" />
+    <Compile Include="Swarm\Misc\FilterTemporaryBuffer.cs" />
     <Compile Include="Swarm\Misc\Matrix33.cs" />
     <Compile Include="Swarm\Auxiliaries\MapsAuxiliary.cs" />
     <Compile Include="Swarm\Components\FastParticlesComponent.cs" />
@@ -70,6 +74,7 @@
     <Compile Include="Swarm\IFormat.cs" />
     <Compile Include="Swarm\IAuxiliary.cs" />
     <Compile Include="Swarm\Misc\Transform.cs" />
+    <Compile Include="Swarm\Misc\Vector4.cs" />
     <Compile Include="Swarm\TypeVersionGroup.cs" />
     <Compile Include="Swarm\Misc\DrawInfo.cs" />
     <Compile Include="Swarm\Misc\SurfaceInfo.cs" />

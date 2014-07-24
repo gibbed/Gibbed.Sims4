@@ -39,13 +39,13 @@ namespace Gibbed.Sims4.FileFormats.Swarm
                 () => new Components.SequenceComponent(),
                 () => new Components.SoundComponent(),
                 () => new Components.ShakeComponent(),
-                () => new Components.CameraComponent(),
-                () => new Components.ModelComponent(),
-                () => new Components.ScreenComponent(),
+                () => new Components.CameraComponent(), // unverified
+                () => new Components.ModelComponent(), // unverified
+                () => new Components.ScreenComponent(), // unverified
                 null,
-                () => new Components.GameComponent(),
-                () => new Components.FastParticlesComponent(),
-                () => new Components.DistributeComponent(),
+                () => new Components.GameComponent(), // unverified
+                () => new Components.FastParticlesComponent(), // unverified
+                () => new Components.DistributeComponent(), // unverified
                 () => new Components.RibbonComponent(),
             };
         }

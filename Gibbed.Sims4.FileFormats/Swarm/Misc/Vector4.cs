@@ -21,30 +21,37 @@
  */
 
 using System;
+using System.IO;
+using Gibbed.IO;
 
 namespace Gibbed.Sims4.FileFormats.Swarm
 {
-    internal static class AuxiliaryTable
+    public struct Vector4 : ISerializable
     {
-        private static readonly Func<IAuxiliary>[] _Factories;
+        public float X;
+        public float Y;
+        public float Z;
+        public float W;
 
-        static AuxiliaryTable()
+        public Vector4(float x, float y, float z, float w)
         {
-            _Factories = new Func<IAuxiliary>[]
-            {
-                () => new Auxiliaries.MapsAuxiliary(), // unverified
-                () => new Auxiliaries.MaterialAuxiliary(), // unverified
-            };
+            this.X = x;
+            this.Y = y;
+            this.Z = z;
+            this.W = w;
         }
 
-        public static Func<IAuxiliary> GetFactory(int index)
+        public void Serialize(Stream output)
         {
-            if (index < 0 || index >= _Factories.Length)
-            {
-                return null;
-            }
+            throw new NotImplementedException();
+        }
 
-            return _Factories[index];
+        public void Deserialize(Stream input)
+        {
+            this.X = input.ReadValueF32(Endian.Little);
+            this.Y = input.ReadValueF32(Endian.Little);
+            this.Z = input.ReadValueF32(Endian.Little);
+            this.W = input.ReadValueF32(Endian.Little);
         }
     }
 }
