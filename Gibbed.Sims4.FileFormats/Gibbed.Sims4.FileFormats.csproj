@@ -47,6 +47,7 @@
     <Compile Include="Swarm\Components\CameraComponent.cs" />
     <Compile Include="Swarm\Components\DecalComponent.cs" />
     <Compile Include="Swarm\Components\DistributeComponent.cs" />
+    <Compile Include="Swarm\Misc\AnimationCurve.cs" />
     <Compile Include="Swarm\Misc\BoundingBox.cs" />
     <Compile Include="Swarm\ComponentTable.cs" />
     <Compile Include="Swarm\Binary.cs" />

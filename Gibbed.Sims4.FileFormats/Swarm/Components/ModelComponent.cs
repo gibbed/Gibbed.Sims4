@@ -21,6 +21,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Gibbed.Sims4.FileFormats.Swarm.Components
@@ -30,13 +31,71 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Components
         #region Properties
         public short MinimumVersion
         {
-            get { throw new NotImplementedException(); }
+            get { return 1; }
         }
 
         public short MaximumVersion
         {
-            get { throw new NotImplementedException(); }
+            get { return 1; }
         }
+
+        public uint Flags
+        {
+            get { return this._Flags; }
+            set { this._Flags = value; }
+        }
+
+        public ulong ResourceId
+        {
+            get { return this._ResourceId; }
+            set { this._ResourceId = value; }
+        }
+
+        public float Size
+        {
+            get { return this._Size; }
+            set { this._Size = value; }
+        }
+
+        public Vector3 Colour
+        {
+            get { return this._Colour; }
+            set { this._Colour = value; }
+        }
+
+        public float Alpha
+        {
+            get { return this._Alpha; }
+            set { this._Alpha = value; }
+        }
+
+        public List<AnimationCurve> AnimationCurves
+        {
+            get { return this._AnimationCurves; }
+        }
+
+        public ulong MaterialId
+        {
+            get { return this._MaterialId; }
+            set { this._MaterialId = value; }
+        }
+
+        public byte OverrideSet
+        {
+            get { return this._OverrideSet; }
+            set { this._OverrideSet = value; }
+        }
+        #endregion
+
+        #region Fields
+        private uint _Flags;
+        private ulong _ResourceId;
+        private float _Size;
+        private Vector3 _Colour;
+        private float _Alpha;
+        private readonly List<AnimationCurve> _AnimationCurves;
+        private ulong _MaterialId;
+        private byte _OverrideSet;
         #endregion
 
         public void Serialize(Stream output, short version)
@@ -46,7 +105,16 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Components
 
         public void Deserialize(Stream input, short version)
         {
-            throw new NotImplementedException();
+            Binary.Read(input, out this._Flags);
+            this.Flags &= 3;
+
+            Binary.Read(input, out this._ResourceId);
+            Binary.Read(input, out this._Size);
+            Binary.Read(input, out this._Colour);
+            Binary.Read(input, out this._Alpha);
+            Binary.Read____(input, this.AnimationCurves);
+            Binary.Read(input, out this._MaterialId);
+            Binary.Read(input, out this._OverrideSet);
         }
     }
 }
