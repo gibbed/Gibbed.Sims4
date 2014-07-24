@@ -125,7 +125,7 @@ namespace Gibbed.Sims4.FileFormats.Swarm
         public void Deserialize(Stream input, short version)
         {
             Binary.Read(input, out this._Flags);
-            this.Flags &= 0xFFFFFF;
+            this._Flags &= 0xFFFFFF;
 
             Binary.Read(input, out this._ComponentAppFlagsMask);
             Binary.Read(input, out this._NotifyMessageId);
@@ -306,7 +306,7 @@ namespace Gibbed.Sims4.FileFormats.Swarm
                 Binary.Read(input, out this._ComponentType);
 
                 Binary.Read(input, out this._Flags);
-                this.Flags &= 0x3FF;
+                this._Flags &= 0x3FF;
 
                 Binary.Read(input, out this._LocalXForm);
                 Binary.Read(input, out this._LODBegin);

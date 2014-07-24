@@ -139,7 +139,7 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Components
         public void Deserialize(Stream input, short version)
         {
             Binary.Read(input, out this._Flags);
-            this.Flags &= 0x3FF;
+            this._Flags &= 0x3FF;
 
             Binary.Read(input, out this._ViewFlags);
             Binary.Read(input, out this._Lifetime);

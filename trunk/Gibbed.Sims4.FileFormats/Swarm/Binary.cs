@@ -92,7 +92,7 @@ namespace Gibbed.Sims4.FileFormats.Swarm
         }
 
         // ReSharper disable InconsistentNaming
-        public static void Read____(Stream input, List<float> list)
+        public static void Read____(Stream input, List<byte> list)
             // ReSharper restore InconsistentNaming
         {
             if (list == null)
@@ -101,19 +101,137 @@ namespace Gibbed.Sims4.FileFormats.Swarm
             }
 
             var count = input.ReadValueU32(Endian.Big);
-            var items = new List<float>();
+            var bytes = input.ReadBytes(count);
+            list.Clear();
+            list.AddRange(bytes);
+        }
+
+        // ReSharper disable InconsistentNaming
+        private static void Read_s__<T>(Stream input, List<T> list, Func<T> readItem)
+            // ReSharper restore InconsistentNaming
+        {
+            if (list == null)
+            {
+                throw new ArgumentNullException("list");
+            }
+
+            var count = input.ReadValueU16(Endian.Big);
+            var items = new List<T>();
             for (uint i = 0; i < count; i++)
             {
-                items.Add(input.ReadValueF32(Endian.Big));
+                var value = readItem();
+                items.Add(value);
             }
             list.Clear();
             list.AddRange(items);
         }
 
         // ReSharper disable InconsistentNaming
-        public static void Read____<T>(Stream input, T[] array)
+        private static void Read____<T>(Stream input, List<T> list, Func<T> readItem)
+            // ReSharper restore InconsistentNaming
+        {
+            if (list == null)
+            {
+                throw new ArgumentNullException("list");
+            }
+
+            var count = input.ReadValueU32(Endian.Big);
+            var items = new List<T>();
+            for (uint i = 0; i < count; i++)
+            {
+                var value = readItem();
+                items.Add(value);
+            }
+            list.Clear();
+            list.AddRange(items);
+        }
+
+        // ReSharper disable InconsistentNaming
+        public static void Read_s__(Stream input, List<bool> list)
+            // ReSharper restore InconsistentNaming
+        {
+            // ReSharper disable ConvertClosureToMethodGroup
+            Read_s__(input, list, () => input.ReadValueB8());
+            // ReSharper restore ConvertClosureToMethodGroup
+        }
+
+        // ReSharper disable InconsistentNaming
+        public static void Read____(Stream input, List<bool> list)
+            // ReSharper restore InconsistentNaming
+        {
+            // ReSharper disable ConvertClosureToMethodGroup
+            Read____(input, list, () => input.ReadValueB8());
+            // ReSharper restore ConvertClosureToMethodGroup
+        }
+
+        // ReSharper disable InconsistentNaming
+        public static void Read_s__(Stream input, List<int> list)
+            // ReSharper restore InconsistentNaming
+        {
+            Read_s__(input, list, () => input.ReadValueS32(Endian.Big));
+        }
+
+        // ReSharper disable InconsistentNaming
+        public static void Read____(Stream input, List<int> list)
+            // ReSharper restore InconsistentNaming
+        {
+            Read____(input, list, () => input.ReadValueS32(Endian.Big));
+        }
+
+        // ReSharper disable InconsistentNaming
+        public static void Read_s__(Stream input, List<float> list)
+            // ReSharper restore InconsistentNaming
+        {
+            Read_s__(input, list, () => input.ReadValueF32(Endian.Big));
+        }
+
+        // ReSharper disable InconsistentNaming
+        public static void Read____(Stream input, List<float> list)
+            // ReSharper restore InconsistentNaming
+        {
+            Read____(input, list, () => input.ReadValueF32(Endian.Big));
+        }
+
+        // ReSharper disable InconsistentNaming
+        public static void Read____(Stream input, List<ulong> list)
+            // ReSharper restore InconsistentNaming
+        {
+            Read____(input, list, () => input.ReadValueU64(Endian.Big));
+        }
+
+        // ReSharper disable InconsistentNaming
+        public static void Read____<T>(Stream input, List<T> list)
             // ReSharper restore InconsistentNaming
             where T : ISerializable, new()
+        {
+            Read____(input,
+                     list,
+                     () =>
+                     {
+                         var item = new T();
+                         item.Deserialize(input);
+                         return item;
+                     });
+        }
+
+        // ReSharper disable InconsistentNaming
+        public static void Read____<T>(Stream input, List<T> list, short version)
+            // ReSharper restore InconsistentNaming
+            where T : IVersionedSerializable, new()
+        {
+            Read____(input,
+                     list,
+                     () =>
+                     {
+                         var item = new T();
+                         item.Deserialize(input, version);
+                         return item;
+                     });
+        }
+
+        // ReSharper disable InconsistentNaming
+        private static void Read____<T>(T[] array, Func<T> readItem)
+            // ReSharper restore InconsistentNaming
         {
             if (array == null)
             {
@@ -123,52 +241,29 @@ namespace Gibbed.Sims4.FileFormats.Swarm
             var count = array.Length;
             for (int i = 0; i < count; i++)
             {
-                (array[i] = new T()).Deserialize(input);
+                array[i] = readItem();
             }
         }
 
         // ReSharper disable InconsistentNaming
-        public static void Read____<T>(Stream input, List<T> list)
+        public static void Read____(Stream input, ulong[] array)
+            // ReSharper restore InconsistentNaming
+        {
+            Read____(array, () => input.ReadValueU32(Endian.Big));
+        }
+
+        // ReSharper disable InconsistentNaming
+        public static void Read____<T>(Stream input, T[] array)
             // ReSharper restore InconsistentNaming
             where T : ISerializable, new()
         {
-            if (list == null)
-            {
-                throw new ArgumentNullException("list");
-            }
-
-            var count = input.ReadValueU32(Endian.Big);
-            var items = new List<T>();
-            for (uint i = 0; i < count; i++)
-            {
-                var item = new T();
-                item.Deserialize(input);
-                items.Add(item);
-            }
-            list.Clear();
-            list.AddRange(items);
-        }
-
-        // ReSharper disable InconsistentNaming
-        public static void Read____<T>(Stream input, List<T> list, short version)
-            // ReSharper restore InconsistentNaming
-            where T : IVersionedSerializable, new()
-        {
-            if (list == null)
-            {
-                throw new ArgumentNullException("list");
-            }
-
-            var count = input.ReadValueU32(Endian.Big);
-            var items = new List<T>();
-            for (uint i = 0; i < count; i++)
-            {
-                var item = new T();
-                item.Deserialize(input, version);
-                items.Add(item);
-            }
-            list.Clear();
-            list.AddRange(items);
+            Read____(array,
+                     () =>
+                     {
+                         var item = new T();
+                         item.Deserialize(input);
+                         return item;
+                     });
         }
     }
 }
