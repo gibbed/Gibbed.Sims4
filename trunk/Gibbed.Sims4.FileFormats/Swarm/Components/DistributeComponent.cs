@@ -20,7 +20,6 @@
  *    distribution.
  */
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -259,7 +258,36 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Components
 
         public void Serialize(Stream output, short version)
         {
-            throw new NotImplementedException();
+            Binary.Write(output, this._Flags);
+            Binary.Write(output, this._Density);
+            Binary.Write(output, this._ComponentName);
+            Binary.Write(output, this._Start);
+            Binary.Write(output, this._SourceType);
+            Binary.Write(output, this._SourceSize);
+            Binary.Write(output, this._PreTransform);
+            Binary.Write(output, this._SizeCurve);
+            Binary.Write(output, this._SizeVary);
+            Binary.Write(output, this._PitchCurve);
+            Binary.Write(output, this._RollCurve);
+            Binary.Write(output, this._HeadingCurve);
+            Binary.Write(output, this._PitchVary);
+            Binary.Write(output, this._RollVary);
+            Binary.Write(output, this._HeadingVary);
+            Binary.Write(output, this._PitchOffset);
+            Binary.Write(output, this._RollOffset);
+            Binary.Write(output, this._HeadingOffset);
+            Binary.Write(output, this._ColorCurve);
+            Binary.Write(output, this._ColorVary);
+            Binary.Write(output, this._AlphaCurve);
+            Binary.Write(output, this._AlphaVary);
+            Binary.Write(output, this._Surfaces);
+            Binary.Write(output, this._EmitMapId);
+            Binary.Write(output, this._ColorMapId);
+            Binary.Write(output, this._PinMapId);
+            Binary.Write(output, this._AltitudeRange);
+            Binary.Write(output, this._DrawInfo);
+            Binary.Write(output, this._OverrideSet);
+            Binary.Write(output, this._MessageId);
         }
 
         public void Deserialize(Stream input, short version)

@@ -22,7 +22,7 @@
 
 namespace Gibbed.Sims4.FileFormats.Swarm
 {
-    public interface IAuxiliary : IFormat
+    public interface IAuxiliary : IDescription
     {
     }
 }

@@ -20,7 +20,6 @@
  *    distribution.
  */
 
-using System;
 using System.IO;
 using Gibbed.IO;
 
@@ -43,7 +42,10 @@ namespace Gibbed.Sims4.FileFormats.Swarm
 
         public void Serialize(Stream output)
         {
-            throw new NotImplementedException();
+            output.WriteValueF32(this.X, Endian.Little);
+            output.WriteValueF32(this.Y, Endian.Little);
+            output.WriteValueF32(this.Z, Endian.Little);
+            output.WriteValueF32(this.W, Endian.Little);
         }
 
         public void Deserialize(Stream input)

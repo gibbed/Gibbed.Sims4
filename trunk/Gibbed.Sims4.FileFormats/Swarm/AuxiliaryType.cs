@@ -20,31 +20,13 @@
  *    distribution.
  */
 
-using System;
-
 namespace Gibbed.Sims4.FileFormats.Swarm
 {
-    internal static class AuxiliaryTable
+    public enum AuxiliaryType : short
     {
-        private static readonly Func<IAuxiliary>[] _Factories;
+        Invalid = -1,
 
-        static AuxiliaryTable()
-        {
-            _Factories = new Func<IAuxiliary>[]
-            {
-                () => new Auxiliaries.MapsAuxiliary(), // unverified
-                () => new Auxiliaries.MaterialAuxiliary(), // unverified
-            };
-        }
-
-        public static Func<IAuxiliary> GetFactory(int index)
-        {
-            if (index < 0 || index >= _Factories.Length)
-            {
-                return null;
-            }
-
-            return _Factories[index];
-        }
+        Maps = 0,
+        Material = 1,
     }
 }

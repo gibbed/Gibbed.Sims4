@@ -20,7 +20,6 @@
  *    distribution.
  */
 
-using System;
 using System.IO;
 
 namespace Gibbed.Sims4.FileFormats.Swarm
@@ -97,17 +96,44 @@ namespace Gibbed.Sims4.FileFormats.Swarm
 
         public void Serialize(Stream output)
         {
-            throw new NotImplementedException();
+            this.Serialize(output, 6);
+        }
+
+        public void Serialize(Stream output, short version)
+        {
+            Binary.Write(output, this._ResourceId);
+            Binary.Write(output, this._Format);
+
+            byte drawMode = this._DrawMode;
+            //if (this._Unknown20 != 0)
+            {
+                drawMode |= 0x80;
+            }
+            Binary.Write(output, drawMode);
+
+            if ((drawMode & 0x80) != 0)
+            {
+                Binary.Write(output, this._Unknown20);
+            }
+
+            if (version >= 6)
+            {
+                Binary.Write(output, this._DrawFlags);
+            }
+            else
+            {
+                Binary.Write(output, (byte)this._DrawFlags);
+            }
+
+            Binary.Write(output, this._Buffer);
+            Binary.Write(output, this._Layer);
+            Binary.Write(output, this._SortOffset);
+            Binary.Write(output, this._ResourceId2);
         }
 
         public void Deserialize(Stream input)
         {
             this.Deserialize(input, 6);
-        }
-
-        public void Serialize(Stream output, short version)
-        {
-            throw new NotImplementedException();
         }
 
         public void Deserialize(Stream input, short version)

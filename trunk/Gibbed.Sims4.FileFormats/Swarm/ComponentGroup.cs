@@ -20,25 +20,39 @@
  *    distribution.
  */
 
+using System.Collections.Generic;
+using System.Linq;
+
 namespace Gibbed.Sims4.FileFormats.Swarm
 {
-    public class TypeVersionGroup<TType> : VersionGroup<TType>
+    internal sealed class ComponentGroup<T> : BaseGroup<T>, IComponentGroup, IComponentGroup<T>
+        where T : IComponent, new()
     {
         #region Properties
-        public short Type
+        public ComponentType Type
         {
             get { return this._Type; }
-            set { this._Type = value; }
         }
         #endregion
 
         #region Fields
-        private short _Type;
+        private readonly ComponentType _Type;
         #endregion
 
-        public override string ToString()
+        public ComponentGroup(ComponentType type, short minimumVersion, short maximumVersion)
+            : base(minimumVersion, maximumVersion)
         {
-            return string.Format("type {0}, {1}", this._Type, base.ToString());
+            this._Type = type;
+        }
+
+        IEnumerable<IComponent> IComponentGroup.Items
+        {
+            get { return this.Items.Cast<IComponent>(); }
+        }
+
+        IList<T> IComponentGroup<T>.Items
+        {
+            get { return this.Items; }
         }
     }
 }

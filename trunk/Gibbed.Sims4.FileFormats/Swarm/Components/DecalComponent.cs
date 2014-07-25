@@ -20,7 +20,6 @@
  *    distribution.
  */
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -182,7 +181,29 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Components
 
         public void Serialize(Stream output, short version)
         {
-            throw new NotImplementedException();
+            Binary.Write(output, this._Flags);
+            Binary.Write(output, this._Unknown10);
+            Binary.Write(output, this._Unknown18);
+            Binary.Write(output, this._Unknown1C);
+            Binary.Write(output, this._Unknown20);
+            Binary.Write(output, this._Unknown24);
+            Binary.Write(output, this._Lifetime);
+            Binary.Write(output, this._RotationCurve);
+            Binary.Write(output, this._SizeCurve);
+            Binary.Write(output, this._AlphaCurve);
+            Binary.Write(output, this._ColorCurve);
+            Binary.Write(output, this._AspectCurve);
+            Binary.Write(output, this._AlphaVary);
+            Binary.Write(output, this._SizeVary);
+            Binary.Write(output, this._RotationVary);
+            Binary.Write(output, this._TextureRepeat);
+            Binary.Write(output, this._TextureOffset);
+            Binary.Write(output, this._EmitColorMapId);
+
+            if (version >= 2)
+            {
+                Binary.Write(output, this._Unknown78);
+            }
         }
 
         public void Deserialize(Stream input, short version)

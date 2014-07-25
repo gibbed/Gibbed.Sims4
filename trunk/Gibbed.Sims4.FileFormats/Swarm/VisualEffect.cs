@@ -20,13 +20,12 @@
  *    distribution.
  */
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 
 namespace Gibbed.Sims4.FileFormats.Swarm
 {
-    public class VisualEffect : IFormat
+    public class VisualEffect : IDescription
     {
         #region Properties
         public short MinimumVersion
@@ -119,7 +118,16 @@ namespace Gibbed.Sims4.FileFormats.Swarm
 
         public void Serialize(Stream output, short version)
         {
-            throw new NotImplementedException();
+            Binary.Write(output, this._Flags);
+            Binary.Write(output, this._ComponentAppFlagsMask);
+            Binary.Write(output, this._NotifyMessageId);
+            Binary.Write(output, this._ScreenSizeRange);
+            Binary.Write(output, this._CursorActiveDistance);
+            Binary.Write(output, this._CursorButton);
+            Binary.Write(output, this._LODDistances);
+            Binary.Write(output, this._ExtendedLODWeights);
+            Binary.Write(output, this._Seed);
+            Binary.Write(output, this._Descriptions, version);
         }
 
         public void Deserialize(Stream input, short version)
@@ -171,7 +179,7 @@ namespace Gibbed.Sims4.FileFormats.Swarm
                 set { this._LODEnd = value; }
             }
 
-            public List<LODScales> LODScales
+            public List<LODScale> LODScales
             {
                 get { return this._LODScales; }
             }
@@ -272,7 +280,7 @@ namespace Gibbed.Sims4.FileFormats.Swarm
             private Transform _LocalXForm;
             private byte _LODBegin;
             private byte _LODEnd;
-            private readonly List<LODScales> _LODScales;
+            private readonly List<LODScale> _LODScales;
             private float _EmitScaleBegin;
             private float _EmitScaleEnd;
             private float _SizeScaleBegin;
@@ -292,13 +300,41 @@ namespace Gibbed.Sims4.FileFormats.Swarm
 
             public Description()
             {
-                this._LODScales = new List<LODScales>();
+                this._LODScales = new List<LODScale>();
                 this._Unknown9C = new List<float>();
             }
 
             public void Serialize(Stream output, short version)
             {
-                throw new NotImplementedException();
+                Binary.Write(output, this._ComponentType);
+                Binary.Write(output, this._Flags);
+                Binary.Write(output, this._LocalXForm);
+                Binary.Write(output, this._LODBegin);
+                Binary.Write(output, this._LODEnd);
+                Binary.Write(output, this._LODScales);
+                Binary.Write(output, this._EmitScaleBegin);
+                Binary.Write(output, this._EmitScaleEnd);
+                Binary.Write(output, this._SizeScaleBegin);
+                Binary.Write(output, this._SizeScaleEnd);
+                Binary.Write(output, this._AlphaScaleBegin);
+                Binary.Write(output, this._AlphaScaleEnd);
+                Binary.Write(output, this._AppFlags);
+                Binary.Write(output, this._AppFlagsMask);
+                Binary.Write(output, this._SelectionGroup);
+                Binary.Write(output, this._SelectionChance);
+                Binary.Write(output, this._TimeScale);
+                Binary.Write(output, this._DescriptionIndex);
+
+                if (version >= 2)
+                {
+                    Binary.Write(output, this._Unknown62);
+                    Binary.Write(output, this._Unknown63);
+                }
+
+                if (version >= 3)
+                {
+                    Binary.Write(output, this._Unknown9C);
+                }
             }
 
             public void Deserialize(Stream input, short version)
@@ -338,7 +374,7 @@ namespace Gibbed.Sims4.FileFormats.Swarm
             }
         }
 
-        public class LODScales : ISerializable
+        public class LODScale : ISerializable
         {
             #region Properties
             public float EmitScale
@@ -368,7 +404,9 @@ namespace Gibbed.Sims4.FileFormats.Swarm
 
             public void Serialize(Stream output)
             {
-                throw new NotImplementedException();
+                Binary.Write(output, this._EmitScale);
+                Binary.Write(output, this._SizeScale);
+                Binary.Write(output, this._AlphaScale);
             }
 
             public void Deserialize(Stream input)

@@ -20,7 +20,6 @@
  *    distribution.
  */
 
-using System;
 using System.IO;
 
 namespace Gibbed.Sims4.FileFormats.Swarm
@@ -38,7 +37,7 @@ namespace Gibbed.Sims4.FileFormats.Swarm
         {
             get { return this._Size; }
             set { this._Size = value; }
-        }        
+        }
         #endregion
 
         #region Fields
@@ -48,7 +47,8 @@ namespace Gibbed.Sims4.FileFormats.Swarm
 
         public void Serialize(Stream output)
         {
-            throw new NotImplementedException();
+            Binary.Write(output, this._ScreenRatio);
+            Binary.Write(output, this._Size);
         }
 
         public void Deserialize(Stream input)

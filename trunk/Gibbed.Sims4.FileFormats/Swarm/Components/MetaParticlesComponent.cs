@@ -20,7 +20,6 @@
  *    distribution.
  */
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -511,7 +510,72 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Components
 
         public void Serialize(Stream output, short version)
         {
-            throw new NotImplementedException();
+            Binary.Write(output, this._Flags);
+            Binary.Write(output, this._ParticleLifetime);
+            Binary.Write(output, this._PrerollTime);
+            Binary.Write(output, this._EmitDelay);
+            Binary.Write(output, this._EmitRetrigger);
+            Binary.Write(output, this._EmitDirection);
+            Binary.Write(output, this._EmitSpeed);
+            Binary.Write(output, this._EmitVolume);
+            Binary.Write(output, this._EmitTorusWidth);
+            Binary.Write(output, this._RateCurve);
+            Binary.Write(output, this._RateCurveTime);
+            Binary.Write(output, this._RateCurveCycles);
+            Binary.Write(output, this._SizeCurve);
+            Binary.Write(output, this._SizeVary);
+            Binary.Write(output, this._PitchCurve);
+            Binary.Write(output, this._RollCurve);
+            Binary.Write(output, this._HeadingCurve);
+            Binary.Write(output, this._PitchVary);
+            Binary.Write(output, this._RollVary);
+            Binary.Write(output, this._HeadingVary);
+            Binary.Write(output, this._PitchOffset);
+            Binary.Write(output, this._RollOffset);
+            Binary.Write(output, this._HeadingOffset);
+            Binary.Write(output, this._ColorCurve);
+            Binary.Write(output, this._ColorVary);
+            Binary.Write(output, this._AlphaCurve);
+            Binary.Write(output, this._AlphaVary);
+            Binary.Write(output, this._ComponentName);
+            Binary.Write(output, this._ComponentType);
+            Binary.Write(output, this._AlignMode);
+            Binary.Write(output, this._DirectionalForcesSum);
+            Binary.Write(output, this._GlobalForcesSum);
+            Binary.Write(output, this._WindStrength);
+            Binary.Write(output, this._GravityStrength);
+            Binary.Write(output, this._RadialForce);
+            Binary.Write(output, this._RadialForceLocation);
+            Binary.Write(output, this._Drag);
+            Binary.Write(output, this._ScrewRate);
+            Binary.Write(output, this._Wiggles);
+            Binary.Write(output, this._ScreenBloomAlphaRate);
+            Binary.Write(output, this._ScreenBloomAlphaBase);
+            Binary.Write(output, this._ScreenBloomSizeRate);
+            Binary.Write(output, this._ScreenBloomSizeBase);
+            Binary.Write(output, this._LoopBoxColorCurve);
+            Binary.Write(output, this._LoopBoxAlphaCurve);
+            Binary.Write(output, this._Surfaces);
+            Binary.Write(output, this._MapBounce);
+            Binary.Write(output, this._MapRepulseHeight);
+            Binary.Write(output, this._MapRepulseStrength);
+            Binary.Write(output, this._MapRepulseScoutDistance);
+            Binary.Write(output, this._MapRepulseVertical);
+            Binary.Write(output, this._MapRepulseKillHeight);
+            Binary.Write(output, this._ProbabilityDeath);
+            Binary.Write(output, this._AltitudeRange);
+            Binary.Write(output, this._ForceMapId);
+            Binary.Write(output, this._EmitRateMapId);
+            Binary.Write(output, this._EmitColorMapId);
+            Binary.Write(output, this._RandomWalks);
+            Binary.Write(output, this._RandomWalkPreferredDirection);
+            Binary.Write(output, this._AlignDamping);
+            Binary.Write(output, this._BankAmount);
+            Binary.Write(output, this._BankRestore);
+            Binary.Write(output, this._AttractorOrigin);
+            Binary.Write(output, this._Attractor);
+            Binary.Write(output, this._PathPoints);
+            Binary.Write(output, this._TractorResetSpeed);
         }
 
         public void Deserialize(Stream input, short version)

@@ -21,37 +21,23 @@
  */
 
 using System.Collections.Generic;
+using System.IO;
 
 namespace Gibbed.Sims4.FileFormats.Swarm
 {
-    public class VersionGroup<TType>
+    public interface IAuxiliaryGroup
     {
-        #region Properties
-        public short Version
-        {
-            get { return this._Version; }
-            set { this._Version = value; }
-        }
+        AuxiliaryType Type { get; }
+        short Version { get; set; }
+        IEnumerable<IAuxiliary> Items { get; }
 
-        public List<TType> Items
-        {
-            get { return this._Items; }
-        }
-        #endregion
+        void Serialize(Stream output);
+        void Deserialize(Stream input);
+    }
 
-        #region Fields
-        private short _Version;
-        private readonly List<TType> _Items;
-        #endregion
-
-        public VersionGroup()
-        {
-            this._Items = new List<TType>();
-        }
-
-        public override string ToString()
-        {
-            return string.Format("version {0}, {1} items", this._Version, this.Items.Count);
-        }
+    public interface IAuxiliaryGroup<T>
+        where T : IAuxiliary
+    {
+        IList<T> Items { get; }
     }
 }

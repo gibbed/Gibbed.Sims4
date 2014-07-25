@@ -20,7 +20,6 @@
  *    distribution.
  */
 
-using System;
 using System.IO;
 
 namespace Gibbed.Sims4.FileFormats.Swarm.Components
@@ -86,7 +85,16 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Components
 
         public void Serialize(Stream output, short version)
         {
-            throw new NotImplementedException();
+            Binary.Write(output, this._Flags);
+            Binary.Write(output, this._SoundId);
+            Binary.Write(output, this._LocationUpdateDelta);
+            Binary.Write(output, this._PlayTime);
+            Binary.Write(output, this._Volume);
+
+            if (version >= 2)
+            {
+                Binary.Write(output, this._Unknown24);
+            }
         }
 
         public void Deserialize(Stream input, short version)

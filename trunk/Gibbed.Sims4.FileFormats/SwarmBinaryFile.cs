@@ -23,9 +23,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Gibbed.IO;
 using Gibbed.Sims4.FileFormats.Swarm;
+using Components = Gibbed.Sims4.FileFormats.Swarm.Components;
+using Auxiliaries = Gibbed.Sims4.FileFormats.Swarm.Auxiliaries;
 
 namespace Gibbed.Sims4.FileFormats
 {
@@ -38,20 +41,9 @@ namespace Gibbed.Sims4.FileFormats
             set { this._Version = value; }
         }
 
-        public List<TypeVersionGroup<IComponent>> Components
+        public VisualEffectGroup VisualEffectGroup
         {
-            get { return this._Components; }
-        }
-
-        public List<TypeVersionGroup<IAuxiliary>> Auxiliaries
-        {
-            get { return this._Auxiliaries; }
-        }
-
-        public VersionGroup<VisualEffect> VisualEffects
-        {
-            get { return this._VisualEffects; }
-            set { this._VisualEffects = value; }
+            get { return this._VisualEffectGroup; }
         }
 
         public Dictionary<int, ulong> EffectIds
@@ -67,25 +59,125 @@ namespace Gibbed.Sims4.FileFormats
 
         #region Fields
         private short _Version;
-        private readonly List<TypeVersionGroup<IComponent>> _Components;
-        private readonly List<TypeVersionGroup<IAuxiliary>> _Auxiliaries;
-        private VersionGroup<VisualEffect> _VisualEffects;
+        private readonly Dictionary<ComponentType, IComponentGroup> _ComponentTypeToGroup;
+        private readonly Dictionary<Type, IComponentGroup> _ComponentNativeToGroup;
+        private readonly Dictionary<AuxiliaryType, IAuxiliaryGroup> _AuxiliaryTypeToGroup;
+        private readonly Dictionary<Type, IAuxiliaryGroup> _AuxiliaryNativeToGroup;
+        private readonly VisualEffectGroup _VisualEffectGroup;
         private readonly Dictionary<int, ulong> _EffectIds;
         private readonly Dictionary<int, string> _EffectNames;
         #endregion
 
         public SwarmBinaryFile()
         {
-            this._Components = new List<TypeVersionGroup<IComponent>>();
-            this._Auxiliaries = new List<TypeVersionGroup<IAuxiliary>>();
-            this._VisualEffects = new VersionGroup<VisualEffect>();
+            this._ComponentTypeToGroup = new Dictionary<ComponentType, IComponentGroup>();
+            this._ComponentNativeToGroup = new Dictionary<Type, IComponentGroup>();
+            this._AuxiliaryTypeToGroup = new Dictionary<AuxiliaryType, IAuxiliaryGroup>();
+            this._AuxiliaryNativeToGroup = new Dictionary<Type, IAuxiliaryGroup>();
+            this.SetupGroups();
+            this._VisualEffectGroup = new VisualEffectGroup(0, 3);
             this._EffectIds = new Dictionary<int, ulong>();
             this._EffectNames = new Dictionary<int, string>();
         }
 
+        private void Setup<T>(ComponentType type, short minimumVersion, short maximumVersion)
+            where T: IComponent, new()
+        {
+            var group = new ComponentGroup<T>(type, minimumVersion, maximumVersion);
+            this._ComponentTypeToGroup.Add(type, group);
+            this._ComponentNativeToGroup.Add(typeof(T), group);
+        }
+
+        private void Setup<T>(AuxiliaryType type, short minimumVersion, short maximumVersion)
+            where T : IAuxiliary, new()
+        {
+            var group = new AuxiliaryGroup<T>(type, minimumVersion, maximumVersion);
+            this._AuxiliaryTypeToGroup.Add(type, group);
+            this._AuxiliaryNativeToGroup.Add(typeof(T), group);
+        }
+
+        private void SetupGroups()
+        {
+            this._ComponentTypeToGroup.Clear();
+            this.Setup<Components.ParticlesComponent>(ComponentType.Particles, 1, 7);
+            this.Setup<Components.MetaParticlesComponent>(ComponentType.MetaParticles, 1, 1);
+            this.Setup<Components.DecalComponent>(ComponentType.Decal, 1, 2);
+            this.Setup<Components.SequenceComponent>(ComponentType.Sequence, 1, 1);
+            this.Setup<Components.SoundComponent>(ComponentType.Sound, 1, 2);
+            this.Setup<Components.ShakeComponent>(ComponentType.Shake, 1, 1);
+            this.Setup<Components.CameraComponent>(ComponentType.Camera, 1, 1);
+            this.Setup<Components.ModelComponent>(ComponentType.Model, 1, 1);
+            this.Setup<Components.ScreenComponent>(ComponentType.Screen, 1, 1);
+            this.Setup<Components.GameComponent>(ComponentType.Game, 1, 1);
+            this.Setup<Components.FastParticlesComponent>(ComponentType.FastParticles, 1, 1);
+            this.Setup<Components.DistributeComponent>(ComponentType.Distribute, 1, 1);
+            this.Setup<Components.RibbonComponent>(ComponentType.Ribbon, 1, 2);
+
+            this._AuxiliaryTypeToGroup.Clear();
+            this.Setup<Auxiliaries.MapsAuxiliary>(AuxiliaryType.Maps, 0, 0);
+            this.Setup<Auxiliaries.MaterialAuxiliary>(AuxiliaryType.Material, 0, 0);
+        }
+
+        public IComponentGroup<T> GetComponentGroup<T>()
+            where T: IComponent
+        {
+            var type = typeof(T);
+            if (this._ComponentNativeToGroup.ContainsKey(type) == false)
+            {
+                return null;
+            }
+            return this._ComponentNativeToGroup[type] as IComponentGroup<T>;
+        }
+
+        public IAuxiliaryGroup<T> GetAuxiliaryGroup<T>()
+            where T : IAuxiliary
+        {
+            var type = typeof(T);
+            if (this._AuxiliaryNativeToGroup.ContainsKey(type) == false)
+            {
+                return null;
+            }
+            return this._AuxiliaryNativeToGroup[type] as IAuxiliaryGroup<T>;
+        }
+
         public void Serialize(Stream output)
         {
-            throw new NotImplementedException();
+            var version = this._Version;
+            if (version != 2)
+            {
+                throw new FormatException("not version 2");
+            }
+            output.WriteValueS16(version, Endian.Big);
+
+            foreach (var kv in this._ComponentTypeToGroup.OrderBy(kv => (short)kv.Key))
+            {
+                output.WriteValueS16((short)kv.Key, Endian.Big);
+                kv.Value.Serialize(output);
+            }
+            output.WriteValueS16(-1, Endian.Big);
+
+            foreach (var kv in this._AuxiliaryTypeToGroup.OrderBy(kv => (short)kv.Key))
+            {
+                output.WriteValueS16((short)kv.Key, Endian.Big);
+                kv.Value.Serialize(output);
+            }
+            output.WriteValueS16(-1, Endian.Big);
+
+            this.VisualEffectGroup.Serialize(output);
+
+            foreach (var kv in this._EffectIds)
+            {
+                output.WriteValueS32(kv.Key, Endian.Big);
+                output.WriteValueU64(kv.Value, Endian.Big);
+            }
+            output.WriteValueS32(-1, Endian.Big);
+
+            foreach (var kv in this._EffectNames)
+            {
+                output.WriteValueS32(kv.Key, Endian.Big);
+                output.WriteStringZ(kv.Value, Encoding.ASCII);
+            }
+            output.WriteValueS32(-1, Endian.Big);
         }
 
         public void Deserialize(Stream input)
@@ -96,113 +188,44 @@ namespace Gibbed.Sims4.FileFormats
                 throw new FormatException("not version 2");
             }
 
-            var components = ReadGroupList(input, i => ComponentTable.GetFactory(i));
-            var auxiliaries = ReadGroupList(input, i => AuxiliaryTable.GetFactory(i));
-            var visualEffects = ReadGroup(input, () => new VisualEffect());
+            this._Version = version;
+
+            this._EffectIds.Clear();
+            this._EffectNames.Clear();
+
+            var componentType = (ComponentType)input.ReadValueS16(Endian.Big);
+            while (componentType != ComponentType.Invalid)
+            {
+                var componentGroup = this._ComponentTypeToGroup[componentType];
+                componentGroup.Deserialize(input);
+                componentType = (ComponentType)input.ReadValueS16(Endian.Big);
+            }
+
+            var auxiliaryType = (AuxiliaryType)input.ReadValueS16(Endian.Big);
+            while (auxiliaryType != AuxiliaryType.Invalid)
+            {
+                var auxiliaryGroup = this._AuxiliaryTypeToGroup[auxiliaryType];
+                auxiliaryGroup.Deserialize(input);
+                auxiliaryType = (AuxiliaryType)input.ReadValueS16(Endian.Big);
+            }
+
+            this.VisualEffectGroup.Deserialize(input);
 
             int effectIndex;
 
-            var effectIds = new Dictionary<int, ulong>();
             effectIndex = input.ReadValueS32(Endian.Big);
             while (effectIndex >= 0)
             {
-                effectIds.Add(effectIndex, input.ReadValueU64(Endian.Big));
+                this._EffectIds.Add(effectIndex, input.ReadValueU64(Endian.Big));
                 effectIndex = input.ReadValueS32(Endian.Big);
             }
 
-            var effectNames = new Dictionary<int, string>();
             effectIndex = input.ReadValueS32(Endian.Big);
             while (effectIndex >= 0)
             {
-                effectNames.Add(effectIndex, input.ReadStringZ(Encoding.ASCII));
+                this._EffectNames.Add(effectIndex, input.ReadStringZ(Encoding.ASCII));
                 effectIndex = input.ReadValueS32(Endian.Big);
             }
-
-            this._Version = version;
-            this._Components.Clear();
-            this._Components.AddRange(components);
-            this._Auxiliaries.Clear();
-            this._Auxiliaries.AddRange(auxiliaries);
-            this._VisualEffects = visualEffects;
-
-            this._EffectIds.Clear();
-            foreach (var kv in effectIds)
-            {
-                this._EffectIds.Add(kv.Key, kv.Value);
-            }
-
-            this._EffectNames.Clear();
-            foreach (var kv in effectNames)
-            {
-                this._EffectNames.Add(kv.Key, kv.Value);
-            }
-        }
-
-        private static VersionGroup<TType> ReadGroup<TType>(
-            Stream input,
-            Func<TType> create)
-            where TType : class, IFormat
-        {
-            return ReadGroup<TType, VersionGroup<TType>>(input, create);
-        }
-
-        private static TVersionList ReadGroup<TType, TVersionList>(
-            Stream input,
-            Func<TType> create)
-            where TType : class, IFormat
-            where TVersionList : VersionGroup<TType>, new()
-        {
-            short version = input.ReadValueS16(Endian.Big);
-
-            var list = new TVersionList()
-            {
-                Version = version,
-            };
-
-            int count = input.ReadValueS32(Endian.Big);
-            for (int i = 0; i < count; i++)
-            {
-                var instance = create();
-                if (instance == null)
-                {
-                    throw new InvalidOperationException();
-                }
-
-                if (version < instance.MinimumVersion || version > instance.MaximumVersion)
-                {
-                    throw new FormatException(string.Format("unsupported version {0} for {1}",
-                                                            version,
-                                                            instance.GetType().Name));
-                }
-                instance.Deserialize(input, version);
-                list.Items.Add(instance);
-            }
-            return list;
-        }
-
-        private static List<TypeVersionGroup<TType>> ReadGroupList<TType>(
-            Stream input,
-            Func<int, Func<TType>> factoryFactory)
-            where TType : class, IFormat
-        {
-            var list = new List<TypeVersionGroup<TType>>();
-
-            var type = input.ReadValueS16(Endian.Big);
-            while (type != -1)
-            {
-                var factory = factoryFactory(type);
-                if (factory == null)
-                {
-                    throw new InvalidOperationException();
-                }
-
-                var typeList = ReadGroup<TType, TypeVersionGroup<TType>>(input, factory);
-                typeList.Type = type;
-                list.Add(typeList);
-
-                type = input.ReadValueS16(Endian.Big);
-            }
-            return list;
         }
     }
 }
