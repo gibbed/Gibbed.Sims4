@@ -28,16 +28,6 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Components
     public class SequenceComponent : IComponent
     {
         #region Properties
-        public short MinimumVersion
-        {
-            get { return 1; }
-        }
-
-        public short MaximumVersion
-        {
-            get { return 1; }
-        }
-
         public List<Item> Items
         {
             get { return this._Items; }

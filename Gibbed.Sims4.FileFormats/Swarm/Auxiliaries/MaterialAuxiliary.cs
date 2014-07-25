@@ -29,16 +29,6 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Auxiliaries
     public class MaterialAuxiliary : IAuxiliary
     {
         #region Properties
-        public short MinimumVersion
-        {
-            get { return 0; }
-        }
-
-        public short MaximumVersion
-        {
-            get { return 0; }
-        }
-
         public ulong MaterialId
         {
             get { return this._MaterialId; }

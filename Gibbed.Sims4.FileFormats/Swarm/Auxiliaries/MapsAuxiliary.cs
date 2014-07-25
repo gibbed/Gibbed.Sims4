@@ -27,16 +27,6 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Auxiliaries
     public class MapsAuxiliary : IAuxiliary
     {
         #region Properties
-        public short MinimumVersion
-        {
-            get { return 0; }
-        }
-
-        public short MaximumVersion
-        {
-            get { return 0; }
-        }
-
         public uint Flags
         {
             get { return this._Flags; }

@@ -28,16 +28,6 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Components
     public class ShakeComponent : IComponent
     {
         #region Properties
-        public short MinimumVersion
-        {
-            get { return 1; }
-        }
-
-        public short MaximumVersion
-        {
-            get { return 1; }
-        }
-
         public float Lifetime
         {
             get { return this._Lifetime; }
