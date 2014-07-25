@@ -20,36 +20,24 @@
  *    distribution.
  */
 
-using System.IO;
-using Gibbed.IO;
-
 namespace Gibbed.Sims4.FileFormats.Swarm
 {
-    public struct Vector3 : ISerializable
+    public enum ComponentType : short
     {
-        public float X;
-        public float Y;
-        public float Z;
+        Invalid = -1,
 
-        public Vector3(float x, float y, float z)
-        {
-            this.X = x;
-            this.Y = y;
-            this.Z = z;
-        }
-
-        public void Serialize(Stream output)
-        {
-            output.WriteValueF32(this.X, Endian.Little);
-            output.WriteValueF32(this.Y, Endian.Little);
-            output.WriteValueF32(this.Z, Endian.Little);
-        }
-
-        public void Deserialize(Stream input)
-        {
-            this.X = input.ReadValueF32(Endian.Little);
-            this.Y = input.ReadValueF32(Endian.Little);
-            this.Z = input.ReadValueF32(Endian.Little);
-        }
+        Particles = 1,
+        MetaParticles = 2,
+        Decal = 3,
+        Sequence = 4,
+        Sound = 5,
+        Shake = 6,
+        Camera = 7,
+        Model = 8,
+        Screen = 9,
+        Game = 11,
+        FastParticles = 12,
+        Distribute = 13,
+        Ribbon = 14,
     }
 }

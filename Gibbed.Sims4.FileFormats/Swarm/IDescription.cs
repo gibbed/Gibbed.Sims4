@@ -21,35 +21,15 @@
  */
 
 using System.IO;
-using Gibbed.IO;
 
 namespace Gibbed.Sims4.FileFormats.Swarm
 {
-    public struct Vector3 : ISerializable
+    public interface IDescription
     {
-        public float X;
-        public float Y;
-        public float Z;
+        short MinimumVersion { get; }
+        short MaximumVersion { get; }
 
-        public Vector3(float x, float y, float z)
-        {
-            this.X = x;
-            this.Y = y;
-            this.Z = z;
-        }
-
-        public void Serialize(Stream output)
-        {
-            output.WriteValueF32(this.X, Endian.Little);
-            output.WriteValueF32(this.Y, Endian.Little);
-            output.WriteValueF32(this.Z, Endian.Little);
-        }
-
-        public void Deserialize(Stream input)
-        {
-            this.X = input.ReadValueF32(Endian.Little);
-            this.Y = input.ReadValueF32(Endian.Little);
-            this.Z = input.ReadValueF32(Endian.Little);
-        }
+        void Serialize(Stream output, short version);
+        void Deserialize(Stream input, short version);
     }
 }

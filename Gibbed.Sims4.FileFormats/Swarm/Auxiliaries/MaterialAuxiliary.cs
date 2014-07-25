@@ -70,7 +70,9 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Auxiliaries
 
         public void Serialize(Stream output, short version)
         {
-            throw new NotImplementedException();
+            Binary.Write(output, this._MaterialId);
+            Binary.Write(output, this._ShaderId);
+            Binary.Write(output, this._Parameters);
         }
 
         public void Deserialize(Stream input, short version)
@@ -167,7 +169,58 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Auxiliaries
 
             public void Serialize(Stream output)
             {
-                throw new NotImplementedException();
+                Binary.Write(output, this._Id);
+                Binary.Write(output, this._Type);
+
+                switch (this.Type)
+                {
+                    case ParameterType.Float:
+                    {
+                        Binary.Write(output, this._Float);
+                        break;
+                    }
+
+                    case ParameterType.Int:
+                    {
+                        Binary.Write(output, this._Int);
+                        break;
+                    }
+
+                    case ParameterType.Bool:
+                    {
+                        Binary.Write(output, this._Bool);
+                        break;
+                    }
+
+                    case ParameterType.Floats:
+                    {
+                        Binary.Write_s(output, this._Floats);
+                        break;
+                    }
+
+                    case ParameterType.Ints:
+                    {
+                        Binary.Write_s(output, this._Ints);
+                        break;
+                    }
+
+                    case ParameterType.Bools:
+                    {
+                        Binary.Write_s(output, this._Bools);
+                        break;
+                    }
+
+                    case ParameterType.TextureId:
+                    {
+                        Binary.Write(output, this._TextureId);
+                        break;
+                    }
+
+                    default:
+                    {
+                        throw new NotSupportedException();
+                    }
+                }
             }
 
             public void Deserialize(Stream input)

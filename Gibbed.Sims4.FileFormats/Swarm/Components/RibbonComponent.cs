@@ -20,7 +20,6 @@
  *    distribution.
  */
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -245,7 +244,39 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Components
 
         public void Serialize(Stream output, short version)
         {
-            throw new NotImplementedException();
+            Binary.Write(output, this._Flags);
+            Binary.Write(output, this._RibbonLifetime);
+            Binary.Write(output, this._OffsetCurve);
+            Binary.Write(output, this._WidthCurve);
+            Binary.Write(output, this._Taper);
+            Binary.Write(output, this._Fade);
+            Binary.Write(output, this._AlphaDecay);
+            Binary.Write(output, this._ColorCurve);
+            Binary.Write(output, this._AlphaCurve);
+            Binary.Write(output, this._LengthColorCurve);
+            Binary.Write(output, this._LengthAlphaCurve);
+            Binary.Write(output, this._EdgeColorCurve);
+            Binary.Write(output, this._EdgeAlphaCurve);
+            Binary.Write(output, this._StartEdgeAlphaCurve);
+            Binary.Write(output, this._EndEdgeAlphaCurve);
+            Binary.Write(output, this._SegmentCount);
+            Binary.Write(output, this._SegmentLength);
+            Binary.Write(output, this._DrawInfo);
+            Binary.Write(output, this._TileUV);
+            Binary.Write(output, this._SlipCurveSpeed);
+            Binary.Write(output, this._SlipUVSpeed);
+
+            if (version >= 2)
+            {
+                Binary.Write(output, this._UVRepeat);
+            }
+
+            Binary.Write(output, this._DirectionalForcesSum);
+            Binary.Write(output, this._WindStrength);
+            Binary.Write(output, this._GravityStrength);
+            Binary.Write(output, this._EmitColorMapId);
+            Binary.Write(output, this._ForceMapId);
+            Binary.Write(output, this._MapRepulseStrength);
         }
 
         public void Deserialize(Stream input, short version)

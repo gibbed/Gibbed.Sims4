@@ -20,16 +20,39 @@
  *    distribution.
  */
 
-using System.IO;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Gibbed.Sims4.FileFormats.Swarm
 {
-    public interface IFormat
+    internal sealed class AuxiliaryGroup<T> : BaseGroup<T>, IAuxiliaryGroup, IAuxiliaryGroup<T>
+        where T : IAuxiliary, new()
     {
-        short MinimumVersion { get; }
-        short MaximumVersion { get; }
+        #region Properties
+        public AuxiliaryType Type
+        {
+            get { return this._Type; }
+        }
+        #endregion
 
-        void Serialize(Stream output, short version);
-        void Deserialize(Stream input, short version);
+        #region Fields
+        private readonly AuxiliaryType _Type;
+        #endregion
+
+        public AuxiliaryGroup(AuxiliaryType type, short minimumVersion, short maximumVersion)
+            : base(minimumVersion, maximumVersion)
+        {
+            this._Type = type;
+        }
+
+        IEnumerable<IAuxiliary> IAuxiliaryGroup.Items
+        {
+            get { return this.Items.Cast<IAuxiliary>(); }
+        }
+
+        IList<T> IAuxiliaryGroup<T>.Items
+        {
+            get { return this.Items; }
+        }
     }
 }

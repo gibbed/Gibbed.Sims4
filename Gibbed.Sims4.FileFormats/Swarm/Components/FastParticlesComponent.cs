@@ -20,7 +20,6 @@
  *    distribution.
  */
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -210,7 +209,29 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Components
 
         public void Serialize(Stream output, short version)
         {
-            throw new NotImplementedException();
+            Binary.Write(output, this._Flags);
+            Binary.Write(output, this._ParticleLifetime);
+            Binary.Write(output, this._PrerollTime);
+            Binary.Write(output, this._EmitDelay);
+            Binary.Write(output, this._EmitRetrigger);
+            Binary.Write(output, this._EmitDirection);
+            Binary.Write(output, this._EmitSpeed);
+            Binary.Write(output, this._EmitVolume);
+            Binary.Write(output, this._RateCurve);
+            Binary.Write(output, this._RateCurveTime);
+            Binary.Write(output, this._RateCurveCycles);
+            Binary.Write(output, this._RateSpeedScale);
+            Binary.Write(output, this._SizeCurve);
+            Binary.Write(output, this._ColorCurve);
+            Binary.Write(output, this._AlphaCurve);
+            Binary.Write(output, this._DrawInfo);
+            Binary.Write(output, this._AlignMode);
+            Binary.Write(output, this._DirectionalForcesSum);
+            Binary.Write(output, this._WindStrength);
+            Binary.Write(output, this._GravityStrength);
+            Binary.Write(output, this._RadialForce);
+            Binary.Write(output, this._RadialForceLocation);
+            Binary.Write(output, this._Drag);
         }
 
         public void Deserialize(Stream input, short version)

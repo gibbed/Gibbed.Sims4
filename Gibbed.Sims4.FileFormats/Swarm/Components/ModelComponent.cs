@@ -20,7 +20,6 @@
  *    distribution.
  */
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -98,9 +97,21 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Components
         private byte _OverrideSet;
         #endregion
 
+        public ModelComponent()
+        {
+            this._AnimationCurves = new List<AnimationCurve>();
+        }
+
         public void Serialize(Stream output, short version)
         {
-            throw new NotImplementedException();
+            Binary.Write(output, this._Flags);
+            Binary.Write(output, this._ResourceId);
+            Binary.Write(output, this._Size);
+            Binary.Write(output, this._Colour);
+            Binary.Write(output, this._Alpha);
+            Binary.Write(output, this.AnimationCurves);
+            Binary.Write(output, this._MaterialId);
+            Binary.Write(output, this._OverrideSet);
         }
 
         public void Deserialize(Stream input, short version)

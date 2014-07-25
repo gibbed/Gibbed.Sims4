@@ -20,7 +20,6 @@
  *    distribution.
  */
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -88,7 +87,13 @@ namespace Gibbed.Sims4.FileFormats.Swarm
 
         public void Serialize(Stream output)
         {
-            throw new NotImplementedException();
+            Binary.Write(output, this._Time);
+            Binary.Write(output, this._Strength);
+            Binary.Write(output, this._TurnRange);
+            Binary.Write(output, this._TurnOffset);
+            Binary.Write(output, this._Mix);
+            Binary.Write(output, this._TurnOffsets);
+            Binary.Write(output, this._WalkLoopType);
         }
 
         public void Deserialize(Stream input)

@@ -20,36 +20,24 @@
  *    distribution.
  */
 
+using System.Collections.Generic;
 using System.IO;
-using Gibbed.IO;
 
 namespace Gibbed.Sims4.FileFormats.Swarm
 {
-    public struct Vector3 : ISerializable
+    public interface IComponentGroup
     {
-        public float X;
-        public float Y;
-        public float Z;
+        ComponentType Type { get; }
+        short Version { get; set; }
+        IEnumerable<IComponent> Items { get; }
 
-        public Vector3(float x, float y, float z)
-        {
-            this.X = x;
-            this.Y = y;
-            this.Z = z;
-        }
+        void Serialize(Stream output);
+        void Deserialize(Stream input);
+    }
 
-        public void Serialize(Stream output)
-        {
-            output.WriteValueF32(this.X, Endian.Little);
-            output.WriteValueF32(this.Y, Endian.Little);
-            output.WriteValueF32(this.Z, Endian.Little);
-        }
-
-        public void Deserialize(Stream input)
-        {
-            this.X = input.ReadValueF32(Endian.Little);
-            this.Y = input.ReadValueF32(Endian.Little);
-            this.Z = input.ReadValueF32(Endian.Little);
-        }
+    public interface IComponentGroup<T>
+        where T : IComponent
+    {
+        IList<T> Items { get; }
     }
 }

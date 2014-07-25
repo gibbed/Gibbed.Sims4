@@ -20,7 +20,6 @@
  *    distribution.
  */
 
-using System;
 using System.IO;
 
 namespace Gibbed.Sims4.FileFormats.Swarm.Auxiliaries
@@ -105,7 +104,15 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Auxiliaries
 
         public void Serialize(Stream output, short version)
         {
-            throw new NotImplementedException();
+            Binary.Write(output, this._MapId);
+            Binary.Write(output, this._Flags);
+            Binary.Write(output, this._MapType);
+            Binary.Write(output, this._ImageId);
+            Binary.Write(output, this._Bounds);
+            Binary.Write(output, this._Channel);
+            Binary.Write(output, this._OpKind);
+            Binary.Write(output, this._OpArgMapId);
+            Binary.Write(output, this._OpArgValue);
         }
 
         public void Deserialize(Stream input, short version)

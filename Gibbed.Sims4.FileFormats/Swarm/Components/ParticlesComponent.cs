@@ -579,19 +579,19 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Components
             set { this._Unknown20C = value; }
         }
 
-        public bool Unknown209
+        public byte Unknown209
         {
             get { return this._Unknown209; }
             set { this._Unknown209 = value; }
         }
 
-        public bool Unknown20A
+        public byte Unknown20A
         {
             get { return this._Unknown20A; }
             set { this._Unknown20A = value; }
         }
 
-        public bool Unknown20B
+        public byte Unknown20B
         {
             get { return this._Unknown20B; }
             set { this._Unknown20B = value; }
@@ -691,9 +691,9 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Components
         private uint _Unknown1B4;
         private bool _Unknown208;
         private uint _Unknown20C;
-        private bool _Unknown209;
-        private bool _Unknown20A;
-        private bool _Unknown20B;
+        private byte _Unknown209;
+        private byte _Unknown20A;
+        private byte _Unknown20B;
         #endregion
 
         public ParticlesComponent()
@@ -714,7 +714,150 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Components
 
         public void Serialize(Stream output, short version)
         {
-            throw new NotImplementedException();
+            Binary.Write(output, this._Flags);
+            Binary.Write(output, this._ParticleLifetime);
+            Binary.Write(output, this._PrerollTime);
+            Binary.Write(output, this._EmitDelay);
+            Binary.Write(output, this._EmitRetrigger);
+            Binary.Write(output, this._EmitDirection);
+            Binary.Write(output, this._EmitSpeed);
+            Binary.Write(output, this._EmitVolume);
+            Binary.Write(output, this._EmitTorusWidth);
+            Binary.Write(output, this._RateCurve);
+            Binary.Write(output, this._RateCurveTime);
+            Binary.Write(output, this._RateCurveCycles);
+            Binary.Write(output, this._RateSpeedScale);
+            Binary.Write(output, this._SizeCurve);
+            Binary.Write(output, this._SizeVary);
+            Binary.Write(output, this._AspectCurve);
+            Binary.Write(output, this._AspectVary);
+            Binary.Write(output, this._RotationVary);
+            Binary.Write(output, this._RotationOffset);
+            Binary.Write(output, this._RotationCurve);
+            Binary.Write(output, this._AlphaCurve);
+            Binary.Write(output, this._AlphaVary);
+            Binary.Write(output, this._ColorCurve);
+            Binary.Write(output, this._ColorVary);
+            Binary.Write(output, this._DrawInfo, version);
+            Binary.Write(output, this._PhysicsType);
+            Binary.Write(output, this._OverrideSet);
+            Binary.Write(output, this._TileCountU);
+            Binary.Write(output, this._TileCountV);
+            Binary.Write(output, this._AlignMode);
+            Binary.Write(output, this._FrameSpeed);
+            Binary.Write(output, this._FrameStart);
+            Binary.Write(output, this._FrameCount);
+            Binary.Write(output, this._FrameRandom);
+            Binary.Write(output, this._DirectionalForcesSum);
+            Binary.Write(output, this._WindStrength);
+            Binary.Write(output, this._GravityStrength);
+            Binary.Write(output, this._RadialForce);
+            Binary.Write(output, this._RadialForceLocation);
+            Binary.Write(output, this._Drag);
+            Binary.Write(output, this._VelocityStretch);
+            Binary.Write(output, this._ScrewRate);
+            Binary.Write(output, this._Wiggles);
+            Binary.Write(output, this._ScreenBloomAlphaRate);
+            Binary.Write(output, this._ScreenBloomAlphaBase);
+            Binary.Write(output, this._ScreenBloomSizeRate);
+            Binary.Write(output, this._ScreenBloomSizeBase);
+            Binary.Write(output, this._LoopBoxColorCurve);
+            Binary.Write(output, this._LoopBoxAlphaCurve);
+            Binary.Write(output, this._Surfaces);
+            Binary.Write(output, this._MapBounce);
+            Binary.Write(output, this._MapRepulseHeight);
+            Binary.Write(output, this._MapRepulseStrength);
+            Binary.Write(output, this._MapRepulseScoutDistance);
+            Binary.Write(output, this._MapRepulseVertical);
+            Binary.Write(output, this._MapRepulseKillHeight);
+            Binary.Write(output, this._ProbabilityDeath);
+            Binary.Write(output, this._AltitudeRange);
+            Binary.Write(output, this._ForceMapId);
+            Binary.Write(output, this._EmitRateMapId);
+            Binary.Write(output, this._EmitColorMapId);
+            Binary.Write(output, this._RandomWalk);
+            Binary.Write(output, this._AttractorOrigin);
+            Binary.Write(output, this._Attractor);
+            Binary.Write(output, this._PathPoints);
+
+            if (version >= 2)
+            {
+                Binary.Write(output, this._Unknown0F0);
+                Binary.Write(output, this._Unknown0E0);
+            }
+
+            if (version >= 3)
+            {
+                Binary.Write(output, this._Unknown100);
+            }
+
+            if (version >= 4)
+            {
+                Binary.Write(output, this._Unknown340);
+            }
+
+            if (version >= 5)
+            {
+                Binary.Write(output, this._Unknown130);
+                Binary.Write(output, this._Unknown170);
+            }
+
+            if (version >= 6)
+            {
+                Binary.Write(output, this._Unknown140);
+            }
+            else
+            {
+                float value = this._Unknown140.X;
+                Binary.Write(output, value);
+                throw new NotImplementedException();
+            }
+
+            if (version >= 7)
+            {
+                Binary.Write(output, this._Unknown150);
+            }
+
+            Binary.Write(output, this._Unknown160);
+            Binary.Write(output, this._Unknown164);
+
+            Binary.Write(output, this._Unknown1C1);
+            if (this._Unknown1C1 == true)
+            {
+                Binary.Write(output, this._Unknown180);
+                Binary.Write(output, this._Unknown1C0);
+
+                if (version >= 6)
+                {
+                    Binary.Write(output, this._Unknown190);
+                }
+                else
+                {
+                    float value = this._Unknown190.X;
+                    Binary.Write(output, value);
+                    throw new NotImplementedException();
+                }
+
+                if (version >= 7)
+                {
+                    Binary.Write(output, this._Unknown1A0);
+                }
+
+                Binary.Write(output, this._Unknown1B0);
+                Binary.Write(output, this._Unknown1B4);
+            }
+
+            if (version >= 6)
+            {
+                Binary.Write(output, this._Unknown208);
+                if (this._Unknown208 == true)
+                {
+                    Binary.Write(output, this._Unknown20C);
+                    Binary.Write(output, this._Unknown209);
+                    Binary.Write(output, this._Unknown20A);
+                    Binary.Write(output, this._Unknown20B);
+                }
+            }
         }
 
         public void Deserialize(Stream input, short version)
@@ -815,7 +958,7 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Components
             {
                 float value;
                 Binary.Read(input, out value);
-                this.Unknown140 = new Vector2(value, value);
+                this._Unknown140 = new Vector2(value, value);
                 throw new NotImplementedException();
             }
 
@@ -828,7 +971,7 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Components
             Binary.Read(input, out this._Unknown164);
 
             Binary.Read(input, out this._Unknown1C1);
-            if (this.Unknown1C1 == true)
+            if (this._Unknown1C1 == true)
             {
                 Binary.Read(input, out this._Unknown180);
                 Binary.Read(input, out this._Unknown1C0);

@@ -20,36 +20,13 @@
  *    distribution.
  */
 
-using System.IO;
-using Gibbed.IO;
-
 namespace Gibbed.Sims4.FileFormats.Swarm
 {
-    public struct Vector3 : ISerializable
+    public sealed class VisualEffectGroup : BaseGroup<VisualEffect>
     {
-        public float X;
-        public float Y;
-        public float Z;
-
-        public Vector3(float x, float y, float z)
+        public VisualEffectGroup(short minimumVersion, short maximumVersion)
+            : base(minimumVersion, maximumVersion)
         {
-            this.X = x;
-            this.Y = y;
-            this.Z = z;
-        }
-
-        public void Serialize(Stream output)
-        {
-            output.WriteValueF32(this.X, Endian.Little);
-            output.WriteValueF32(this.Y, Endian.Little);
-            output.WriteValueF32(this.Z, Endian.Little);
-        }
-
-        public void Deserialize(Stream input)
-        {
-            this.X = input.ReadValueF32(Endian.Little);
-            this.Y = input.ReadValueF32(Endian.Little);
-            this.Z = input.ReadValueF32(Endian.Little);
         }
     }
 }
