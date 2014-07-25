@@ -27,16 +27,6 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Components
     public class SoundComponent : IComponent
     {
         #region Properties
-        public short MinimumVersion
-        {
-            get { return 1; }
-        }
-
-        public short MaximumVersion
-        {
-            get { return 2; }
-        }
-
         public uint Flags
         {
             get { return this._Flags; }

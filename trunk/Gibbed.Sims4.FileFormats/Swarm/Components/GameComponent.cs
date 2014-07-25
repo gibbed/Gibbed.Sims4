@@ -27,16 +27,6 @@ namespace Gibbed.Sims4.FileFormats.Swarm.Components
     public class GameComponent : IComponent
     {
         #region Properties
-        public short MinimumVersion
-        {
-            get { return 1; }
-        }
-
-        public short MaximumVersion
-        {
-            get { return 1; }
-        }
-
         public uint Flags
         {
             get { return this._Flags; }

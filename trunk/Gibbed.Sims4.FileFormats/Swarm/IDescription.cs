@@ -26,9 +26,6 @@ namespace Gibbed.Sims4.FileFormats.Swarm
 {
     public interface IDescription
     {
-        short MinimumVersion { get; }
-        short MaximumVersion { get; }
-
         void Serialize(Stream output, short version);
         void Deserialize(Stream input, short version);
     }

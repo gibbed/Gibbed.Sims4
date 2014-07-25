@@ -75,7 +75,7 @@ namespace Gibbed.Sims4.FileFormats
             this._AuxiliaryTypeToGroup = new Dictionary<AuxiliaryType, IAuxiliaryGroup>();
             this._AuxiliaryNativeToGroup = new Dictionary<Type, IAuxiliaryGroup>();
             this.SetupGroups();
-            this._VisualEffectGroup = new VisualEffectGroup(0, 3);
+            this._VisualEffectGroup = new VisualEffectGroup(1, 3);
             this._EffectIds = new Dictionary<int, ulong>();
             this._EffectNames = new Dictionary<int, string>();
         }
@@ -172,7 +172,7 @@ namespace Gibbed.Sims4.FileFormats
             }
             output.WriteValueS32(-1, Endian.Big);
 
-            foreach (var kv in this._EffectNames)
+            foreach (var kv in this._EffectNames.OrderBy(kv => kv.Value))
             {
                 output.WriteValueS32(kv.Key, Endian.Big);
                 output.WriteStringZ(kv.Value, Encoding.ASCII);

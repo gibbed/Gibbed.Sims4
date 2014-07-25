@@ -28,16 +28,6 @@ namespace Gibbed.Sims4.FileFormats.Swarm
     public class VisualEffect : IDescription
     {
         #region Properties
-        public short MinimumVersion
-        {
-            get { return 1; }
-        }
-
-        public short MaximumVersion
-        {
-            get { return 3; }
-        }
-
         public uint Flags
         {
             get { return this._Flags; }
@@ -149,10 +139,10 @@ namespace Gibbed.Sims4.FileFormats.Swarm
         public class Description : IVersionedSerializable
         {
             #region Properties
-            public byte ComponentType
+            public ComponentType ComponentType
             {
-                get { return this._ComponentType; }
-                set { this._ComponentType = value; }
+                get { return (ComponentType)this._ComponentType; }
+                set { this._ComponentType = (byte)value; }
             }
 
             public uint Flags
