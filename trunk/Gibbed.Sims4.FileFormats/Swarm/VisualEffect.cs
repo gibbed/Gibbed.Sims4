@@ -240,10 +240,10 @@ namespace Gibbed.Sims4.FileFormats.Swarm
                 set { this._TimeScale = value; }
             }
 
-            public int DescriptionIndex
+            public int ComponentIndex
             {
-                get { return this._DescriptionIndex; }
-                set { this._DescriptionIndex = value; }
+                get { return this._ComponentIndex; }
+                set { this._ComponentIndex = value; }
             }
 
             public byte Unknown62
@@ -282,7 +282,7 @@ namespace Gibbed.Sims4.FileFormats.Swarm
             private ushort _SelectionGroup;
             private ushort _SelectionChance;
             private float _TimeScale;
-            private int _DescriptionIndex;
+            private int _ComponentIndex;
             private byte _Unknown62;
             private byte _Unknown63;
             private readonly List<float> _Unknown9C;
@@ -313,7 +313,7 @@ namespace Gibbed.Sims4.FileFormats.Swarm
                 Binary.Write(output, this._SelectionGroup);
                 Binary.Write(output, this._SelectionChance);
                 Binary.Write(output, this._TimeScale);
-                Binary.Write(output, this._DescriptionIndex);
+                Binary.Write(output, this._ComponentIndex);
 
                 if (version >= 2)
                 {
@@ -349,7 +349,7 @@ namespace Gibbed.Sims4.FileFormats.Swarm
                 Binary.Read(input, out this._SelectionGroup);
                 Binary.Read(input, out this._SelectionChance);
                 Binary.Read(input, out this._TimeScale);
-                Binary.Read(input, out this._DescriptionIndex);
+                Binary.Read(input, out this._ComponentIndex);
 
                 if (version >= 2)
                 {
