@@ -28,13 +28,13 @@ using Gibbed.IO;
 
 namespace Gibbed.Sims4.FileFormats
 {
-    public class DataFile
+    public class SimDataFile
     {
         public const uint Signature = 0x41544144; // 'DATA'
 
         private readonly List<StructureDefinition> _StructureDefinitions;
 
-        public DataFile()
+        public SimDataFile()
         {
             this._StructureDefinitions = new List<StructureDefinition>();
         }
