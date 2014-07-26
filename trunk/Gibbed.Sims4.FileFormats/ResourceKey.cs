@@ -37,9 +37,9 @@ namespace Gibbed.Sims4.FileFormats
 
         public static void WriteResourceKeyTGI(this Stream stream, ResourceKey key, Endian endian)
         {
-            stream.WriteValueU32(key.TypeId, endian);
-            stream.WriteValueU32(key.GroupId, endian);
-            stream.WriteValueU64(key.InstanceId, endian);
+            stream.WriteValueU32(key.Type, endian);
+            stream.WriteValueU32(key.Group, endian);
+            stream.WriteValueU64(key.Instance, endian);
         }
 
         public static ResourceKey ReadResourceKeyIGT(this Stream stream, Endian endian)
@@ -52,9 +52,9 @@ namespace Gibbed.Sims4.FileFormats
 
         public static void WriteResourceKeyIGT(this Stream stream, ResourceKey key, Endian endian)
         {
-            stream.WriteValueU64(key.InstanceId, endian);
-            stream.WriteValueU32(key.GroupId, endian);
-            stream.WriteValueU32(key.TypeId, endian);
+            stream.WriteValueU64(key.Instance, endian);
+            stream.WriteValueU32(key.Group, endian);
+            stream.WriteValueU32(key.Type, endian);
         }
     }
 
@@ -67,32 +67,32 @@ namespace Gibbed.Sims4.FileFormats
             Invalid = new ResourceKey(0, 0, 0);
         }
 
-        public readonly uint TypeId;
-        public readonly uint GroupId;
-        public readonly ulong InstanceId;
+        public readonly uint Type;
+        public readonly uint Group;
+        public readonly ulong Instance;
 
         public ResourceKey(ulong instanceId, uint typeId, uint groupId)
         {
-            this.InstanceId = instanceId;
-            this.TypeId = typeId;
-            this.GroupId = groupId;
+            this.Instance = instanceId;
+            this.Type = typeId;
+            this.Group = groupId;
         }
 
-        public ResourceKey(ulong instanceId, uint typeId)
-            : this(instanceId, typeId, 0)
+        public ResourceKey(ulong instance, uint type)
+            : this(instance, type, 0)
         {
         }
 
         public string ToPath()
         {
             return string.Format("{0:X8}-{1:X8}-{2:X16}",
-                this.TypeId, this.GroupId, this.InstanceId);
+                this.Type, this.Group, this.Instance);
         }
 
         public override string ToString()
         {
             return string.Format("{0:X8}:{1:X8}:{2:X16}",
-                this.TypeId, this.GroupId, this.InstanceId);
+                this.Type, this.Group, this.Instance);
         }
 
         public override bool Equals(object obj)
@@ -108,22 +108,22 @@ namespace Gibbed.Sims4.FileFormats
         public static bool operator !=(ResourceKey a, ResourceKey b)
         {
             return
-                a.TypeId != b.TypeId ||
-                a.GroupId != b.GroupId ||
-                a.InstanceId != b.InstanceId;
+                a.Type != b.Type ||
+                a.Group != b.Group ||
+                a.Instance != b.Instance;
         }
 
         public static bool operator ==(ResourceKey a, ResourceKey b)
         {
             return
-                a.TypeId == b.TypeId &&
-                a.GroupId == b.GroupId &&
-                a.InstanceId == b.InstanceId;
+                a.Type == b.Type &&
+                a.Group == b.Group &&
+                a.Instance == b.Instance;
         }
 
         public override int GetHashCode()
         {
-            return this.InstanceId.GetHashCode() ^ ((int)(this.TypeId ^ (this.GroupId << 16)));
+            return this.Instance.GetHashCode() ^ ((int)(this.Type ^ (this.Group << 16)));
         }
     }
 }

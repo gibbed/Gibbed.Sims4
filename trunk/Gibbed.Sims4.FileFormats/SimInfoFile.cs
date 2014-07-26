@@ -69,7 +69,7 @@ namespace Gibbed.Sims4.FileFormats
             output.WriteValueU32(this._Unknown44, endian);
             output.WriteValueU32(this._Unknown40, endian);
             output.WriteValueF32(this._Unknown48, endian);
-            output.WriteValueU64(this._OutfitResourceKey.InstanceId);
+            output.WriteValueU64(this._OutfitResourceKey.Instance);
         }
 
         public void Deserialize(Stream input)
