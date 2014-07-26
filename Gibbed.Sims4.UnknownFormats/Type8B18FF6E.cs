@@ -231,13 +231,13 @@ namespace Gibbed.Sims4.UnknownFormats
 
         public struct Sub1
         {
+            public ResourceKey Unknown00 { get; set; }
+            public ResourceKey Unknown10 { get; set; }
+            public ResourceKey Unknown20 { get; set; }
+            public ResourceKey Unknown30 { get; set; }
             public bool Unknown40 { get; set; }
             public float Unknown44 { get; set; }
             public float Unknown48 { get; set; }
-            public ResourceKey Unknown00 { get; set; }
-            public ResourceKey Unknown10 { get; set; }
-            public ResourceKey Unknown30 { get; set; }
-            public ResourceKey Unknown20 { get; set; }
         }
 
         private uint UpdateUnknown40(uint value)
