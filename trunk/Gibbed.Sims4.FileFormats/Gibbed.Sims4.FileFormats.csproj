@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="DataFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResourceKey.cs" />
     <Compile Include="SwarmBinaryFile.cs" />
     <Compile Include="Swarm\AuxiliaryGroup.cs" />
     <Compile Include="Swarm\AuxiliaryType.cs" />
