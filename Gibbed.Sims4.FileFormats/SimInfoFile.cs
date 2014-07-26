@@ -29,10 +29,10 @@ namespace Gibbed.Sims4.FileFormats
     public class SimInfoFile
     {
         #region Properties
-        public ResourceKey Unknown30
+        public ResourceKey OutfitResourceKey
         {
-            get { return this._Unknown30; }
-            set { this._Unknown30 = value; }
+            get { return this._OutfitResourceKey; }
+            set { this._OutfitResourceKey = value; }
         }
 
         public uint Unknown40
@@ -55,7 +55,7 @@ namespace Gibbed.Sims4.FileFormats
         #endregion
 
         #region Fields
-        private ResourceKey _Unknown30;
+        private ResourceKey _OutfitResourceKey;
         private uint _Unknown40;
         private uint _Unknown44;
         private float _Unknown48;
@@ -69,7 +69,7 @@ namespace Gibbed.Sims4.FileFormats
             output.WriteValueU32(this._Unknown44, endian);
             output.WriteValueU32(this._Unknown40, endian);
             output.WriteValueF32(this._Unknown48, endian);
-            output.WriteValueU64(this._Unknown30.InstanceId);
+            output.WriteValueU64(this._OutfitResourceKey.InstanceId);
         }
 
         public void Deserialize(Stream input)
@@ -82,12 +82,12 @@ namespace Gibbed.Sims4.FileFormats
                 throw new FormatException();
             }
 
-            this.Unknown44 = input.ReadValueU32(endian);
-            this.Unknown40 = input.ReadValueU32(endian);
-            this.Unknown48 = input.ReadValueF32(endian);
+            this._Unknown44 = input.ReadValueU32(endian);
+            this._Unknown40 = input.ReadValueU32(endian);
+            this._Unknown48 = input.ReadValueF32(endian);
 
             var instance = input.ReadValueU64(endian);
-            this.Unknown30 = instance != 0 ? new ResourceKey(instance, 0x025ED6F4, 0) : ResourceKey.Invalid;
+            this._OutfitResourceKey = instance != 0 ? new ResourceKey(instance, 0x025ED6F4, 0) : ResourceKey.Invalid;
         }
     }
 }
