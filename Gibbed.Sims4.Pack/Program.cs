@@ -39,9 +39,11 @@ namespace Gibbed.Sims4.Pack
         {
             bool showHelp = false;
             bool verbose = false;
+            bool avoidDuplicates = false;
 
             var options = new OptionSet()
             {
+                { "a|avoid-duplicates", "avoid duplicates", v => avoidDuplicates = v != null },
                 { "v|verbose", "be verbose", v => verbose = v != null },
                 { "h|help", "show this message and exit", v => showHelp = v != null },
             };
@@ -147,6 +149,8 @@ namespace Gibbed.Sims4.Pack
                     inputPath = nodes.Current.Value;
                 }
 
+                inputPath = Path.GetFullPath(inputPath);
+
                 if (File.Exists(inputPath) == false)
                 {
                     Console.WriteLine(inputPath + " does not exist!");
@@ -154,8 +158,9 @@ namespace Gibbed.Sims4.Pack
                 }
 
                 filePaths.Add(key,
-                              new KeyValuePair<string, DatabasePackedFile.CompressionScheme>(inputPath,
-                                                                                             compressionScheme));
+                              new KeyValuePair<string, DatabasePackedFile.CompressionScheme>(
+                                  inputPath,
+                                  compressionScheme));
             }
 
             if (verbose == true)
@@ -170,6 +175,8 @@ namespace Gibbed.Sims4.Pack
                     Version = new Version(2, 1),
                 };
 
+                var writtenFiles = new Dictionary<string, DatabasePackedFile.Entry>();
+
                 dbpf.WriteHeader(output, 0, 0);
                 foreach (var kv in filePaths)
                 {
@@ -182,8 +189,28 @@ namespace Gibbed.Sims4.Pack
                         Console.WriteLine("{0}", filePath);
                     }
 
+                    if (avoidDuplicates == true &&
+                        writtenFiles.ContainsKey(filePath) == true)
+                    {
+                        var writtenEntry = writtenFiles[filePath];
+
+                        dbpf.Entries.Add(new DatabasePackedFile.Entry
+                        {
+                            Key = key,
+                            CompressedSize = writtenEntry.CompressedSize,
+                            UncompressedSize = writtenEntry.UncompressedSize,
+                            CompressionScheme = writtenEntry.CompressionScheme,
+                            Flags = writtenEntry.Flags,
+                            Offset = writtenEntry.Offset,
+                        });
+
+                        continue;
+                    }
+
                     using (var input = File.OpenRead(filePath))
                     {
+                        DatabasePackedFile.Entry entry;
+
                         switch (compressionScheme)
                         {
                             case DatabasePackedFile.CompressionScheme.RefPack:
@@ -201,7 +228,7 @@ namespace Gibbed.Sims4.Pack
                                 long offset = output.Position;
                                 output.WriteBytes(compressed);
 
-                                dbpf.Entries.Add(new DatabasePackedFile.Entry
+                                entry = new DatabasePackedFile.Entry
                                 {
                                     Key = key,
                                     CompressedSize = (uint)(compressed.Length) | 0x80000000,
@@ -209,7 +236,8 @@ namespace Gibbed.Sims4.Pack
                                     CompressionScheme = DatabasePackedFile.CompressionScheme.RefPack,
                                     Flags = 1,
                                     Offset = offset,
-                                });
+                                };
+
                                 break;
                             }
 
@@ -233,7 +261,7 @@ namespace Gibbed.Sims4.Pack
                                     long offset = output.Position;
                                     output.WriteFromStream(temp, temp.Length);
 
-                                    dbpf.Entries.Add(new DatabasePackedFile.Entry
+                                    entry = new DatabasePackedFile.Entry
                                     {
                                         Key = key,
                                         CompressedSize = (uint)(temp.Length) | 0x80000000,
@@ -241,7 +269,7 @@ namespace Gibbed.Sims4.Pack
                                         CompressionScheme = DatabasePackedFile.CompressionScheme.Zlib,
                                         Flags = 1,
                                         Offset = offset,
-                                    });
+                                    };
                                 }
 
                                 break;
@@ -254,7 +282,7 @@ namespace Gibbed.Sims4.Pack
                                 long offset = output.Position;
                                 output.WriteFromStream(input, (uint)input.Length);
 
-                                dbpf.Entries.Add(new DatabasePackedFile.Entry
+                                entry = new DatabasePackedFile.Entry
                                 {
                                     Key = key,
                                     CompressedSize = (uint)input.Length | 0x80000000,
@@ -262,7 +290,7 @@ namespace Gibbed.Sims4.Pack
                                     CompressionScheme = DatabasePackedFile.CompressionScheme.None,
                                     Flags = 1,
                                     Offset = offset,
-                                });
+                                };
 
                                 break;
                             }
@@ -271,6 +299,13 @@ namespace Gibbed.Sims4.Pack
                             {
                                 throw new NotSupportedException();
                             }
+                        }
+
+                        dbpf.Entries.Add(entry);
+
+                        if (avoidDuplicates == true)
+                        {
+                            writtenFiles.Add(filePath, entry);
                         }
                     }
                 }
