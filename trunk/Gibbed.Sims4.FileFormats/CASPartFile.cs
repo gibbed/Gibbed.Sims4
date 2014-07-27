@@ -283,9 +283,6 @@ namespace Gibbed.Sims4.FileFormats
                 }
             }
 
-            var test = new BinaryReader(input);
-            test.ReadString()
-
             var v162 = input.ReadValueU8();
             for (int i = 0; i < v162; i++)
             {
