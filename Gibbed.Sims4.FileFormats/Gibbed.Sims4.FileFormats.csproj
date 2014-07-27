@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CASPartFile.cs" />
     <Compile Include="DatabasePackedFile.cs" />
     <Compile Include="ProjectHelpers.cs" />
     <Compile Include="SimDataFile.cs" />

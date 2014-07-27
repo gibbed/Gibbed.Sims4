@@ -71,11 +71,11 @@ namespace Gibbed.Sims4.FileFormats
         public readonly uint Group;
         public readonly ulong Instance;
 
-        public ResourceKey(ulong instanceId, uint typeId, uint groupId)
+        public ResourceKey(ulong instance, uint type, uint group)
         {
-            this.Instance = instanceId;
-            this.Type = typeId;
-            this.Group = groupId;
+            this.Instance = instance;
+            this.Type = type;
+            this.Group = group;
         }
 
         public ResourceKey(ulong instance, uint type)
