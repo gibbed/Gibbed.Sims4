@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="Type8B18FF6E.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TypeDB43E069.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Gibbed.IO\Gibbed.IO.csproj">
