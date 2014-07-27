@@ -167,6 +167,10 @@ namespace Gibbed.Sims4.TextureConvert
             };
             header.Serialize(output, endian);
 
+            var fullTransparentAlpha = new byte[] { 0x00, 0x05, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+            var fullTransparentColor = new byte[] { 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+            var fullOpaqueAlpha = new byte[] { 0x00, 0x05, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
+
             for (int i = 0; i < mipCount; i++)
             {
                 var mipHeader = mipHeaders[i];
@@ -191,14 +195,8 @@ namespace Gibbed.Sims4.TextureConvert
                     {
                         for (int j = 0; j < count; j++)
                         {
-                            output.WriteValueU16(0);
-
-                            output.WriteValueU16(0);
-                            output.WriteValueU16(0);
-                            output.WriteValueU16(0);
-
-                            output.WriteValueU32(0);
-                            output.WriteValueU32(0);
+                            output.Write(fullTransparentAlpha, 0, 8);
+                            output.Write(fullTransparentColor, 0, 8);
                         }
                     }
                     else if (op == 1)
@@ -221,9 +219,7 @@ namespace Gibbed.Sims4.TextureConvert
                         {
                             if (hasSpecular == false)
                             {
-                                // TODO: fix me
-                                output.WriteValueU64(0xFFFFFFFFFFFF0500ul, endian);
-                                //output.WriteValueU64(0ul, endian);
+                                output.Write(fullOpaqueAlpha, 0, 8);
                             }
                             else
                             {
@@ -325,9 +321,9 @@ namespace Gibbed.Sims4.TextureConvert
             using (var block0Data = new MemoryStream())
             using (var block1Data = new MemoryStream())
             {
-                for (int i = 0; i < header.MipMapCount; i++)
+                for (int mipIndex = 0; mipIndex < header.MipMapCount; mipIndex++)
                 {
-                    mipHeaders[i] = new MipHeader()
+                    mipHeaders[mipIndex] = new MipHeader()
                     {
                         CommandOffset = (int)commandData.Length,
                         Offset2 = (int)block2Data.Length,
@@ -336,55 +332,80 @@ namespace Gibbed.Sims4.TextureConvert
                         Offset1 = (int)block1Data.Length,
                     };
 
-                    var mipWidth = Math.Max(4, header.Width >> i);
-                    var mipHeight = Math.Max(4, header.Height >> i);
-                    var mipDepth = Math.Max(1, header.Depth >> i);
+                    var mipWidth = Math.Max(4, header.Width >> mipIndex);
+                    var mipHeight = Math.Max(4, header.Height >> mipIndex);
+                    var mipDepth = Math.Max(1, header.Depth >> mipIndex);
 
                     var mipSize = Math.Max(1, (mipWidth + 3) / 4) * Math.Max(1, (mipHeight + 3) / 4) * 16;
                     var mipData = input.ReadBytes(mipSize);
 
                     for (int offset = 0; offset < mipSize;)
                     {
-                        ushort nullCount = 0;
-                        while (nullCount < 0x3FFF &&
+                        ushort transparentCount = 0;
+                        while (transparentCount < 0x3FFF &&
                                offset < mipSize &&
-                               TrueForAll(mipData, offset, 16, b => b == 0) == true)
+                               TestAlphaAny(mipData, offset, a => a != 0) == false)
                         {
-                            nullCount++;
+                            transparentCount++;
                             offset += 16;
                         }
 
-                        if (nullCount > 0)
+                        if (transparentCount > 0)
                         {
-                            nullCount <<= 2;
-                            nullCount |= 0;
-                            commandData.WriteValueU16(nullCount, endian);
+                            transparentCount <<= 2;
+                            transparentCount |= 0;
+                            commandData.WriteValueU16(transparentCount, endian);
                             continue;
                         }
 
-                        var startOffset = offset;
-                        ushort fullCount = 0;
-                        while (fullCount < 0x3FFF &&
+                        var opaqueOffset = offset;
+                        ushort opaqueCount = 0;
+                        while (opaqueCount < 0x3FFF &&
                                offset < mipSize &&
-                               TrueForAny(mipData, offset, 16, b => b != 0) == true)
+                               TestAlphaAll(mipData, offset, a => a == 0xFF) == true)
                         {
-                            fullCount++;
+                            opaqueCount++;
                             offset += 16;
                         }
 
-                        if (fullCount > 0)
+                        if (opaqueCount > 0)
                         {
-                            for (int j = 0; j < fullCount; j++, startOffset += 16)
+                            for (int i = 0; i < opaqueCount; i++, opaqueOffset += 16)
                             {
-                                block0Data.Write(mipData, startOffset + 0, 2);
-                                block1Data.Write(mipData, startOffset + 2, 6);
-                                block2Data.Write(mipData, startOffset + 8, 4);
-                                block3Data.Write(mipData, startOffset + 12, 4);
+                                block2Data.Write(mipData, opaqueOffset + 8, 4);
+                                block3Data.Write(mipData, opaqueOffset + 12, 4);
                             }
 
-                            fullCount <<= 2;
-                            fullCount |= 1;
-                            commandData.WriteValueU16(fullCount, endian);
+                            opaqueCount <<= 2;
+                            opaqueCount |= 2;
+                            commandData.WriteValueU16(opaqueCount, endian);
+                            continue;
+                        }
+
+                        var translucentOffset = offset;
+                        ushort translucentCount = 0;
+                        while (translucentCount < 0x3FFF &&
+                               offset < mipSize &&
+                               TestAlphaAny(mipData, offset, a => a != 0) == true &&
+                               TestAlphaAll(mipData, offset, a => a == 0xFF) == false)
+                        {
+                            translucentCount++;
+                            offset += 16;
+                        }
+
+                        if (translucentCount > 0)
+                        {
+                            for (int i = 0; i < translucentCount; i++, translucentOffset += 16)
+                            {
+                                block0Data.Write(mipData, translucentOffset + 0, 2);
+                                block1Data.Write(mipData, translucentOffset + 2, 6);
+                                block2Data.Write(mipData, translucentOffset + 8, 4);
+                                block3Data.Write(mipData, translucentOffset + 12, 4);
+                            }
+
+                            translucentCount <<= 2;
+                            translucentCount |= 1;
+                            commandData.WriteValueU16(translucentCount, endian);
                             continue;
                         }
 
@@ -427,7 +448,79 @@ namespace Gibbed.Sims4.TextureConvert
             }
         }
 
-        public static bool TrueForAll<T>(T[] array, int offset, int count, Predicate<T> match)
+        private static unsafe void UnpackAlpha(byte[] array, int offset, byte* alpha, out ulong bits)
+        {
+            alpha[0] = array[offset + 0];
+            alpha[1] = array[offset + 1];
+
+            if (alpha[0] > alpha[1])
+            {
+                alpha[2] = (byte)((6 * alpha[0] + 1 * alpha[1] + 3) / 7);
+                alpha[3] = (byte)((5 * alpha[0] + 2 * alpha[1] + 3) / 7);
+                alpha[4] = (byte)((4 * alpha[0] + 3 * alpha[1] + 3) / 7);
+                alpha[5] = (byte)((3 * alpha[0] + 4 * alpha[1] + 3) / 7);
+                alpha[6] = (byte)((2 * alpha[0] + 5 * alpha[1] + 3) / 7);
+                alpha[7] = (byte)((1 * alpha[0] + 6 * alpha[1] + 3) / 7);
+            }
+            else
+            {
+                alpha[2] = (byte)((4 * alpha[0] + 1 * alpha[1] + 2) / 5);
+                alpha[3] = (byte)((3 * alpha[0] + 2 * alpha[1] + 2) / 5);
+                alpha[4] = (byte)((2 * alpha[0] + 3 * alpha[1] + 2) / 5);
+                alpha[5] = (byte)((1 * alpha[0] + 4 * alpha[1] + 2) / 5);
+                alpha[6] = 0;
+                alpha[7] = 255;
+            }
+
+            bits = 0;
+            for (int i = 8; i >= 2; i--)
+            {
+                bits <<= 8;
+                bits |= array[offset + i];
+            }
+        }
+
+        private static unsafe bool TestAlphaAll(byte[] array, int offset, Func<byte, bool> test)
+        {
+            var alpha = stackalloc byte[16];
+            ulong bits;
+
+            UnpackAlpha(array, offset, alpha, out bits);
+
+            for (int i = 0; i < 16; i++)
+            {
+                if (test(alpha[bits & 3]) == false)
+                {
+                    return false;
+                }
+
+                bits >>= 3;
+            }
+
+            return true;
+        }
+
+        private static unsafe bool TestAlphaAny(byte[] array, int offset, Func<byte, bool> test)
+        {
+            var alpha = stackalloc byte[16];
+            ulong bits;
+
+            UnpackAlpha(array, offset, alpha, out bits);
+
+            for (int i = 0; i < 16; i++)
+            {
+                if (test(alpha[bits & 3]) == true)
+                {
+                    return true;
+                }
+
+                bits >>= 3;
+            }
+
+            return false;
+        }
+
+        private static bool TrueForAll<T>(T[] array, int offset, int count, Predicate<T> match)
         {
             if (array == null)
             {
@@ -460,7 +553,7 @@ namespace Gibbed.Sims4.TextureConvert
             return true;
         }
 
-        public static bool TrueForAny<T>(T[] array, int offset, int count, Predicate<T> match)
+        private static bool TrueForAny<T>(T[] array, int offset, int count, Predicate<T> match)
         {
             if (array == null)
             {
