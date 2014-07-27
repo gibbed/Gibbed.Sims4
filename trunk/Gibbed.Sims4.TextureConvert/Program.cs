@@ -448,6 +448,8 @@ namespace Gibbed.Sims4.TextureConvert
             }
         }
 
+        // http://msdn.microsoft.com/en-us/library/windows/desktop/bb206238(v=vs.85).aspx#THREE_BIT_LINEAR_ALPHA_INTERPOLATION
+
         private static unsafe void UnpackAlpha(byte[] array, int offset, byte* alpha, out ulong bits)
         {
             alpha[0] = array[offset + 0];
@@ -468,8 +470,8 @@ namespace Gibbed.Sims4.TextureConvert
                 alpha[3] = (byte)((3 * alpha[0] + 2 * alpha[1] + 2) / 5);
                 alpha[4] = (byte)((2 * alpha[0] + 3 * alpha[1] + 2) / 5);
                 alpha[5] = (byte)((1 * alpha[0] + 4 * alpha[1] + 2) / 5);
-                alpha[6] = 0;
-                alpha[7] = 255;
+                alpha[6] = 0x00;
+                alpha[7] = 0xFF;
             }
 
             bits = 0;
@@ -489,7 +491,7 @@ namespace Gibbed.Sims4.TextureConvert
 
             for (int i = 0; i < 16; i++)
             {
-                if (test(alpha[bits & 3]) == false)
+                if (test(alpha[bits & 7]) == false)
                 {
                     return false;
                 }
@@ -509,7 +511,7 @@ namespace Gibbed.Sims4.TextureConvert
 
             for (int i = 0; i < 16; i++)
             {
-                if (test(alpha[bits & 3]) == true)
+                if (test(alpha[bits & 7]) == true)
                 {
                     return true;
                 }
