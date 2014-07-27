@@ -473,7 +473,7 @@ namespace Gibbed.Sims4.TextureConvert
             }
 
             bits = 0;
-            for (int i = 8; i >= 2; i--)
+            for (int i = 7; i >= 2; i--)
             {
                 bits <<= 8;
                 bits |= array[offset + i];
