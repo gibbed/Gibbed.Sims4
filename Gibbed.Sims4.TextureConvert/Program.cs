@@ -27,7 +27,7 @@ using Gibbed.IO;
 using NDesk.Options;
 using DDS = Gibbed.Sims4.TextureFormats.DDS;
 
-namespace Gibbed.Sims4.TextureConvert
+namespace Gibbed.Sims4.TextureCompress
 {
     internal class Program
     {

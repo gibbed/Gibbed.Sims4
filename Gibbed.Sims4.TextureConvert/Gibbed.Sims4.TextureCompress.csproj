@@ -8,8 +8,8 @@
     <ProjectGuid>{3836D232-CB41-4206-B83D-E7D6F6181A3F}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Gibbed.Sims4.TextureConvert</RootNamespace>
-    <AssemblyName>Gibbed.Sims4.TextureConvert</AssemblyName>
+    <RootNamespace>Gibbed.Sims4.TextureCompress</RootNamespace>
+    <AssemblyName>Gibbed.Sims4.TextureCompress</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
