@@ -48,6 +48,7 @@
     <Compile Include="ResourceKey.cs" />
     <Compile Include="SimInfoFile.cs" />
     <Compile Include="StringHelpers.cs" />
+    <Compile Include="StringTableFile.cs" />
     <Compile Include="SwarmBinaryFile.cs" />
     <Compile Include="Swarm\AuxiliaryGroup.cs" />
     <Compile Include="Swarm\AuxiliaryType.cs" />
