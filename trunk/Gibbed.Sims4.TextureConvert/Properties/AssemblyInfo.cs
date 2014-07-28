@@ -27,11 +27,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle("Gibbed.Sims4.TextureConvert")]
+[assembly: AssemblyTitle("Gibbed.Sims4.TextureCompress")]
 [assembly: AssemblyDescription("http://gib.me/")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Gibbed.Sims4.TextureConvert")]
+[assembly: AssemblyProduct("Gibbed.Sims4.TextureCompress")]
 [assembly: AssemblyCopyright("Copyright © Gibbed 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

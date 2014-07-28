@@ -20,7 +20,7 @@
  *    distribution.
  */
 
-namespace Gibbed.Sims4.TextureConvert
+namespace Gibbed.Sims4.TextureCompress
 {
     internal struct MipHeader
     {
