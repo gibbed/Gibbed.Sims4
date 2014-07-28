@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.Sims4.TextureShuffle", "Gibbed.Sims4.TextureShuffle\Gibbed.Sims4.TextureShuffle.csproj", "{66FDC2BC-D915-4A3C-B91E-D3E263C132CB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.Sims4.TextureConvert", "Gibbed.Sims4.TextureConvert\Gibbed.Sims4.TextureConvert.csproj", "{3836D232-CB41-4206-B83D-E7D6F6181A3F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.Sims4.TextureCompress", "Gibbed.Sims4.TextureCompress\Gibbed.Sims4.TextureCompress.csproj", "{3836D232-CB41-4206-B83D-E7D6F6181A3F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.Sims4.TextureFormats", "Gibbed.Sims4.TextureFormats\Gibbed.Sims4.TextureFormats.csproj", "{2C8EEEC2-50AE-47B1-8298-C663BFC34292}"
 EndProject
