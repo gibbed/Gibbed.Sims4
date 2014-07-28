@@ -77,23 +77,34 @@ namespace Gibbed.Sims4.TextureCompress
                     throw new EndOfStreamException("file not large enough to be a RLE or DDS file");
                 }
 
-                var magic = input.ReadValueU32(Endian.Little);
-                if (magic == DDS.FourCC.DXT5 ||
-                    magic.Swap() == DDS.FourCC.DXT5)
+                var magic1 = input.ReadValueU32(Endian.Little);
+                var magic2 = input.ReadValueU32(Endian.Little);
+                input.Position = 0;
+
+                if ((magic1 == FourCC.DXT5 || magic1.Swap() == FourCC.DXT5) &&
+                    (magic2 == FourCC.RLE2 || magic2.Swap() == FourCC.RLE2))
                 {
                     var outputPath = extras.Count > 1 ? extras[1] : Path.ChangeExtension(inputPath, ".dds");
                     using (var output = File.Create(outputPath))
                     {
-                        ConvertToDDS(input, output, magic == DDS.FourCC.DXT5 ? Endian.Little : Endian.Big);
+                        ExportFromRLE2(input, output, magic1 == FourCC.DXT5 ? Endian.Little : Endian.Big);
                     }
                 }
-                else if (magic == DDS.Header.Signature ||
-                         magic.Swap() == DDS.Header.Signature)
+                else if ((magic1 == FourCC.DXT5 || magic1.Swap() == FourCC.DXT5) &&
+                         (magic2 == FourCC.RLES || magic2.Swap() == FourCC.RLES))
+                {
+                    var outputPath = extras.Count > 1 ? extras[1] : Path.ChangeExtension(inputPath, ".dds");
+                    using (var output = File.Create(outputPath))
+                    {
+                        ExportFromRLES(input, output, magic1 == FourCC.DXT5 ? Endian.Little : Endian.Big);
+                    }
+                }
+                else if (magic1 == DDS.Header.Signature || magic1.Swap() == DDS.Header.Signature)
                 {
                     var outputPath = extras.Count > 1 ? extras[1] : Path.ChangeExtension(inputPath, ".rle");
                     using (var output = File.Create(outputPath))
                     {
-                        ConvertToRLE2(input, output, magic == DDS.Header.Signature ? Endian.Little : Endian.Big);
+                        ImportToRLE2(input, output, magic1 == DDS.Header.Signature ? Endian.Little : Endian.Big);
                     }
                 }
                 else
@@ -103,15 +114,19 @@ namespace Gibbed.Sims4.TextureCompress
             }
         }
 
-        private static void ConvertToDDS(Stream input, Stream output, Endian endian)
+        private static void ExportFromRLE2(Stream input, Stream output, Endian endian)
         {
+            var magic = input.ReadValueU32(endian);
+            if (magic != FourCC.DXT5)
+            {
+                throw new FormatException("unsupported format");
+            }
+
             var version = input.ReadValueU32(endian);
-            if (version != 0x32454C52 && // RLE2
-                version != 0x53454C52) // RLES
+            if (version != 0x32454C52) // RLE2
             {
                 throw new FormatException("unsupported version");
             }
-            bool hasSpecular = version == 0x53454C52;
 
             var width = input.ReadValueU16(endian);
             var height = input.ReadValueU16(endian);
@@ -133,7 +148,6 @@ namespace Gibbed.Sims4.TextureCompress
                     Offset3 = input.ReadValueS32(endian),
                     Offset0 = input.ReadValueS32(endian),
                     Offset1 = input.ReadValueS32(endian),
-                    Offset4 = hasSpecular == false ? 0 : input.ReadValueS32(endian),
                 };
             }
             mipHeaders[mipCount] = new MipHeader
@@ -142,8 +156,7 @@ namespace Gibbed.Sims4.TextureCompress
                 Offset2 = mipHeaders[0].Offset3,
                 Offset3 = mipHeaders[0].Offset0,
                 Offset0 = mipHeaders[0].Offset1,
-                Offset1 = hasSpecular == false ? (int)input.Length : mipHeaders[0].Offset4,
-                Offset4 = (int)input.Length,
+                Offset1 = (int)input.Length,
             };
 
             input.Position = 0;
@@ -217,18 +230,7 @@ namespace Gibbed.Sims4.TextureCompress
                     {
                         for (int j = 0; j < count; j++)
                         {
-                            if (hasSpecular == false)
-                            {
-                                output.Write(fullOpaqueAlpha, 0, 8);
-                            }
-                            else
-                            {
-                                output.Write(temp, blockOffset0, 2);
-                                output.Write(temp, blockOffset1, 6);
-                                blockOffset0 += 2;
-                                blockOffset1 += 6;
-                            }
-
+                            output.Write(fullOpaqueAlpha, 0, 8);
                             output.Write(temp, blockOffset2, 4);
                             output.Write(temp, blockOffset3, 4);
                             blockOffset2 += 4;
@@ -251,8 +253,166 @@ namespace Gibbed.Sims4.TextureCompress
             }
         }
 
-        private static void ConvertToRLE2(Stream input, Stream output, Endian endian)
+        private static void ExportFromRLES(Stream input, Stream output, Endian endian)
         {
+            var magic = input.ReadValueU32(endian);
+            if (magic != FourCC.DXT5)
+            {
+                throw new FormatException("unsupported format");
+            }
+
+            var version = input.ReadValueU32(endian);
+            if (version != 0x53454C52) // RLES
+            {
+                throw new FormatException("unsupported version");
+            }
+
+            var width = input.ReadValueU16(endian);
+            var height = input.ReadValueU16(endian);
+            var mipCount = input.ReadValueU16(endian);
+            var unknown0E = input.ReadValueU16(endian);
+
+            if (unknown0E != 0)
+            {
+                throw new FormatException();
+            }
+
+            var mipHeaders = new MipHeader[mipCount + 1];
+            for (var i = 0; i < mipCount; i++)
+            {
+                mipHeaders[i] = new MipHeader
+                {
+                    CommandOffset = input.ReadValueS32(endian),
+                    Offset2 = input.ReadValueS32(endian),
+                    Offset3 = input.ReadValueS32(endian),
+                    Offset0 = input.ReadValueS32(endian),
+                    Offset1 = input.ReadValueS32(endian),
+                    Offset4 = input.ReadValueS32(endian),
+                };
+            }
+            mipHeaders[mipCount] = new MipHeader
+            {
+                CommandOffset = mipHeaders[0].Offset2,
+                Offset2 = mipHeaders[0].Offset3,
+                Offset3 = mipHeaders[0].Offset0,
+                Offset0 = mipHeaders[0].Offset1,
+                Offset1 = mipHeaders[0].Offset4,
+                Offset4 = (int)input.Length,
+            };
+
+            input.Position = 0;
+            var temp = input.ReadBytes((int)input.Length);
+
+            output.WriteValueU32(DDS.Header.Signature, endian);
+            var header = new DDS.Header()
+            {
+                Size = DDS.Header.StructureSize,
+                Flags = DDS.HeaderFlags.Texture,
+                Width = width,
+                Height = height,
+                Depth = 1,
+                MipMapCount = mipCount,
+                PixelFormat =
+                {
+                    Size = DDS.PixelFormat.StructureSize,
+                    Flags = DDS.PixelFormatFlags.FourCC,
+                    FourCC = DDS.FourCC.DXT5,
+                },
+            };
+            header.Serialize(output, endian);
+
+            var fullTransparentAlpha = new byte[] { 0x00, 0x05, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+            var fullTransparentColor = new byte[] { 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+            var fullOpaqueAlpha = new byte[] { 0x00, 0x05, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
+
+            for (int i = 0; i < mipCount; i++)
+            {
+                var mipHeader = mipHeaders[i];
+                var nextMipHeader = mipHeaders[i + 1];
+
+                int blockOffset2, blockOffset3, blockOffset0, blockOffset1, blockOffset4;
+                blockOffset2 = mipHeader.Offset2;
+                blockOffset3 = mipHeader.Offset3;
+                blockOffset0 = mipHeader.Offset0;
+                blockOffset1 = mipHeader.Offset1;
+                blockOffset4 = mipHeader.Offset4;
+
+                for (int commandOffset = mipHeader.CommandOffset;
+                    commandOffset < nextMipHeader.CommandOffset;
+                    commandOffset += 2)
+                {
+                    var command = BitConverter.ToUInt16(temp, commandOffset);
+
+                    var op = command & 3;
+                    var count = command >> 2;
+
+                    if (op == 0)
+                    {
+                        for (int j = 0; j < count; j++)
+                        {
+                            output.Write(fullTransparentAlpha, 0, 8);
+                            output.Write(fullTransparentAlpha, 0, 8);
+                        }
+                    }
+                    else if (op == 1)
+                    {
+                        for (int j = 0; j < count; j++)
+                        {
+                            //output.Write(fullOpaqueAlpha, 0, 8);
+                            //output.Write(fullTransparentColor, 0, 8);
+
+                            output.Write(temp, blockOffset0, 2);
+                            output.Write(temp, blockOffset1, 6);
+                            blockOffset0 += 2;
+                            blockOffset1 += 6;
+
+                            output.Write(temp, blockOffset2, 4);
+                            output.Write(temp, blockOffset3, 4);
+                            blockOffset2 += 4;
+                            blockOffset3 += 4;
+
+                            blockOffset4 += 16;
+                        }
+                    }
+                    else if (op == 2)
+                    {
+                        for (int j = 0; j < count; j++)
+                        {
+                            output.Write(temp, blockOffset0, 2);
+                            output.Write(temp, blockOffset1, 6);
+                            output.Write(temp, blockOffset2, 4);
+                            output.Write(temp, blockOffset3, 4);
+                            blockOffset2 += 4;
+                            blockOffset3 += 4;
+                            blockOffset0 += 2;
+                            blockOffset1 += 6;
+                        }
+                    }
+                    else
+                    {
+                        throw new NotSupportedException();
+                    }
+                }
+
+                if (blockOffset0 != nextMipHeader.Offset0 ||
+                    blockOffset1 != nextMipHeader.Offset1 ||
+                    blockOffset2 != nextMipHeader.Offset2 ||
+                    blockOffset3 != nextMipHeader.Offset3 ||
+                    blockOffset4 != nextMipHeader.Offset4)
+                {
+                    throw new InvalidOperationException();
+                }
+            }
+        }
+
+        private static void ImportToRLE2(Stream input, Stream output, Endian endian)
+        {
+            var magic = input.ReadValueU32(endian);
+            if (magic != DDS.Header.Signature)
+            {
+                throw new FormatException("unsupported format");
+            }
+
             var header = new DDS.Header();
             header.Deserialize(input, endian);
 
