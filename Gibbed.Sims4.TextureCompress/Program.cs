@@ -90,7 +90,7 @@ namespace Gibbed.Sims4.TextureCompress
                 else if (magic == DDS.Header.Signature ||
                          magic.Swap() == DDS.Header.Signature)
                 {
-                    var outputPath = extras.Count > 1 ? extras[1] : Path.ChangeExtension(inputPath, ".rle2");
+                    var outputPath = extras.Count > 1 ? extras[1] : Path.ChangeExtension(inputPath, ".rle");
                     using (var output = File.Create(outputPath))
                     {
                         ConvertToRLE2(input, output, magic == DDS.Header.Signature ? Endian.Little : Endian.Big);
