@@ -1,0 +1,23 @@
+<project>
+	<name>The Sims 4</name>
+	<dependencies>
+		<dependency>Shared</dependency>
+	</dependencies>
+	<list_location>The Sims 4</list_location>
+	<install_locations>
+		<install_location>
+			<action type="registryview" view="Registry32" hive="LocalMachine" subkey="SOFTWARE\Maxis\The Sims 4" value="Install Dir" />
+		</install_location>
+		<install_location>
+			<action type="registryview" view="Registry64" hive="LocalMachine" subkey="SOFTWARE\Maxis\The Sims 4" value="Install Dir" />
+		</install_location>
+		<install_location>
+			<action type="registryview" view="Registry32" hive="LocalMachine" subkey="SOFTWARE\Maxis\The Sims 4" value="GDFBinary" />
+			<action type="directory_name" />
+		</install_location>
+		<install_location>
+			<action type="registryview" view="Registry64" hive="LocalMachine" subkey="SOFTWARE\Maxis\The Sims 4" value="GDFBinary" />
+			<action type="directory_name" />
+		</install_location>
+	</install_locations>
+</project>
