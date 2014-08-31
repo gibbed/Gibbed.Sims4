@@ -2,56 +2,118 @@
   <type id="0x00B2D882"                            ext="dds"                          >DirectDraw Surface</type>
   <type id="0x010FAF71" />
   <type id="0x015A1849"                            ext="geom"                        />
+  <type id="0x0166038C"                            ext="model"                       />
   <type id="0x01661233"                            ext="scene"                       />
+  <type id="0x01942E2C" src="LotDescription"                                         />
   <type id="0x01A527DB"                            ext="snr"                         />
+  <type id="0x01D0E75D" />
   <type id="0x01D10F34" />
   <type id="0x01EEF63A"                            ext="sns"                         />
-  <type id="0x025ED6F4"                            ext="simoutfit"                   />
-  <type id="0x02D5DF13"                            ext="jazz"                        />
+  <type id="0x02019972" />
+  <type id="0x025ED6F4"                            ext="siminfo"                     />
+  <type id="0x02D5DF13"                            ext="jazz"                         >State Machine</type>
+  <type id="0x033260E3"                            ext="trackmask"                    >Track Mask</type>
   <type id="0x0333406C"                            ext="xml"                         />
+  <type id="0x033B2B66" />
   <type id="0x034AEECB"                            ext="caspart"                     />
   <type id="0x0354796A"                            ext="skintone"                    />
   <type id="0x0355E0A6"                            ext="bonedelta"                   />
   <type id="0x03B4C61D"                            ext="lightingdata"                />
+  <type id="0x0418FE2A" />
   <type id="0x067CAA11"                            ext="blendgeom"                   />
+  <type id="0x07936CE0" src="CTProductBlock"                                         />
+  <type id="0x0D338A3A" src="LotPreview"                                             />
   <type id="0x105205BA" src="SimInfo"              ext="siminfo"                     />
+  <type id="0x122FC66A" src="lotx"                                                   />
+  <type id="0x16CA6BC4" />
   <type id="0x1A8506C5" src="mmusx"                ext="mmusx"                       />
   <type id="0x1B25A024" src="sysx"                 ext="sysx"                        />
+  <type id="0x1C1CF1F7" />
+  <type id="0x1C99B344"                                                               >BC_CACHE</type>
+  <type id="0x1CC04273" src="WorldMap"                                                >World Map</type>
+  <type id="0x1D6DF1CF" src="CTProductColumn"                                        />
   <type id="0x220557DA" src="stbl"                 ext="stbl"                         >String Table</type>
   <type id="0x25796DCA" src="otf"                  ext="otf"                          >OpenType Font</type>
   <type id="0x26978421" src="cur"                  ext="cur"                          >Cursor</type>
   <type id="0x276CA4B9" src="ttf"                  ext="ttf"                          >TrueType Font</type>
   <type id="0x2A8A5E22" src="TrayMetadataResource" ext="trayitem"                     >Tray Metadata</type>
   <type id="0x2F7D0004"                            ext="png"    tag="PNG"             >Portable Network Graphics</type>
+  <type id="0x2FAE983E" src="CTProductFoundation"                                    />
+  <type id="0x319E4F1D"                            ext="objcat"                       >Object Catalog</type>
   <type id="0x3453CF95"                            ext="rle"                         />
   <type id="0x376840D7" src="vp6"                  ext="vp6"    tag="VP6"             >On2 TrueMotion VP6</type>
+  <type id="0x3BD45407" />
   <type id="0x3C1AF1F2"                            ext="png1"                        />
-  <type id="0x4115F9D5" />
+  <type id="0x3C2A8647" />
+  <type id="0x3EAAA87C" />
+  <type id="0x3F0C529A" src="CeilingRail"                                             >CTProductCeilingRail</type>
+  <type id="0x4115F9D5" src="mixbus"                                                 />
+  <type id="0x48C28979" src="CTProductLocator"                                       />
+  <type id="0x4F726BBE" />
   <type id="0x545AC67A" src="SimData"              ext="simdata"                     />
   <type id="0x5B282D45"                            ext="png2"                        />
+  <type id="0x62E94D38" src="Combined_Tuning"      ext="combtune"                    />
   <type id="0x62ECC59A" src="GFxResource"          ext="gfx"                          >Scaleform GFx</type>
   <type id="0x6B20C4F3"                            ext="clip"                        />
-  <type id="0x71BDB8A2" />
+  <type id="0x6DFF1A66" />
+  <type id="0x6F40796A" />
+  <type id="0x71BDB8A2" src="FeaturedOutfit"                                         />
+  <type id="0x729F6C4F" src="HouseDescription"                                       />
+  <type id="0x73CB32C2" />
+  <type id="0x74050B1F"                            ext="magcol"                       >Magazine Collection</type>
+  <type id="0x76BCF80C" />
+  <type id="0x78C8BCE4" src="WorldManifest"                                           >World Manifest</type>
+  <type id="0x81CA1A10" />
+  <type id="0x84C23219" src="FloorTrim"                                              />
   <type id="0x8B18FF6E" />
   <type id="0x8EAF13DE"                            ext="rig"                         />
+  <type id="0x91EDBD3E" />
+  <type id="0x9917EACD" />
   <type id="0x99D98089" src="imusx"                ext="imusx"                       />
+  <type id="0x9A20CD1C" src="CTProductStair"                                         />
+  <type id="0x9AFE47F5" />
   <type id="0x9C925813"                            ext="png3"                        />
   <type id="0x9D1AB874" />
+  <type id="0x9F5CFF10" src="CTProductStyle"                                         />
+  <type id="0xA0451CBD" src="CTProductModularPiece"                                  />
+  <type id="0xA057811C" src="Frieze"                                                 />
+  <type id="0xA1FF2FC4" src="WorldMapLot"                                            />
   <type id="0xA576C2E7" src="mapx"                 ext="mapx"                        />
+  <type id="0xA680EA4B" />
+  <type id="0xA8F7B517" src="CTProductWindowSet"                                     />
+  <type id="0xAC03A936" src="CTProductMTXBundle"                                     />
   <type id="0xAC16FBEC" />
+  <type id="0xB0118C15" />
+  <type id="0xB0311D0F" src="RoofTrim"                                               />
   <type id="0xB3C438F0" />
+  <type id="0xB4F762C9" src="CTProductFloorPattern"                                  />
   <type id="0xB6C8B6A0" />
+  <type id="0xB734E44F" />
+  <type id="0xB8444447" />
+  <type id="0xB91E18DB" src="magalog"              ext="magalog"                      >Magalog Data</type>
+  <type id="0xB93A9915" />
   <type id="0xBA856C78"                            ext="rles"                        />
+  <type id="0xBC4A5044" src="ClipHeader"           ext="clipheader"                  />
   <type id="0xBDD82221" />
-  <type id="0xC0DB5AE7" />
+  <type id="0xC0DB5AE7" src="ObjectDefinition"     ext="objdef"                      />
   <type id="0xC202C770" src="trax"                 ext="trax"                        />
   <type id="0xC582D2FB" src="voicex"               ext="voicex"                      />
   <type id="0xC5F6763E" />
+  <type id="0xC71CA490" />
   <type id="0xCD9DE247" />
-  <type id="0xD382BF57" />
+  <type id="0xD2DC5BAD" src="ambx"                                                   />
+  <type id="0xD3044521"                            ext="slot"                        />
+  <type id="0xD382BF57"                            ext="footprint"                   />
+  <type id="0xD5F0F921" src="CTProductWallPattern"                                   />
+  <type id="0xD65DAFF9" src="RegionDescription" />
+  <type id="0xD99F5E5C" />
   <type id="0xDB43E069" />
+  <type id="0xE2249422"                                                               >AC_CACHE</type>
   <type id="0xE231B3D8" src="objmod"               ext="objmod"                      />
+  <type id="0xE7ADA79D" src="CTProductFountainTrim"                                  />
   <type id="0xEA5118B0"                            ext="swb"                          >Effects</type>
   <type id="0xEAA32ADD" />
+  <type id="0xEBCBB16C" src="CTProductTerrainPaint"                                  />
+  <type id="0xF1EDBD86" />
   <type id="0xFD04E3BE" src="brobx"                ext="brobx"                       />
 </types>
