@@ -1,0 +1,15 @@
+import "S4Common.proto";
+import "ResourceKey.proto";
+import "Situations.proto";
+import "UI.proto";
+
+package EA.Sims4.Network;
+
+message SituationEnded {
+	required .EA.Sims4.Network.IconInfo icon_info = 1;
+	optional uint32 final_score = 3;
+	optional .EA.Sims4.Network.SituationLevelUpdate final_level = 4;
+	repeated fixed64 sim_ids = 5 [packed = true];
+	optional .EA.Sims4.Network.ResourceKey audio_sting = 6;
+}
+

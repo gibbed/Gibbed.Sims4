@@ -1,0 +1,59 @@
+import "ResourceKey.proto";
+
+package EA.Sims4.Network;
+
+message Product {
+	enum BundleContainment {
+		LOOSE = 0;
+		TIGHT = 1;
+	}
+
+	required uint64 id = 1;
+	required string offerid = 2;
+	repeated uint64 children = 3 [packed = true];
+	repeated .EA.Sims4.Network.ResourceKey instances = 4;
+	optional string name = 5;
+	repeated .EA.Sims4.Network.Country countries = 6;
+	required bool isBundle = 7;
+	optional .EA.Sims4.Network.Product.BundleContainment containmentType = 8 [default = LOOSE];
+	repeated uint64 childProductIds = 9 [packed = true];
+	optional int32 bundlePriority = 10;
+	optional uint32 keyNameHash = 11;
+	optional uint32 keyDescriptionHash = 12;
+	optional uint32 keyUpsellDescriptionHash = 13;
+	optional uint64 thumbnailResourceInstanceIdHash = 14;
+	optional bool hiddenInCatalog = 15;
+	optional bool isPurchasable = 16 [default = true];
+	optional uint32 celebrationPriority = 17 [default = 400];
+	optional bool localizedImages = 18 [default = false];
+}
+
+message Catalog {
+	required uint64 timestamp = 1;
+	repeated .EA.Sims4.Network.Product products = 2;
+}
+
+message Country {
+	required string countryCode = 1;
+	repeated .EA.Sims4.Network.Price prices = 2;
+}
+
+message Price {
+	required float price = 1;
+	required string currency = 2;
+	required string currencyType = 3;
+	required string priceType = 4;
+	optional uint64 startDate = 5;
+	optional uint64 endDate = 6;
+}
+
+message ViewedEntitlements {
+	repeated .EA.Sims4.Network.EntitlementNotification viewed_entitlements = 1;
+}
+
+message EntitlementNotification {
+	optional uint64 entitlement_id = 1;
+	optional bool viewed = 2;
+	optional uint64 product_id = 3;
+}
+

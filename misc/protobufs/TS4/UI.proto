@@ -1,0 +1,272 @@
+import "Consts.proto";
+import "Sparse.proto";
+import "ResourceKey.proto";
+import "Localization.proto";
+
+package EA.Sims4.Network;
+
+message UiObjectMetadata {
+	enum HoverTipStyle {
+		HOVER_TIP_DISABLED = 0;
+		HOVER_TIP_DEFAULT = 1;
+		HOVER_TIP_CONSUMABLE_CRAFTABLE = 2;
+		HOVER_TIP_GARDENING = 3;
+		HOVER_TIP_COLLECTION = 4;
+		HOVER_TIP_CUSTOM_OBJECT = 5;
+	}
+
+	optional .EA.Sims4.Network.SparseMessageData sparse_data = 1;
+	optional .EA.Sims4.Network.UiObjectMetadata.HoverTipStyle hover_tip = 2 [default = HOVER_TIP_DISABLED];
+	optional .EA.Sims4.Network.UiObjectMetadata.HoverTipStyle debug_hover_tip = 3 [default = HOVER_TIP_DISABLED];
+	optional string custom_name = 4;
+	optional .EA.Sims4.Network.LocalizedString recipe_name = 5;
+	optional fixed64 crafter_sim_id = 6;
+	repeated .EA.Sims4.Network.LocalizedString buff_effects = 7;
+	optional .EA.Sims4.Network.LocalizedString recipe_description = 8;
+	optional uint32 quality = 9;
+	optional uint32 servings = 10;
+	optional uint64 spoiled_time = 11;
+	optional .EA.Sims4.Network.LocalizedString percentage_left = 12;
+	optional .EA.Sims4.Network.LocalizedString style_name = 13;
+	optional uint32 simoleon_value = 14;
+	optional .EA.Sims4.Network.ResourceKey main_icon = 15;
+	repeated .EA.Sims4.Network.ResourceKey sub_icons = 16;
+	optional .EA.Sims4.Network.LocalizedString quality_description = 17;
+	optional fixed32 quality_color = 18;
+	repeated .EA.Sims4.Network.LocalizedString object_info_names = 19;
+	repeated .EA.Sims4.Network.LocalizedString object_info_descriptions = 20;
+	optional string inscription = 21;
+	optional string custom_description = 22;
+	optional .EA.Sims4.Network.LocalizedString header = 23;
+	optional .EA.Sims4.Network.LocalizedString subtext = 24;
+	optional .EA.Sims4.Network.LocalizedString crafted_by_text = 25;
+}
+
+message IconInfo {
+	optional .EA.Sims4.Network.LocalizedString name = 1;
+	required .EA.Sims4.Network.ResourceKey icon = 2;
+	optional .EA.Sims4.Network.LocalizedString desc = 3;
+	optional .EA.Sims4.Network.ManagerObjectId icon_object = 4;
+	optional .EA.Sims4.Network.DefinitionGeoPair icon_object_def = 5;
+	optional fixed64 texture_id = 6;
+	optional fixed64 object_instance_id = 7;
+}
+
+message InventoryUpdate {
+	required uint64 sim_id = 1;
+	required uint32 size = 2;
+}
+
+message DynamicInventoryItemData {
+	optional uint32 value = 1;
+	optional bool locked = 2;
+	optional bool in_use = 3;
+	optional int32 crafting_quality = 4;
+	optional uint32 count = 5;
+	optional uint64 new_object_id = 6;
+	optional bool is_new = 7;
+	optional uint32 sort_order = 8;
+	optional .EA.Sims4.Network.IconInfo icon_info = 9;
+}
+
+message InventoryItemData {
+	required uint64 definition_id = 1;
+	required .EA.Sims4.Network.DynamicInventoryItemData dynamic_data = 2;
+}
+
+message SimInventoryItemUpdate {
+	enum UpdateType {
+		TYPE_ADD = 0;
+		TYPE_UPDATE = 1;
+		TYPE_REMOVE = 2;
+	}
+
+	required .EA.Sims4.Network.SimInventoryItemUpdate.UpdateType type = 1 [default = TYPE_ADD];
+	required uint64 sim_id = 2;
+	required uint64 object_id = 3;
+	optional .EA.Sims4.Network.InventoryItemData add_data = 4;
+	optional .EA.Sims4.Network.DynamicInventoryItemData update_data = 5;
+	optional uint64 object_inventory_type = 6;
+	optional uint64 stack_id = 7;
+}
+
+message InventoryItemUpdate {
+	enum UpdateType {
+		TYPE_ADD = 0;
+		TYPE_UPDATE = 1;
+		TYPE_REMOVE = 2;
+	}
+
+	enum InventoryType {
+		TYPE_OBJECT = 0;
+		TYPE_SHARED = 1;
+	}
+
+	required .EA.Sims4.Network.InventoryItemUpdate.UpdateType type = 1 [default = TYPE_ADD];
+	required uint64 inventory_id = 2;
+	required uint64 object_id = 3;
+	optional .EA.Sims4.Network.InventoryItemData add_data = 4;
+	optional .EA.Sims4.Network.DynamicInventoryItemData update_data = 5;
+	required .EA.Sims4.Network.InventoryItemUpdate.InventoryType inventory_type = 6 [default = TYPE_OBJECT];
+	required uint64 stack_id = 7;
+}
+
+message OpenInventory {
+	optional uint64 object_id = 1;
+	optional .EA.Sims4.Network.InventoryItemUpdate.InventoryType inventory_type = 2 [default = TYPE_OBJECT];
+	optional uint64 inventory_id = 3;
+}
+
+message CollectibleItemUpdate {
+	enum UpdateType {
+		TYPE_ADD = 0;
+		TYPE_REMOVE = 1;
+		TYPE_DISCOVERY = 2;
+	}
+
+	required .EA.Sims4.Network.CollectibleItemUpdate.UpdateType type = 1 [default = TYPE_ADD];
+	required uint64 collection_id = 2;
+	optional uint64 household_id = 3;
+	optional uint64 object_id = 4;
+	optional uint64 object_def_id = 5;
+	optional uint64 sim_id = 6;
+}
+
+message ShowObjectInventory {
+	required .EA.Sims4.Network.LocalizedString name = 1;
+	repeated .EA.Sims4.Network.InventoryItemData items = 2;
+}
+
+message InventoryCountUpdate {
+	message InventoryCount {
+		required uint32 inventory_type = 1;
+		required uint32 count = 2;
+	}
+
+	repeated .EA.Sims4.Network.InventoryCountUpdate.InventoryCount inventory_counts = 1;
+}
+
+message GameSaveComplete {
+	required uint32 return_status = 1;
+	optional float save_cooldown = 2;
+	optional .EA.Sims4.Network.LocalizedString failure_reason = 3;
+	optional uint32 slot_id = 4;
+}
+
+message GameSaveLockUnlock {
+	required bool is_locked = 1;
+	optional .EA.Sims4.Network.LocalizedString lock_reason = 3;
+}
+
+message UiDayAndTime {
+	enum DaysInWeek {
+		SUNDAY = 0;
+		MONDAY = 1;
+		TUESDAY = 2;
+		WEDNESDAY = 3;
+		THURSDAY = 4;
+		FRIDAY = 5;
+		SATURDAY = 6;
+	}
+
+	required .EA.Sims4.Network.UiDayAndTime.DaysInWeek day = 1 [default = SUNDAY];
+	required uint32 hour = 2;
+	required uint32 minute = 3;
+}
+
+message UiScreenSlam {
+	enum Types {
+		DEFAULT = 0;
+		ASPIRATION = 1;
+		SKILL = 2;
+		ACHIEVEMENT = 3;
+		SITUATION_GOLD = 4;
+		SITUATION_SILVER = 5;
+		SITUATION_BRONZE = 6;
+		CAREER = 7;
+	}
+
+	enum Size {
+		SMALL = 0;
+		MEDIUM = 1;
+		LARGE = 2;
+		EXTRA_LARGE = 3;
+	}
+
+	optional uint32 type = 1;
+	optional .EA.Sims4.Network.LocalizedString name = 2;
+	optional .EA.Sims4.Network.ResourceKey icon = 3;
+	optional uint32 size = 4;
+	optional .EA.Sims4.Network.LocalizedString title = 5;
+	optional uint64 sim_id = 6;
+}
+
+message LotDisplayInfo {
+	optional string lot_name = 1;
+	optional string household_name = 2;
+}
+
+message HouseholdDisplayInfo {
+	required fixed64 household_id = 1;
+	optional fixed64 lot_id = 2;
+	repeated fixed64 at_home_sim_ids = 3 [packed = true];
+}
+
+message SimRelativeLotLocation {
+	optional fixed64 sim_id = 1;
+	optional bool on_active_lot = 2;
+	optional bool home_zone_active = 3;
+}
+
+message LightColorAndIntensity {
+	optional uint32 red = 1;
+	optional uint32 green = 2;
+	optional uint32 blue = 3;
+	optional float intensity = 4;
+	optional fixed64 target_id = 5;
+	optional bool all_lights = 6;
+}
+
+message SatisfyTutorialTip {
+	required fixed64 tutorial_tip_id = 1;
+}
+
+message ShowMapView {
+	optional fixed64 actor_sim_id = 1;
+	repeated fixed64 lot_ids_for_travel = 2 [packed = true];
+	optional uint32 dialog_id = 3;
+	repeated fixed64 traveling_sim_ids = 4 [packed = true];
+}
+
+message SimTravelAvailability {
+	optional fixed64 sim_id = 1;
+	optional bool is_active_household = 2;
+	optional fixed64 household_id = 3;
+	optional bool is_at_work = 4;
+	optional fixed64 zone_id = 5;
+	optional uint32 age = 6;
+}
+
+message AvailableSimsForTravel {
+	optional fixed64 actor_sim_id = 1;
+	repeated fixed64 sim_ids_for_travel = 2 [packed = true];
+	repeated .EA.Sims4.Network.SimTravelAvailability available_sims = 3;
+}
+
+message SimInfoLocationStatus {
+	optional fixed64 sim_id = 1;
+	optional uint32 age = 2;
+	optional bool is_at_home = 3;
+}
+
+message HouseholdLocationStatus {
+	optional fixed64 household_id = 1;
+	optional string household_name = 2;
+	optional fixed64 home_zone_id = 3;
+	repeated .EA.Sims4.Network.SimInfoLocationStatus sim_info_status = 4;
+}
+
+message TravelViewHouseholdsInfo {
+	repeated .EA.Sims4.Network.HouseholdLocationStatus household_locations = 1;
+}
+

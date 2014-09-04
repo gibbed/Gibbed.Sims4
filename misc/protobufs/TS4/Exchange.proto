@@ -1,0 +1,289 @@
+import "Consts.proto";
+import "SimObjectAttributes.proto";
+
+package EA.Sims4.Network;
+
+message TrayBlueprintMetadata {
+	optional uint64 venue_type = 1;
+	optional uint32 size_x = 2;
+	optional uint32 size_z = 3;
+	optional uint32 price_level = 4;
+	optional uint32 price_value = 5;
+	optional uint32 num_bedrooms = 6;
+	optional uint32 num_bathrooms = 7;
+	optional uint32 architecture_value = 8;
+	optional uint32 num_thumbnails = 9 [default = 1];
+	optional uint32 front_side = 10 [default = 0];
+}
+
+message TrayRoomBlueprintMetadata {
+	optional uint32 room_type = 1;
+	optional uint32 size_x = 2;
+	optional uint32 size_z = 3;
+	optional uint32 price_value = 4;
+	optional uint32 height = 5;
+	optional uint32 price_level = 6;
+}
+
+message TraySimMetadata {
+	optional .EA.Sims4.Persistence.PersistableTraitTracker trait_tracker = 1;
+	optional .EA.Sims4.Persistence.PersistableGenealogyTracker genealogy_tracker = 2;
+	optional string first_name = 3;
+	optional string last_name = 4;
+	optional uint64 id = 5;
+	optional uint32 gender = 6;
+	optional uint64 aspirationId = 7;
+	repeated .EA.Sims4.Persistence.FamilyRelation sim_relationships = 8;
+	optional uint32 age = 9;
+}
+
+message TrayHouseholdMetadata {
+	optional uint32 family_size = 1;
+	repeated .EA.Sims4.Network.TraySimMetadata sim_data = 2;
+}
+
+message TrayMetadata {
+	message ExtraThumbnailInfo {
+		repeated uint32 thumbnail_info = 1 [packed = true];
+	}
+
+	message SpecificData {
+		optional .EA.Sims4.Network.TrayBlueprintMetadata bp_metadata = 1;
+		optional .EA.Sims4.Network.TrayHouseholdMetadata hh_metadata = 2;
+		optional .EA.Sims4.Network.TrayRoomBlueprintMetadata ro_metadata = 7;
+		optional bool is_hidden = 3;
+		optional bool is_downloadtemp = 4;
+		optional bool is_modded_content = 5;
+		optional .EA.Sims4.Network.TrayMetadata.ExtraThumbnailInfo xti = 6;
+		optional string description_hashtags = 8;
+		optional uint64 language_id = 9;
+		optional uint64 sku_id = 10;
+		optional bool is_maxis_content = 11;
+	}
+
+	optional uint64 id = 1;
+	optional .EA.Sims4.Network.ExchangeItemTypes type = 2 [default = EXCHANGE_INVALIDTYPE];
+	optional bytes remote_id = 3;
+	optional string name = 4;
+	optional string description = 5;
+	optional uint64 creator_id = 6;
+	optional string creator_name = 7;
+	optional uint64 favorites = 8;
+	optional uint64 downloads = 9;
+	optional .EA.Sims4.Network.TrayMetadata.SpecificData metadata = 10;
+	optional uint64 item_timestamp = 11;
+	repeated uint64 mtx_ids = 12 [packed = true];
+	optional bytes creator_uuid = 13;
+	optional uint64 modifier_id = 14;
+	optional string modifier_name = 15;
+	repeated uint32 meta_info = 16 [packed = true];
+	optional int32 verify_code = 17;
+}
+
+message ExchangeItemPrerequisites {
+	repeated uint64 item = 1 [packed = true];
+}
+
+message ExchangeEnvelope {
+	message ThumbnailMessage {
+		repeated uint32 thumbnail_info = 1 [packed = true];
+		repeated bytes thumbnail_data = 2;
+	}
+
+	optional bytes uuid = 1;
+	optional string owner = 2;
+	optional .EA.Sims4.Network.ExchangeItemPrerequisites product_ids = 3;
+	optional bytes small_thumbnail = 4;
+	optional bytes large_thumbnail = 5;
+	optional bytes payload = 6;
+	optional .EA.Sims4.Network.TrayMetadata metadata = 7;
+	optional .EA.Sims4.Network.ExchangeEnvelope.ThumbnailMessage thumbnail_message = 8;
+}
+
+message ExchangeSocialEnvelope {
+	required uint64 nucleusid = 2;
+	optional string owner = 3;
+	optional .EA.Sims4.Network.TrayMetadata metadata = 4;
+	optional uint64 quantity = 5;
+	optional bytes feedid = 6;
+}
+
+message ExchangeListResults {
+	repeated .EA.Sims4.Network.ExchangeEnvelope results = 1;
+}
+
+message ExchangeWebserverUri {
+	optional string baseuri = 1;
+	optional uint32 foldermodulos = 2;
+}
+
+message ExchangeSearchRequest {
+	optional string match_term = 1;
+	optional .EA.Sims4.Network.ExchangeItemTypes type = 2 [default = EXCHANGE_INVALIDTYPE];
+	optional bytes last_uuid = 3;
+	optional uint32 max_results = 4;
+}
+
+message ExchangeFetchByStatRequest {
+	message ExchangeFetchFromValue {
+		optional uint32 counter_value = 1;
+		optional bytes uuid = 2;
+	}
+
+	optional .EA.Sims4.Network.ExchangeFetchByStatRequest.ExchangeFetchFromValue value_fetch = 1;
+	optional .EA.Sims4.Network.ExchangeItemTypes type = 2 [default = EXCHANGE_INVALIDTYPE];
+	optional uint32 max_results = 3;
+}
+
+message ExchangeFetchKeywordRequest {
+	optional string keyword = 1;
+	optional .EA.Sims4.Network.ExchangeItemTypes type = 2 [default = EXCHANGE_INVALIDTYPE];
+	optional bytes uuid = 3;
+	optional uint32 max_results = 4;
+}
+
+message ExchangeFetchRecentRequest {
+	optional bytes uuid = 1;
+	optional .EA.Sims4.Network.ExchangeItemTypes type = 2 [default = EXCHANGE_INVALIDTYPE];
+	optional uint32 max_results = 3;
+}
+
+message ExchangeGetUpdatedStats {
+	repeated bytes uuids = 1;
+}
+
+message ExchangeGetPrefixMatch {
+	optional string prefix = 1;
+	repeated string matches = 2;
+}
+
+message ExchangeCombinedSearch {
+	optional .EA.Sims4.Network.ExchangeGalleryFilter filter = 1 [default = EGF_TOP_FAVORITES];
+	optional string persona = 2;
+	optional string keyword = 3;
+	optional .EA.Sims4.Network.ExchangeItemTypes type = 4 [default = EXCHANGE_INVALIDTYPE];
+	optional uint64 venue = 5;
+	optional bytes uuid = 6;
+	optional uint32 counter_value = 7;
+	optional uint32 max_results = 8;
+	optional .EA.Sims4.Network.ExchangeContentType content_type = 9 [default = EGT_INVALIDTYPE];
+	optional string hashtag = 10;
+	optional .EA.Sims4.Network.ExchangeGallerySecondaryFilter sim_size = 11 [default = EGSF_ONE_SIM];
+	optional .EA.Sims4.Network.ExchangeGallerySecondaryFilter lot_size = 12 [default = EGSF_ONE_SIM];
+	optional .EA.Sims4.Network.ExchangeGallerySecondaryFilter room_size = 13 [default = EGSF_ONE_SIM];
+	optional .EA.Sims4.Network.ExchangeGalleryWallHeight room_height = 14 [default = EGSF_ROOMWALL_UPTO5METERS];
+	optional .EA.Sims4.Network.ExchangeGalleryPriceRange price_range = 15 [default = EGSF_PRICERANGE_ALL];
+	optional uint64 room_type = 16;
+	optional uint64 sku = 17;
+	optional uint64 language = 18;
+	optional uint64 modded = 19;
+	optional uint64 locked = 20;
+}
+
+message ExchangeTestParameters {
+	optional uint64 max_entries = 1;
+	optional bool broadcast = 2;
+	optional uint64 low_range = 3;
+	optional uint64 high_range = 4;
+}
+
+message ExchangeSocialMessage {
+	repeated uint64 friends = 1 [packed = true];
+	repeated uint64 subscriptions = 2 [packed = true];
+	optional bool added = 3;
+}
+
+message ExchangeWWCEMessage {
+	optional uint64 requestid = 1;
+	optional uint64 reporter_nucleusid = 2;
+	optional uint64 reported_nucleusid = 3;
+	optional uint32 offense_field = 4;
+	optional string offense_description = 5;
+	optional string content_uuid = 6;
+	optional uint32 content_type = 7;
+	optional bytes comment_id = 8;
+	optional string reporter_persona = 9;
+	optional string reported_persona = 10;
+	optional .EA.Sims4.Network.TrayMetadata content_metadata = 11;
+	optional string locale = 12;
+	optional uint64 bio_persona_id = 13;
+}
+
+message ExchangeWWCEHideMessage {
+	optional bool hide = 1;
+	optional string content_uuid = 2;
+	optional uint32 content_type = 3;
+}
+
+message ExchangeWWCEResponse {
+	optional string petition_guid = 1;
+	optional .EA.Sims4.Network.WWCEOpResult op_result = 2 [default = WWCE_OP_RESULT_SUCCESS];
+	optional string content_guid = 3;
+	optional uint32 content_type = 4;
+}
+
+message ExchangeFetchPlayerInfoMessage {
+	optional uint64 playerid = 1;
+	optional string playername = 2;
+}
+
+message ExchangeFetchPlayerStatistics {
+	optional uint64 playerid = 1;
+	optional uint32 downloads = 2;
+	optional uint32 shared = 3;
+	optional uint32 followers = 4;
+}
+
+message ExchangeFetchSubcriptionStats {
+	repeated .EA.Sims4.Network.ExchangeFetchPlayerStatistics fetchplayerstats = 1;
+}
+
+message ExchangeHashtagTrendsMessage {
+	repeated string results = 1;
+}
+
+message ExchangeModerateMessage {
+	optional string tag = 1;
+	optional uint32 value = 2;
+}
+
+message ExchangeStatTicker {
+	optional uint32 type = 1;
+	optional uint32 value = 2;
+}
+
+message ExchangeStatTickerMessage {
+	repeated .EA.Sims4.Network.ExchangeStatTicker data = 1;
+}
+
+message ExchangeGetSharedItemsByIdMessage {
+	repeated bytes remote_ids = 1;
+}
+
+message ExchangeControlMessage {
+	required .EA.Sims4.Network.ExchangeOpTypes opcode = 1 [default = EOP_GET_SHARED];
+	optional .EA.Sims4.Network.ExchangeOpResult result = 2 [default = EXCHANGE_OP_RESULT_SUCCESS];
+	optional .EA.Sims4.Network.ExchangeEnvelope envelope = 3;
+	optional .EA.Sims4.Network.ExchangeListResults getlistmsg = 4;
+	optional .EA.Sims4.Network.ExchangeWebserverUri webserveruri = 5;
+	optional .EA.Sims4.Network.ExchangeSearchRequest searchrequestmsg = 6;
+	optional .EA.Sims4.Network.ExchangeFetchByStatRequest fetchbystatmsg = 7;
+	optional .EA.Sims4.Network.ExchangeGetUpdatedStats getupdatedstatsmsg = 8;
+	optional .EA.Sims4.Network.ExchangeGetPrefixMatch getprefixmatch = 9;
+	optional .EA.Sims4.Network.ExchangeFetchKeywordRequest fetchkeywordmsg = 10;
+	optional .EA.Sims4.Network.ExchangeFetchRecentRequest fetchrecentmsg = 11;
+	optional .EA.Sims4.Network.ExchangeCombinedSearch combinedsearchmsg = 12;
+	optional .EA.Sims4.Network.ExchangeTestParameters exchangetest = 13;
+	optional .EA.Sims4.Network.ExchangeSocialMessage exchangesocial = 14;
+	optional .EA.Sims4.Network.ExchangeWWCEMessage wwcemsg = 15;
+	optional .EA.Sims4.Network.ExchangeWWCEResponse wwceresponse = 16;
+	optional .EA.Sims4.Network.ExchangeWWCEHideMessage wwcehidemsg = 17;
+	optional .EA.Sims4.Network.ExchangeFetchPlayerInfoMessage fetchplayerinfomsg = 18;
+	optional .EA.Sims4.Network.ExchangeFetchPlayerStatistics fetchplayerstats = 19;
+	optional .EA.Sims4.Network.ExchangeFetchSubcriptionStats subscribers_stats = 20;
+	optional .EA.Sims4.Network.ExchangeHashtagTrendsMessage hashtagtrends = 21;
+	optional .EA.Sims4.Network.ExchangeModerateMessage moderatemsg = 22;
+	optional .EA.Sims4.Network.ExchangeStatTickerMessage stat_tickers = 23;
+	optional .EA.Sims4.Network.ExchangeGetSharedItemsByIdMessage items_request = 24;
+}
+

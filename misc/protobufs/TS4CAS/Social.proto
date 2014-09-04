@@ -1,0 +1,238 @@
+import "Consts.proto";
+import "Chat.proto";
+import "S4Common.proto";
+import "Localization.proto";
+import "Exchange.proto";
+
+package EA.Sims4.Network;
+
+enum SocialFeedItemType {
+	SFI_ITEM_DOWNLOADED = 0;
+	SFI_ITEM_UPLOADED = 1;
+	SFI_ITEM_FAVORITED = 2;
+	SFI_ITEM_COMMENTED = 3;
+	SFI_ITEM_SHOWCASED = 4;
+	SFI_PROFILE_COMMENTED = 5;
+	SFI_NEW_FOLLOWERS = 6;
+}
+
+enum SocialClusterMessageType {
+	SOC_LOGIN = 0;
+	SOC_LOGOFF = 1;
+	SOC_PRESENCEUPDATE = 2;
+	SOC_FEEDUPDATE = 3;
+	SOC_ADD_FEEDSUB = 4;
+	SOC_REMOVE_FEEDSUB = 5;
+	SOC_BROADCAST_PRIVOP = 6;
+	SOC_BROADCAST_QUEUED = 8;
+	SOC_BROADCAST_CACHE_INVALIDATE = 9;
+}
+
+message SocialFriendMsg {
+	optional uint64 simId = 1;
+	optional uint64 nucleusid = 2;
+	optional string note = 3;
+	optional string prefix = 4;
+	optional string persona = 5;
+	optional bool cheatForce = 6;
+}
+
+message SocialPersonaResponseMsg {
+	repeated string personas = 1;
+}
+
+message SocialId {
+	optional string persona = 1;
+	optional uint64 s4guid = 2;
+	optional string guid_descriptor = 3;
+	optional uint64 nucleusId = 4;
+}
+
+message SocialGenericResponse {
+	optional uint32 error = 1;
+	optional .EA.Sims4.Network.SocialOpTypes msg_type = 2 [default = SOP_PUBLIC_MIN];
+	optional bytes postId = 3;
+	optional bytes postParentId = 4;
+}
+
+message SocialPlayerInfoList {
+	message PlayerInfo {
+		optional string AccountName = 1;
+		optional string AccountNotes = 2;
+		optional .EA.Sims4.Network.OnlinePresenceStatus presence = 3 [default = PRESENCE_UNAVAILABLE];
+		optional string OnlineStatus2 = 4;
+		optional uint64 NucleusId = 9;
+		optional string PlayerBio = 10;
+	}
+
+	repeated .EA.Sims4.Network.SocialPlayerInfoList.PlayerInfo players = 1;
+}
+
+message SocialFeedSubMessage {
+	message SubscriptionFlags {
+		optional bool hidden = 1;
+		repeated uint32 filterTypes = 2 [packed = true];
+	}
+
+	message SubscriptionObject {
+		optional string name = 1;
+		optional .EA.Sims4.Network.SocialId id = 2;
+		optional .EA.Sims4.Network.SocialFeedSubMessage.SubscriptionFlags flags = 4;
+	}
+
+	optional .EA.Sims4.Network.SocialId owner_id = 1;
+	repeated .EA.Sims4.Network.SocialFeedSubMessage.SubscriptionObject subscriptions = 2;
+}
+
+message SocialSearchMsg {
+	optional string prefix = 1;
+	repeated .EA.Sims4.Network.LocalizedStringToken search_results = 2;
+}
+
+message OriginErrorMessage {
+	optional uint32 errorcode = 1;
+	optional string errormessage = 2;
+}
+
+message SocialInviteResponseMessage {
+	required string invitationid = 1;
+	required uint32 invitationtype = 2;
+	required uint64 inviternucleusid = 3;
+	required uint64 accepternucleusid = 4;
+	required bool actionSuccess = 5;
+}
+
+message SocialCassandraTest {
+	optional .EA.Sims4.Network.CassandraTestCode opcode = 1 [default = CASSANDRA_CLOSE_SOCKET];
+}
+
+message SocialFriendListRequestMessage {
+	optional uint64 account_id = 1;
+	optional uint64 friend_id = 2;
+	optional string address_str = 3;
+	optional string object_str = 4;
+	optional uint64 reply_proxy_id = 5;
+}
+
+message SocialRequestNucleusIdFromPersona {
+	required uint64 requestid = 1;
+	required string personaName = 2;
+	optional uint32 message_id = 3;
+}
+
+message SocialNucleusIdFromPersonaResponse {
+	required uint64 requestid = 1;
+	required uint64 nucleusid = 2;
+	required uint32 message_id = 3;
+}
+
+message SocialExchangeMessage {
+	optional .EA.Sims4.Network.ExchangeSocialEnvelope envelope = 1;
+}
+
+message SocialFeedItemMessage {
+	optional bytes feed_id = 1;
+	optional .EA.Sims4.Network.SocialFeedItemType feed_type = 2 [default = SFI_ITEM_DOWNLOADED];
+	optional .EA.Sims4.Network.TrayMetadata metadata = 3;
+	optional uint64 nucleusid = 4;
+	optional string persona = 5;
+	optional uint64 quantity = 6;
+}
+
+message SocialFeedItemUnserializedMessage {
+	optional bytes feed_id = 1;
+	optional bytes data = 2;
+	optional uint64 count_override = 3;
+}
+
+message SocialWallCommentMessage {
+	optional bytes uuid = 1;
+	optional uint64 author_id = 2;
+	optional string author_persona = 3;
+	optional string message = 4;
+}
+
+message SocialGetWallCommentsMessage {
+	optional uint64 nucleusid = 1;
+	optional bytes gallery_id = 2;
+	optional bytes starting_uuid = 3;
+	optional uint32 num_results = 4;
+	repeated .EA.Sims4.Network.SocialWallCommentMessage messages = 5;
+	optional bool hidden = 6;
+}
+
+message SocialPostWallCommentMessage {
+	optional uint64 nucleusid = 1;
+	optional bytes gallery_id = 2;
+	optional .EA.Sims4.Network.SocialWallCommentMessage message = 3;
+}
+
+message SocialDeleteWallCommentMessage {
+	optional uint64 nucleusid = 1;
+	optional bytes gallery_id = 2;
+	optional bytes uuid = 3;
+}
+
+message SocialRequestFeedWallMessage {
+	optional bytes ending_uuid = 1;
+	repeated .EA.Sims4.Network.SocialFeedItemMessage messages = 2;
+	repeated .EA.Sims4.Network.SocialFeedItemUnserializedMessage unserialized_messages = 3;
+}
+
+message SocialCommentPetitionMessage {
+	optional uint64 nucleusid = 1;
+	optional bytes commentid = 2;
+	optional string commentKey = 3;
+}
+
+message SocialBioPetitionMessage {
+	optional uint64 nucleusid = 1;
+	optional uint64 bio_nucleusid = 2;
+}
+
+message SocialFeedRemovalMessage {
+	optional bytes feed_id = 1;
+}
+
+message SocialControlMessage {
+	required .EA.Sims4.Network.SocialOpTypes opcode = 1 [default = SOP_PUBLIC_MIN];
+	optional .EA.Sims4.Network.SocialOpTypes subop = 2 [default = SOP_PUBLIC_MIN];
+	optional uint64 transactionId = 3;
+	optional uint32 result = 100;
+	optional .EA.Sims4.Network.SocialGetWallCommentsMessage getwallcommentsmsg = 4;
+	optional .EA.Sims4.Network.SocialPostWallCommentMessage postwallcommentmsg = 5;
+	optional .EA.Sims4.Network.SocialDeleteWallCommentMessage deletewallcommentmsg = 6;
+	optional .EA.Sims4.Network.SocialFriendMsg friendmsg = 7;
+	optional .EA.Sims4.Network.SocialGenericResponse genericresponse = 8;
+	optional .EA.Sims4.Network.SocialPlayerInfoList playerinfo = 9;
+	optional .EA.Sims4.Network.SocialFeedSubMessage feedsubmsg = 10;
+	optional .EA.Sims4.Network.SocialSearchMsg searchresultmsg = 11;
+	optional .EA.Sims4.Network.SocialInviteResponseMessage inviteresponsemsg = 12;
+	optional .EA.Sims4.Network.OriginErrorMessage originerror = 13;
+	optional .EA.Sims4.Network.SocialCassandraTest socialcassandratest = 14;
+	optional .EA.Sims4.Network.SocialFriendListRequestMessage socialfriendlistrequestmsg = 15;
+	optional .EA.Sims4.Network.SocialRequestNucleusIdFromPersona socialrequestnucleusidfrompersona = 16;
+	optional .EA.Sims4.Network.SocialNucleusIdFromPersonaResponse socialnucleusidfrompersonaresponse = 17;
+	optional .EA.Sims4.Network.SocialExchangeMessage socialexchangemessage = 18;
+	optional .EA.Sims4.Network.SocialRequestFeedWallMessage socialrequestfeedwallmessage = 19;
+	optional .EA.Sims4.Network.ExchangeStatTickerMessage stat_tickers = 21;
+	optional .EA.Sims4.Network.SocialCommentPetitionMessage comment_petition_msg = 22;
+	optional .EA.Sims4.Network.SocialFeedRemovalMessage feedremovalmsg = 23;
+	optional .EA.Sims4.Network.SocialBioPetitionMessage bio_petition_msg = 24;
+}
+
+message SocialInvalidateMsg {
+	optional uint32 cache_index = 1;
+	optional bytes key = 2;
+}
+
+message SocialControlQueueBroadcastMessage {
+	optional .EA.Sims4.Network.SocialControlMessage control = 1;
+	repeated uint64 friendIds = 3 [packed = true];
+}
+
+message LifeEventMessage {
+	optional uint32 type = 1;
+	repeated fixed64 sim_ids = 2 [packed = true];
+}
+

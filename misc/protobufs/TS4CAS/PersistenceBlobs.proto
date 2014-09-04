@@ -1,0 +1,16 @@
+import "Consts.proto";
+import "S4Common.proto";
+
+package EA.Sims4.Persistence;
+
+message BlobSimFacialCustomizationData {
+	message Modifier {
+		optional uint64 key = 1;
+		optional float amount = 2;
+	}
+
+	repeated uint64 sculpts = 1 [packed = true];
+	repeated .EA.Sims4.Persistence.BlobSimFacialCustomizationData.Modifier face_modifiers = 2;
+	repeated .EA.Sims4.Persistence.BlobSimFacialCustomizationData.Modifier body_modifiers = 3;
+}
+

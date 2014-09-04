@@ -1,0 +1,741 @@
+import "ResourceKey.proto";
+import "Math.proto";
+import "Consts.proto";
+import "Localization.proto";
+import "GameplaySaveData.proto";
+
+package EA.Sims4.Network;
+
+message Operation {
+	enum Type {
+		OBJECT_DELETE = 1;
+		SET_TRANSFORM = 2;
+		SET_LOCATION = 3;
+		SET_MODEL = 4;
+		SET_RIG = 5;
+		SET_SIM_NAME = 6;
+		ROUTE_CANCEL = 7;
+		SET_FOOTPRINT = 8;
+		ROUTE_UPDATE = 9;
+		FOCUS = 10;
+		FOCUS_NON_BLOCKING = 11;
+		SET_SCALE = 12;
+		FX = 13;
+		SET_SLOT = 14;
+		SET_ACTOR_DATA = 15;
+		UI_UPDATE = 16;
+		SET_INTERACTABLE = 17;
+		SOUND_STOP = 18;
+		SET_SORT_ORDER = 19;
+		VFX_STOP = 20;
+		SET_SIM_ACTIVE = 21;
+		SET_SIM_OUTFIT = 22;
+		SET_TINT = 23;
+		SET_OPACITY = 24;
+		SET_GEOMETRY_STATE = 25;
+		SET_VISIBILITY = 26;
+		SET_MATERIAL_STATE = 27;
+		ARB_INITIAL_UPDATE = 28;
+		SET_AUDIO_EFFECTS = 29;
+		SET_VOICE_PITCH = 30;
+		SET_SKIN_TONE = 31;
+		LOOT = 32;
+		SET_SIM_GAMEPLAY_FILTER_FX = 33;
+		ARB = 34;
+		FOLLOW_ROUTE = 35;
+		SOUND_START = 36;
+		VFX_START = 37;
+		ENABLE_PENDING_HEADLINE = 38;
+		DISABLE_PENDING_HEADLINE = 39;
+		SOCIAL_GROUP_UPDATE = 40;
+		OBJECT_CREATE = 41;
+		SOCIAL_GROUP_CREATE = 42;
+		SIM_INFO_CREATE = 43;
+		SOCIAL_GROUP_DELETE = 44;
+		SIM_INFO_DELETE = 45;
+		LOOT_PLUMBBOB = 46;
+		LOOT_PIP = 47;
+		SET_VOICE_ACTOR = 48;
+		SET_PHYSIQUE = 49;
+		CLIENT_CREATE = 50;
+		CLIENT_DELETE = 51;
+		SET_THUMBNAIL = 52;
+		ADD_BALLOON = 53;
+		RESLOT_PLUMBBOB = 54;
+		SET_FACIAL_ATTRIBUTES = 55;
+		SET_ACTIVE_RESOURCES = 56;
+		SET_UI_OBJECT_METADATA = 57;
+		SET_PARENT_TYPE = 58;
+		SIM_COMMODITY_UPDATE = 59;
+		SITUATION_START = 60;
+		SITUATION_END = 61;
+		SITUATION_SIM_JOB_CHANGED = 62;
+		SITUATION_SCORE_UPDATED = 63;
+		VIDEO_SET_PLAYLIST = 64;
+		SET_LIGHT_DIMMER = 65;
+		SET_CENSOR_STATE = 66;
+		FADE_OPACITY = 67;
+		PARTY_CREATE = 68;
+		PARTY_UPDATE = 69;
+		PARTY_DELETE = 70;
+		SET_MONEY = 71;
+		SET_PAINTING = 72;
+		HOUSEHOLD_CREATE = 73;
+		HOUSEHOLD_DELETE = 74;
+		SET_OBJECT_DEF_STATE_INDEX = 75;
+		SET_VALUE = 76;
+		SET_SIM_AGE = 77;
+		SET_SIM_AGE_PROGRESS = 78;
+		SET_SIM_GENDER = 79;
+		OBJECT_RESET = 80;
+		PARTY_KICKOUT = 81;
+		PARTY_TURN_UPDATE = 82;
+		SET_SIM_CURRENT_SKILL_ID = 83;
+		CHANGE_SIM_OUTFIT = 84;
+		SET_SIM_DEATH_TYPE = 85;
+		SET_GAME_TIME = 86;
+		SET_CAREER = 87;
+		SET_TRAITS = 88;
+		SET_SIM_SLEEP = 89;
+		SET_ACCOUNT_ID = 90;
+		SET_IS_NPC = 91;
+		SITUATION_GOALS_UPDATE = 92;
+		SITUATION_LEVEL_UPDATE = 93;
+		SITUATION_SIM_JOINED = 94;
+		SITUATION_SIM_LEFT = 95;
+		INTERACTION_PROGRESS_UPDATE = 96;
+		SET_SIM_GENETIC_DATA = 97;
+		SET_PRIMARY_ASPIRATION = 98;
+		SET_CURRENT_WHIMS = 99;
+		SET_WHIM_COMPLETE = 100;
+		SET_WHIM_BUCKS = 101;
+		SET_PREGNANCY_PROGRESS = 102;
+		TRAVEL_BRING_TO_ZONE = 103;
+		TRAVEL_SWITCH_TO_ZONE = 104;
+		UPDATE_FOOTPRINT_STATUS = 105;
+		COLLECTION_HOUSEHOLD_UPDATE = 106;
+		SET_FIRST_NAME = 107;
+		SET_LAST_NAME = 108;
+		SET_PERSONA = 109;
+		SET_RELATED_OBJECTS = 110;
+		PRELOAD_SIM_OUTFIT = 111;
+		SIM_SKILL_PROGRESS = 112;
+		SIM_UPDATE = 113;
+		SIM_INTERACTION_QUEUE_VIEW_ADD = 114;
+		SIM_INTERACTIONS_ADD = 115;
+		SIM_INTERACTIONS_UPDATE = 116;
+		SIM_INTERACTIONS_REMOVE = 117;
+		SIM_INTERACTIONS_REMOVE_ALL = 118;
+		SIM_SERVER_RESPONSE_FAILED = 119;
+		SELECTABLE_SIMS_UPDATE = 120;
+		SIM_RELATIONSHIP_UPDATE = 121;
+		SIM_REL_HANDSHAKE_UPDATE = 122;
+		SIM_SIMOLEANS_UPDATE = 123;
+		SIM_INTERACTION_MOVE = 124;
+		SIM_INTERACTION_REPLACE = 125;
+		SIM_INTERACTION_QUICK_TIME_MIXER_UPDATE = 126;
+		SIM_INTERACTION_START = 127;
+		SIM_INTERACTION_END = 128;
+		SIM_INTERACTION_LIABILITY_UPDATE = 129;
+		SIM_CRAFTING_LIABILITY_UPDATE = 130;
+		PIE_MENU_CATEGORIES_STATIC_DATA_LIST = 131;
+		SIM_SKILL_UPDATE = 132;
+		SIM_BUFF_UPDATE = 133;
+		UI_DIALOG_SHOW = 134;
+		SIM_INTERACTION_TURN_START = 135;
+		SIM_MOOD_UPDATE = 136;
+		SIM_ASPIRATION_TRACKER_UPDATE = 137;
+		SIM_GOALS_STATUS_UPDATE = 138;
+		INVENTORY_UPDATE = 139;
+		SIM_INVENTORY_ITEM_UPDATE = 140;
+		SHOW_OBJECT_INVENTORY = 141;
+		PHONE_MENU_CREATE = 142;
+		UI_PHONE_RING = 143;
+		OBJECT_AUDIO_PLAYLIST_SKIP_TO_NEXT = 144;
+		ACCT_ACHIEVEMENT_TRACKER_UPDATE = 145;
+		ACCT_GOALS_STATUS_UPDATE = 146;
+		SIM_GENDER_PREFERENCE_UPDATE = 147;
+		TUTORIAL_TRIGGER = 148;
+		TUTORIAL_VIEWED_LIST = 149;
+		SIM_MEMORY_TRIGGER_UPDATE = 150;
+		SELECT_CAREER_UI = 151;
+		CAREER_SITUATION_ENABLE = 152;
+		SIM_COLLECTIBLE_ITEM_UPDATE = 153;
+		OBJECT_IS_INTERACTABLE = 154;
+		PIE_MENU_CREATE = 155;
+		INVENTORY_COUNT_UPDATE = 156;
+		TRAVEL_MENU_INFO = 157;
+		TRAVEL_MENU_SHOW = 158;
+		SIM_COMMODITY_PROGRESS_UPDATE = 159;
+		SOCIAL_CONTEXT_UPDATE = 160;
+		SET_AT_WORK_INFO = 161;
+		SIM_SATISFACTION_REWARDS = 162;
+		SET_FULL_NAME_KEY = 163;
+		SIM_TRANSFER_REQUEST = 164;
+		SET_WALLS_UP_OR_DOWN = 165;
+		UI_NOTIFICATION_SHOW = 166;
+		SET_CAN_LIVE_DRAG = 167;
+		LIVE_DRAG_START = 168;
+		LIVE_DRAG_END = 169;
+		LIVE_DRAG_CANCEL = 170;
+		SET_SINGED = 171;
+		INVENTORY_ITEM_UPDATE = 172;
+		SET_PHONE_SILENCE = 173;
+		LIFE_EVENT_SEND = 174;
+		OPEN_INVENTORY = 175;
+		SET_BABY_SKIN_TONE = 176;
+		MSG_SIM_PERSONALITY_ASSIGNMENT = 177;
+		SET_AWAY_ACTION = 178;
+		SET_LIGHT_COLOR = 179;
+		UI_LIGHT_COLOR_SHOW = 180;
+		SET_VOICE_EFFECT = 181;
+		SIM_RELATIONSHIP_DELETE = 182;
+		SET_OBJECT_DEFINITION_ID = 183;
+		SIM_RELATIVE_LOT_LOCATION = 184;
+		TUTORIAL_TIP_SATISFY = 185;
+		FOCUS_CAMERA = 186;
+		SET_SIM_AGE_PROGRESS_TOOLTIP_DATA = 187;
+		TRAVEL_VIEW_HOUSEHOLDS_INFO = 188;
+	}
+
+	required .EA.Sims4.Network.Operation.Type type = 1 [default = OBJECT_DELETE];
+	optional bytes data = 2;
+	optional .EA.Sims4.Network.MessageTypes data_context = 3 [default = MSG_INVALID];
+	optional fixed32 primary_channel_mask_override = 4;
+	repeated .EA.Sims4.Network.OperationChannel additional_channels = 5;
+}
+
+message OperationList {
+	repeated .EA.Sims4.Network.Operation operations = 1;
+}
+
+message ObjectCreate {
+	repeated uint32 components = 1 [packed = true];
+	required .EA.Sims4.Network.OperationList operation_list = 2;
+	required uint64 def_id = 3;
+	optional bool visible_to_automation = 4 [default = true];
+}
+
+message ObjectReset {
+	required uint64 object_id = 1;
+}
+
+message SocialGroupCreate {
+	required .EA.Sims4.Network.OperationList operation_list = 1;
+}
+
+message SocialGroupUpdate {
+	message SocialGroupMember {
+		required fixed64 sim_id = 1;
+		optional fixed64 social_context_bit_id = 2;
+	}
+
+	repeated .EA.Sims4.Network.SocialGroupUpdate.SocialGroupMember members = 1;
+}
+
+message PartyMember {
+	required uint64 sim_id = 1;
+	repeated uint64 brb_sim_ids = 2 [packed = true];
+}
+
+message PartyCreate {
+	required .EA.Sims4.Network.OperationList operation_list = 1;
+}
+
+message PartyUpdate {
+	repeated .EA.Sims4.Network.PartyMember party_members = 1;
+}
+
+message PartyTurnUpdate {
+	repeated uint64 active_sim_ids = 1 [packed = true];
+}
+
+message PartyKickout {
+	required uint64 initiator_sim_id = 1;
+	required uint64 receiver_sim_id = 2;
+}
+
+message SimInfoCreate {
+	required .EA.Sims4.Network.OperationList operation_list = 1;
+}
+
+message ClientCreate {
+	required .EA.Sims4.Network.OperationList operation_list = 1;
+	required uint64 account_id = 2;
+	required uint64 household_id = 3;
+	required bool is_active = 4;
+}
+
+message SetLocation {
+	optional .EA.Sims4.Network.Transform transform = 1;
+	optional int32 level = 2;
+	optional uint64 parent_id = 3;
+	optional uint32 joint_name_hash = 4;
+	optional uint32 slot_hash = 5;
+}
+
+message SetModel {
+	required .EA.Sims4.Network.ResourceKey key = 1;
+	optional uint32 variant_id = 2;
+}
+
+message SetRig {
+	required .EA.Sims4.Network.ResourceKey key = 1;
+}
+
+message SetVoicePitch {
+	required float voice_pitch = 1;
+}
+
+message SetSkinTone {
+	required uint64 skin_tone = 1;
+}
+
+message SetVoiceActor {
+	required uint32 voice_actor = 1;
+}
+
+message SetVoiceEffect {
+	required uint64 voice_effect = 1;
+}
+
+message SetPhysique {
+	required string physique = 1;
+}
+
+message SetSimName {
+	required string first = 1;
+	required string last = 2;
+	required string persona = 3;
+}
+
+message SetFirstName {
+	required string first_name = 1;
+}
+
+message SetLastName {
+	required string last_name = 1;
+}
+
+message SetFullNameKey {
+	required uint32 full_name_key = 1;
+}
+
+message SetPersona {
+	required string persona = 1;
+}
+
+message RouteCancel {
+	required uint64 id = 1;
+	optional .EA.Sims4.Network.Transform location = 2;
+	optional float time = 3;
+}
+
+message SetFootprint {
+	required .EA.Sims4.Network.ResourceKey key = 1;
+}
+
+message UpdateFootprintStatus {
+	required .EA.Sims4.Network.ResourceKey key = 1;
+	required bool enabled = 2;
+}
+
+message SetSlot {
+	required .EA.Sims4.Network.ResourceKey key = 1;
+}
+
+message SetScale {
+	required float scale = 1;
+}
+
+message SetTint {
+	required .EA.Sims4.Network.Vector3 tint = 1;
+}
+
+message SetOpacity {
+	required float opacity = 1;
+}
+
+message SetPregnancyProgress {
+	required float pregnancy_progress = 1;
+}
+
+message SetSinged {
+	required bool is_singed = 1;
+}
+
+message SetGeometryState {
+	required uint32 state_name_hash = 1;
+}
+
+message SetVisibility {
+	required bool visibility = 1;
+	optional bool inherits = 2;
+	optional bool enable_drop_shadow = 3;
+}
+
+message SetMaterialState {
+	required uint32 state_name_hash = 1;
+	optional float opacity = 2;
+	optional float transition = 3;
+}
+
+message SetSortOrder {
+	required uint32 sort_order = 1;
+}
+
+message SetInteractable {
+	required bool interactable = 1;
+}
+
+message SetParentType {
+	required uint32 parent_type = 1;
+	required uint64 parent_location = 2;
+}
+
+message SetAudioEffects {
+	message AudioEffect {
+		required uint64 key = 1;
+		required uint64 effect_id = 2;
+	}
+
+	repeated .EA.Sims4.Network.SetAudioEffects.AudioEffect audio_effects = 1;
+}
+
+message FxEvent {
+	message TextureOverride {
+		required int32 index = 1;
+		required .EA.Sims4.Network.ResourceKey key = 2;
+	}
+
+	enum EventType {
+		EFFECT_START = 0;
+		EFFECT_STOP = 1;
+	}
+
+	required .EA.Sims4.Network.FxEvent.EventType event_type = 1 [default = EFFECT_START];
+	optional string effect_name = 2;
+	optional string bone_name = 3;
+	optional .EA.Sims4.Network.Vector3 offset = 4;
+	optional .EA.Sims4.Network.FxEvent.TextureOverride texture_override = 5;
+}
+
+message SetActorData {
+	required uint32 type = 1;
+	repeated uint32 data = 2 [packed = true];
+}
+
+message SetSimActive {
+	required bool sim_active = 1;
+}
+
+message OutfitMessage {
+	required uint64 outfit_id = 1;
+	required uint64 sim_id = 2;
+	required uint32 version = 3;
+	repeated uint64 part_ids = 4 [packed = true];
+	required uint32 type = 5;
+	repeated uint32 body_types = 6 [packed = true];
+	optional bool match_hair_style = 7 [default = false];
+}
+
+message SetSimOutfits {
+	repeated .EA.Sims4.Network.OutfitMessage outfits = 1;
+}
+
+message PartData {
+	required uint64 id = 1;
+	required uint32 body_type = 2;
+}
+
+message PartDataListMessage {
+	repeated .EA.Sims4.Network.PartData parts = 1;
+}
+
+message SetGeneticData {
+	optional bytes sculpts_and_mods_attr = 1;
+	optional string physique = 2;
+	optional float voice_pitch = 3;
+	optional uint32 voice_actor = 4;
+	optional .EA.Sims4.Network.PartDataListMessage parts_list = 5;
+}
+
+message SetThumbnail {
+	required .EA.Sims4.Network.ResourceKey key = 1;
+}
+
+message VideoSetPlaylist {
+	required uint32 version_id = 1;
+	repeated .EA.Sims4.Network.ResourceKey clip_keys = 2;
+	required bool final_loop = 3;
+}
+
+message SetLightDimmer {
+	required float dimmer = 1;
+}
+
+message SetLightColor {
+	optional .EA.Sims4.Network.Vector3 color = 1;
+}
+
+message SetCensorState {
+	required uint32 censor_state = 1;
+}
+
+message FadeOpacity {
+	required float duration = 1;
+	required float target_value = 2;
+}
+
+message SetObjectDefStateIndex {
+	required uint32 object_def_state_index = 1;
+}
+
+message SetMoney {
+	required uint32 money = 1;
+	optional bool show_vfx = 2;
+	optional uint64 sim_id = 3;
+	optional uint32 reason = 4;
+	optional int32 vfx_amount = 5;
+}
+
+message InitializeCollection {
+	repeated .EA.Sims4.Persistence.CollectionData household_collections = 1;
+}
+
+message SetPainting {
+	required uint64 painting = 1;
+	required uint32 reveal_level = 2;
+	optional bool use_overlay = 3 [default = false];
+}
+
+message HouseholdCreate {
+	optional .EA.Sims4.Network.OperationList operation_list = 1;
+	optional uint32 money = 2;
+}
+
+message SetValue {
+	required uint32 value = 1;
+}
+
+message SetSimAge {
+	required uint32 age = 1;
+}
+
+message SetSimAgeProgress {
+	required uint32 progress = 1;
+}
+
+message SetGender {
+	required uint32 gender = 1;
+}
+
+message SetDeathType {
+	optional uint32 death_type = 1 [default = 0];
+}
+
+message SetCurrentSkillId {
+	required uint64 current_skill_id = 1;
+}
+
+message ChangeSimOutfit {
+	required uint32 type = 1;
+	required uint32 index = 2;
+}
+
+message SetCareer {
+	required uint64 career_uid = 1;
+	required uint32 career_level = 2;
+	optional int32 performance = 3;
+	optional .EA.Sims4.Network.LocalizedString company = 4;
+	optional bool auto_work = 5;
+	optional uint64 career_track = 6;
+	optional uint32 user_career_level = 7;
+	optional bool performance_complete = 8;
+	optional .EA.Sims4.Network.LocalizedString performance_tooltip = 9;
+	optional bool skip_next_shift = 10;
+	optional bool is_retired = 11;
+}
+
+message SetCareers {
+	repeated .EA.Sims4.Network.SetCareer careers = 1;
+}
+
+message SetAtWorkInfo {
+	enum AtWorkState {
+		WORKDAY_OVER = 0;
+		WORKDAY_AVAILABLE = 1;
+		WORKDAY_ATTENDING = 2;
+		WORKDAY_LATE = 3;
+	}
+
+	required uint64 career_uid = 1;
+	optional bool attended_work = 2;
+	optional bool left_work = 3;
+	optional .EA.Sims4.Network.SetAtWorkInfo.AtWorkState work_state = 4 [default = WORKDAY_OVER];
+}
+
+message SetAtWorkInfos {
+	repeated .EA.Sims4.Network.SetAtWorkInfo at_work_infos = 1;
+}
+
+message SetSimSleep {
+	required bool sleep = 1;
+}
+
+message TravelSwitchToZone {
+	optional uint64 sim_to_visit_id = 1;
+	optional uint64 household_to_control_id = 2;
+	optional uint64 zone_id = 3;
+	optional uint32 world_id = 4;
+}
+
+message TravelBringToZone {
+	optional uint64 sim_to_bring_id = 1;
+	optional uint64 household_id = 2;
+	optional uint64 zone_id = 3;
+	optional uint32 world_id = 4;
+}
+
+message SetPrimaryAspiration {
+	optional uint64 aspiration_id = 1;
+}
+
+message SetSimGameplayFilterFx {
+	optional uint32 sim_filter_fx = 1;
+}
+
+message WhimGoal {
+	optional uint64 whim_guid64 = 1;
+	optional .EA.Sims4.Network.LocalizedString whim_name = 2;
+	optional uint32 whim_score = 3;
+	optional bool whim_noncancel = 4;
+	optional .EA.Sims4.Network.ResourceKey whim_icon_key = 5;
+	optional uint32 whim_goal_count = 6;
+	optional uint32 whim_current_count = 7;
+	optional fixed64 whim_target_sim = 8 [default = 0];
+	optional .EA.Sims4.Network.LocalizedString whim_tooltip = 9;
+	optional bool whim_emotional = 10 [default = false];
+	optional uint64 whim_mood_guid64 = 11 [default = 0];
+	optional .EA.Sims4.Network.LocalizedString whim_tooltip_reason = 12;
+}
+
+message SetCurrentWhims {
+	repeated .EA.Sims4.Network.WhimGoal whim_goals = 1;
+}
+
+message SetWhimComplete {
+	optional uint64 whim_guid64 = 1;
+}
+
+message SetWhimBucks {
+	enum WhimBuckReason {
+		LOAD = 0;
+		ASPIRATION = 1;
+		WHIM = 2;
+		COMMAND = 3;
+		PURCHASED_REWARD = 4;
+	}
+
+	optional uint64 whim_bucks = 1;
+	optional .EA.Sims4.Network.SetWhimBucks.WhimBuckReason reason = 2 [default = LOAD];
+}
+
+message SetTraits {
+	repeated uint64 trait_ids = 1 [packed = true];
+}
+
+message ChangeSimAge {
+	required uint32 age = 1;
+}
+
+message SetAccountId {
+	required fixed64 account_id = 1;
+}
+
+message SetIsNpc {
+	required bool is_npc = 1;
+}
+
+message SetRelatedObjects {
+	repeated fixed64 related_object_ids = 1 [packed = true];
+	optional fixed64 target_sim_id = 2;
+}
+
+message PreloadSimOutfit {
+	repeated .EA.Sims4.Network.OutfitTypeAndIndex outfits = 1;
+}
+
+message OutfitTypeAndIndex {
+	required uint32 type = 1;
+	required uint32 index = 2;
+}
+
+message SetWallsUpOrDown {
+	required bool walls_up = 1;
+}
+
+message SetCanLiveDrag {
+	optional bool can_live_drag = 1;
+}
+
+message LiveDragStart {
+	optional fixed64 live_drag_object_id = 1;
+	optional uint32 drag_start_system = 2;
+	repeated fixed64 drop_object_ids = 3 [packed = true];
+	optional uint64 stack_id = 4;
+	optional int32 sell_value = 5;
+}
+
+message LiveDragEnd {
+	optional fixed64 live_drag_object_id = 1;
+	optional uint32 drag_start_system = 2;
+	optional uint32 drag_end_system = 3;
+	optional fixed64 next_drag_object_id = 4;
+}
+
+message LiveDragCancel {
+	optional fixed64 live_drag_object_id = 1;
+	optional uint32 drag_start_system = 2;
+	optional uint32 drag_end_system = 3;
+}
+
+message SetPhoneSilence {
+	required bool silence = 1;
+}
+
+message SetBabySkinTone {
+	enum BabySkinTone {
+		LIGHT = 0;
+		MEDIUM = 1;
+		DARK = 2;
+		BLUE = 3;
+		GREEN = 4;
+		ADULT_SIM = 5;
+	}
+
+	optional .EA.Sims4.Network.SetBabySkinTone.BabySkinTone baby_skin_tone = 1 [default = LIGHT];
+}
+
+message SetAwayAction {
+	optional .EA.Sims4.Network.ResourceKey icon = 1;
+	optional .EA.Sims4.Network.LocalizedString tooltip = 2;
+}
+
+message SetObjectDefinitionId {
+	required uint64 def_id = 3;
+}
+
+message FocusCamera {
+	optional uint64 id = 1;
+	optional .EA.Sims4.Network.Vector3 location = 2;
+	optional bool follow_mode = 3;
+	optional .EA.Sims4.Network.Vector3 position = 4;
+}
+
+message SetSimAgeProgressTooltipData {
+	optional uint32 current_day = 1;
+	optional uint32 ready_to_age_day = 2;
+	optional uint32 days_alive = 3;
+}
+

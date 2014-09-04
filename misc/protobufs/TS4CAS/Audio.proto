@@ -1,0 +1,18 @@
+package EA.Sims4.Network;
+
+message SoundStart {
+	optional uint64 object_id = 1;
+	optional uint32 channel = 2;
+	required uint64 sound_id = 3;
+}
+
+message SoundStop {
+	required uint64 object_id = 1;
+	required uint32 channel = 2;
+}
+
+message SoundSkipToNext {
+	required uint64 object_id = 1;
+	required uint32 channel = 2;
+}
+

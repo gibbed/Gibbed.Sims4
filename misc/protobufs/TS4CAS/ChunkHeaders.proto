@@ -1,0 +1,23 @@
+package EA.Sims4.Network;
+
+message BlueprintThumbnailChunkPackageHeader {
+	optional uint64 blueprintID = 1;
+	optional uint32 index = 2;
+}
+
+message LotThumbnailChunkPackageHeader {
+	optional uint64 blueprintID = 1;
+	optional uint32 index = 2;
+}
+
+message MemoriesThumbnailChunkPackageHeader {
+	optional uint64 memoryId = 1;
+	repeated uint64 simIds = 2 [packed = true];
+	optional uint64 householdId = 3;
+	optional bool favorite = 4;
+}
+
+message NeighborhoodThumbnailChunkPackageHeader {
+	optional uint64 blueprintID = 1;
+}
+

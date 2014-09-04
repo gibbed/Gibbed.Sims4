@@ -1,0 +1,489 @@
+import "Loot.proto";
+import "ResourceKey.proto";
+import "Localization.proto";
+import "Math.proto";
+import "S4Common.proto";
+import "UI.proto";
+import "Consts.proto";
+import "FileSerialization.proto";
+
+package EA.Sims4.Network;
+
+enum MixerStateTypes {
+	MIXER_STATE_AVAILABLE = 0;
+	MIXER_STATE_PENDING = 1;
+	MIXER_STATE_ACTIVE = 2;
+	MIXER_STATE_COOLDOWN = 3;
+	MIXER_STATE_DISABLED = 4;
+	MIXER_STATE_PENDING_FAIL = 5;
+}
+
+enum LoopingStates {
+	NOT_APPLICABLE = 0;
+	ENABLED = 1;
+	DISABLED = 2;
+	DISABLED_LOCKED = 3;
+}
+
+enum Polarity {
+	NEUTRAL = 0;
+	NEGATIVE = 1;
+	POSITIVE = 2;
+}
+
+enum IQ_PipelineStage {
+	NONE = 0;
+	QUEUED = 1;
+	PRE_TRANSITIONING = 2;
+	PREPARED = 3;
+	PROCESSING = 4;
+	STAGED = 5;
+	EXITED = 6;
+}
+
+enum IQ_UI_State {
+	IQ_QUEUED = 0;
+	IQ_TRANSITIONING = 1;
+	IQ_RUNNING = 2;
+}
+
+enum BuffProgressArrow {
+	BUFF_PROGRESS_NONE = 0;
+	BUFF_PROGRESS_UP = 1;
+	BUFF_PROGRESS_DOWN = 2;
+}
+
+message UpdateClientSim {
+	enum PB_Color {
+		GREEN = 1;
+		BLUE = 2;
+	}
+
+	required uint64 id = 1;
+	required bool active = 2;
+	required bool plumbbob_visible = 3;
+	optional .EA.Sims4.Network.UpdateClientSim.PB_Color plumbbob_color = 4 [default = GREEN];
+}
+
+message AspirationTrackerUpdate {
+	optional uint64 sim_id = 1;
+	repeated uint32 aspirations_completed = 2 [packed = true];
+	repeated uint32 objectives_completed = 3 [packed = true];
+	optional bool init_message = 4;
+}
+
+message GoalsStatusUpdate {
+	optional uint64 sim_id = 1;
+	repeated uint64 goals_updated = 2 [packed = true];
+	repeated int64 goal_values = 3 [packed = true];
+	repeated int64 goal_objectives = 4 [packed = true];
+	repeated bool goals_that_are_money = 5 [packed = true];
+}
+
+message SelectedAspirationUpdate {
+	optional uint64 sim_id = 1;
+	optional uint64 aspiration_selected = 2;
+}
+
+message SatisfactionReward {
+	enum REWARD_TYPE {
+		MONEY = 0;
+		BUFF = 1;
+		OBJECT = 2;
+		TRAIT = 3;
+		CASPART = 4;
+	}
+
+	required uint64 reward_id = 1;
+	optional uint32 cost = 2;
+	optional bool affordable = 3;
+	optional bool available = 4;
+	optional .EA.Sims4.Network.SatisfactionReward.REWARD_TYPE type = 5 [default = MONEY];
+}
+
+message SatisfactionRewards {
+	required uint64 sim_id = 1;
+	repeated .EA.Sims4.Network.SatisfactionReward rewards = 2;
+}
+
+message AccountFamilyData {
+	required uint64 accountid = 1;
+	optional uint64 familyid = 2;
+	optional string familyname = 3;
+	optional uint64 money = 4;
+	optional bool dirty = 5;
+	repeated .EA.Sims4.Persistence.SimData sim = 6;
+	optional uint32 responsecode = 7;
+	optional uint64 familyzoneid = 8;
+	optional bool is_npc = 9;
+	optional bool is_new = 10;
+	optional string description = 11;
+	optional string hashtag_description = 19;
+	optional .EA.Sims4.Persistence.ObjectList inventory = 12;
+	optional uint64 last_modified_time = 13;
+	optional uint64 original_creator_id = 14;
+	optional string original_creator_string = 15;
+	optional bytes original_creator_uuid = 16;
+	optional uint64 modifier_id = 17;
+	optional string modifier_string = 18;
+	optional bool hidden = 20;
+}
+
+message FamilyData {
+	required .EA.Sims4.Network.AccountFamilyData family_account = 1;
+	optional uint64 lastplayed_idx = 2;
+	optional uint64 lastplayed_simid = 3;
+	optional float lastplayed_simtime = 4;
+	optional uint64 homezone_id = 5;
+}
+
+message SimLoadInfoVector {
+	repeated .EA.Sims4.Persistence.SimData SimLoadInfoResponse = 1;
+}
+
+message UpdateClientActiveSim {
+	required uint64 active_sim_id = 1;
+}
+
+message ServerResponseFailed {
+	enum Reason {
+		REJECT_CLIENT_SELECT_MIXERINTERACTION = 1;
+		REJECT_CLIENT_CANCEL_SUPERINTERACTION = 2;
+		REJECT_CLIENT_SELECT_MIXER_INVALID = 3;
+	}
+
+	required uint32 handle = 1;
+	optional uint32 reason = 2;
+}
+
+message SimPB {
+	enum SelectorVisualType {
+		NORMAL = 0;
+		OTHER = 1;
+		BABY = 2;
+		AT_WORK = 3;
+		LATE_FOR_WORK = 4;
+	}
+
+	required uint64 id = 1;
+	optional .EA.Sims4.GameInstanceInfoPB instance_info = 2;
+	optional string firstname = 3;
+	optional string lastname = 4;
+	optional bool at_work = 5;
+	optional bool is_selectable = 6;
+	optional .EA.Sims4.Network.SimPB.SelectorVisualType selector_visual_type = 7 [default = NORMAL];
+	optional uint32 career_category = 8;
+}
+
+message UpdateSelectableSims {
+	repeated .EA.Sims4.Network.SimPB sims = 1;
+}
+
+message Interaction {
+	enum VisualType {
+		SIMPLE = 0;
+		PARENT = 1;
+		MIXER = 2;
+		POSTURE = 3;
+	}
+
+	required uint64 interaction_id = 1;
+	required uint64 insert_after_id = 2;
+	optional .EA.Sims4.Network.IconInfo icon_info = 3;
+	required bool canceled = 4;
+	required bool cancelable = 5;
+	optional bool is_pending = 7;
+	optional uint32 priority = 8;
+	optional bool is_guaranteed = 9;
+	optional bool visible = 12;
+	optional uint64 super_id = 13;
+	optional .EA.Sims4.Network.Interaction.VisualType visual_type = 14 [default = SIMPLE];
+	optional fixed64 initiating_id = 15;
+	repeated fixed64 interactions_to_be_canceled = 16 [packed = true];
+	optional uint64 skill_id = 23;
+	optional bool is_primary = 26;
+	optional .EA.Sims4.Network.IQ_PipelineStage pipeline_progress = 29 [default = NONE];
+	optional .EA.Sims4.Network.IQ_UI_State queue_ui_state = 30 [default = IQ_QUEUED];
+	optional .EA.Sims4.Network.ManagerObjectId target_manager_object_id = 32;
+	repeated .EA.Sims4.Network.ManagerObjectId participant_manager_object_ids = 33;
+	optional fixed64 stc_bit_id = 34;
+	optional .EA.Sims4.Network.IconInfo super_icon_info = 35;
+	repeated fixed64 mood_list = 36 [packed = true];
+}
+
+message InteractionsAdd {
+	required uint64 sim_id = 1;
+	repeated .EA.Sims4.Network.Interaction interactions = 2;
+}
+
+message InteractionsUpdate {
+	required uint64 sim_id = 1;
+	repeated .EA.Sims4.Network.Interaction interactions = 2;
+}
+
+message InteractionMixerOptionAdd {
+	required uint32 mixer_id = 1;
+	required .EA.Sims4.Network.IconInfo icon_info = 2;
+	required .EA.Sims4.Network.MixerStateTypes state = 3 [default = MIXER_STATE_AVAILABLE];
+	optional uint64 interaction_id = 4;
+	optional uint64 autonomy_pick = 5;
+	optional uint64 skill_id = 6;
+	optional uint64 mixer_target = 12;
+	optional bool target_is_social_group = 13;
+	optional uint32 insert_after_id = 14;
+	optional float success_chance = 16;
+	optional uint64 affordance_id = 18;
+	optional .EA.Sims4.Network.LocalizedString display_name_multi_target = 19;
+	optional bool target_is_group = 20;
+}
+
+message InteractionMixerOptionsAdd {
+	required uint64 interaction_id = 1;
+	required uint32 server_reference_id = 2;
+	repeated .EA.Sims4.Network.InteractionMixerOptionAdd mixer_option = 3;
+}
+
+message InteractionMixerOptionsUpdate {
+	required uint64 interaction_id = 1;
+	repeated .EA.Sims4.Network.InteractionMixerOptionUpdate mixer_option = 2;
+}
+
+message InteractionMixerOptionUpdate {
+	required uint32 mixer_id = 1;
+	required .EA.Sims4.Network.MixerStateTypes state = 2 [default = MIXER_STATE_AVAILABLE];
+	optional uint64 interaction_id = 3;
+	optional uint64 mixer_target = 6;
+	optional bool target_is_social_group = 7;
+	optional float success_chance = 8;
+}
+
+message InteractionMixerOptionCommands {
+	required uint64 sim_id = 1;
+	required uint64 interaction_id = 2;
+	required uint32 server_reference_id = 3;
+	repeated .EA.Sims4.Network.InteractionMixerOptionAdd mixer_adds = 4;
+	repeated .EA.Sims4.Network.InteractionMixerOptionUpdate mixer_updates = 6;
+}
+
+message InteractionMixerOptionsClear {
+	required uint64 sim_id = 1;
+	required uint64 interaction_id = 2;
+	required uint32 server_reference_id = 3;
+}
+
+message InteractionMixerLock {
+	required fixed64 sim_id = 1;
+}
+
+message InteractionQuickTimeMixerUpdate {
+	required fixed64 sim_id = 1;
+	required uint64 mixer_id = 2;
+	optional uint64 object_id = 3;
+	optional uint32 server_reference_id = 4;
+	optional .EA.Sims4.Network.LocalizedString display_name = 5;
+}
+
+message InteractionQueueViewAdd {
+	required .EA.Sims4.Network.InteractionsAdd interactions = 1;
+	repeated .EA.Sims4.Network.InteractionMixerOptionsAdd mixer_options = 2;
+}
+
+message InteractionsRemove {
+	required uint64 sim_id = 1;
+	repeated uint64 interaction_ids = 2 [packed = true];
+}
+
+message InteractionsRemoveAll {
+	required uint64 sim_id = 1;
+}
+
+message InteractionReplace {
+	required uint64 sim_id = 1;
+	required uint64 old_interaction_id = 2;
+	required .EA.Sims4.Network.Interaction new_interaction = 3;
+}
+
+message InteractionOutcome {
+	enum Result {
+		NEUTRAL = 0;
+		NEGATIVE = 1;
+		POSITIVE = 2;
+	}
+
+	required uint64 sim_id = 1;
+	required .EA.Sims4.Network.InteractionOutcome.Result result = 2 [default = NEUTRAL];
+	optional .EA.Sims4.Network.LocalizedString display_message = 3;
+}
+
+message InteractionStart {
+	required uint64 sim_id = 1;
+}
+
+message InteractionEnd {
+	required uint64 sim_id = 1;
+}
+
+message InteractionTurnStart {
+	repeated uint64 sim_ids = 1 [packed = true];
+	required uint64 social_group = 2;
+}
+
+message InteractionLiabilityUpdate {
+	enum LiabilityType {
+		CRAFTING_QUALITY = 1;
+	}
+
+	required .EA.Sims4.Network.InteractionLiabilityUpdate.LiabilityType type = 1 [default = CRAFTING_QUALITY];
+	required uint64 sim_id = 2;
+	required bool liabilty_release = 3 [default = false];
+	optional uint64 skill_id = 4;
+	optional uint32 skill_points = 5;
+	optional .EA.Sims4.Network.LocalizedString crafting_item_name = 6;
+	optional int32 crafting_quality = 7;
+}
+
+message CraftingLiabilityUpdate {
+	required .EA.Sims4.Network.InteractionLiabilityUpdate core_data = 1;
+	optional .EA.Sims4.Network.LocalizedString crafting_item_name = 2;
+	optional uint32 crafting_quality = 3;
+	optional .EA.Sims4.Network.LocalizedString phase_name = 4;
+	optional uint32 phase_index = 5;
+	optional uint32 total_phases = 6;
+	optional uint32 turn_index = 7;
+	optional uint32 total_turns = 8;
+	optional int32 quality_statistic_value = 9;
+}
+
+message RequestNumberMessage {
+	required uint64 request = 1;
+	required uint64 zone_id = 2;
+}
+
+message FocusCameraEvent {
+	optional uint64 id = 1;
+	optional .EA.Sims4.Network.Vector3 location = 2;
+	optional bool follow_mode = 3;
+	optional .EA.Sims4.Network.Vector3 position = 4;
+}
+
+message EnablePendingInteractionHeadline {
+	optional uint64 sim_id = 1;
+	optional uint64 si_id = 2;
+	optional .EA.Sims4.Network.IconInfo icon_info = 3;
+}
+
+message DisablePendingInteractionHeadline {
+	optional uint64 sim_id = 1;
+	optional uint64 group_id = 2;
+	optional bool canceled = 3;
+}
+
+message AddBalloon {
+	enum BalloonType {
+		THOUGHT_TYPE = 0;
+		SPEECH_TYPE = 1;
+		DISTRESS_TYPE = 2;
+	}
+
+	enum BalloonPriority {
+		MOTIVE_FAILURE_PRIORITY = 0;
+		SPEECH_PRIORITY = 1;
+		THOUGHT_PRIORITY = 2;
+	}
+
+	optional uint64 sim_id = 1;
+	optional .EA.Sims4.Network.ResourceKey icon = 3;
+	optional uint64 icon_sim_id = 4;
+	optional .EA.Sims4.Network.ResourceKey overlay = 5;
+	optional .EA.Sims4.Network.AddBalloon.BalloonType type = 6 [default = THOUGHT_TYPE];
+	optional .EA.Sims4.Network.AddBalloon.BalloonPriority priority = 7 [default = MOTIVE_FAILURE_PRIORITY];
+	optional float duration = 8;
+	optional .EA.Sims4.Network.ManagerObjectId icon_object = 9;
+}
+
+message ReslotPlumbbob {
+	optional uint64 sim_id = 1;
+	optional uint64 obj_id = 2;
+	optional uint32 bone = 3;
+	optional .EA.Sims4.Network.Vector3 offset = 4;
+}
+
+message BuffUpdate {
+	required uint64 buff_id = 1;
+	optional uint64 sim_id = 2;
+	optional bool equipped = 3;
+	optional .EA.Sims4.Network.LocalizedString reason = 4;
+	optional uint64 timeout = 5;
+	optional bool is_mood_buff = 6;
+	optional .EA.Sims4.Network.BuffProgressArrow buff_progress = 7 [default = BUFF_PROGRESS_NONE];
+	optional fixed64 commodity_guid = 8;
+	optional float rate_multiplier = 9 [default = 1];
+	optional uint64 mood_type_override = 10;
+	optional uint64 transition_into_buff_id = 11;
+}
+
+message TutorialUpdate {
+	required uint64 tutorial_id = 1;
+}
+
+message TutorialViewedList {
+	repeated uint64 tutorial_ids = 1 [packed = true];
+}
+
+message MemoryTriggerUpdate {
+	required uint64 sim_id = 1;
+	required bool trigger_memory = 2;
+	optional uint64 timeout = 3;
+	optional uint64 memory_id = 4;
+}
+
+message CareerInfo {
+	required uint64 uid = 1;
+	required uint64 career_track = 2;
+	required uint32 career_level = 3;
+	optional .EA.Sims4.Network.LocalizedString company = 4;
+	optional bool conflicted_schedule = 5;
+}
+
+message CareerSelectionUI {
+	enum SelectionReason {
+		JOIN_CAREER = 0;
+		QUIT_CAREER = 1;
+		CALLED_IN_SICK = 2;
+	}
+
+	required uint64 sim_id = 1;
+	repeated .EA.Sims4.Network.CareerInfo career_choices = 2;
+	required bool is_branch_select = 3;
+	optional .EA.Sims4.Network.CareerSelectionUI.SelectionReason reason = 4 [default = JOIN_CAREER];
+}
+
+message CareerSituationEnable {
+	required uint64 sim_id = 1;
+	optional uint64 career_situation_id = 2;
+	optional bool enable = 3;
+	optional uint64 career_uid = 4;
+}
+
+message RewardCount {
+	required uint32 count = 1;
+}
+
+message RewardList {
+	repeated uint64 instance_ids = 1 [packed = true];
+	repeated uint64 reward_ids = 2 [packed = true];
+	repeated fixed64 sim_ids = 3 [packed = true];
+}
+
+message RewardPayout {
+	required uint64 reward_id = 1;
+	repeated uint32 money = 2 [packed = true];
+	repeated fixed64 cas_part_keys = 3 [packed = true];
+	repeated uint64 trait_ids = 4 [packed = true];
+	repeated .EA.Sims4.Network.LocalizedString object_names = 5;
+}
+
+message SocialContextUpdate {
+	optional fixed64 bit_id = 1;
+}
+

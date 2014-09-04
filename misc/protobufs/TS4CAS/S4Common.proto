@@ -1,0 +1,58 @@
+package EA.Sims4;
+
+enum UserState {
+	userstate_pending = 1;
+	userstate_logged_in = 2;
+	userstate_logged_out = 3;
+	userstate_timedout_out = 4;
+	userstate_bad_login = 5;
+	connected_to_mtx_server = 100;
+	connected_to_exchange_server = 200;
+	connected_to_social_server = 300;
+}
+
+message GameInstanceInfoPB {
+	required uint64 zone_id = 1;
+	optional uint32 world_id = 2;
+	optional string neighborhood_name = 3;
+	optional string zone_name = 4;
+	optional uint64 zone_session_id = 5;
+}
+
+message UserEntitlement {
+	optional uint64 entitlement_id = 1;
+	optional uint32 version = 2;
+	optional uint64 product_id = 3;
+	optional uint64 last_modified_date = 4;
+	optional uint64 product_sku = 5;
+	optional bool is_new = 6 [default = true];
+}
+
+message UserEntitlementMap {
+	repeated .EA.Sims4.UserEntitlement entitlements = 1;
+	optional uint64 last_modified_date = 2;
+}
+
+message UserShoppingCartItem {
+	optional string entitlement_tag = 1;
+	optional string offer_id = 2;
+	optional uint32 quantity = 3;
+	optional double override_price = 4;
+	optional double unit_price = 5;
+	optional uint64 ientitlement_tag = 6;
+	optional uint64 entry_id = 7;
+}
+
+message UserShoppingCart {
+	repeated .EA.Sims4.UserShoppingCartItem items = 1;
+	optional string last_modified_date = 2;
+}
+
+message Uint64Value {
+	required uint64 value = 1;
+}
+
+message Uint64List {
+	repeated .EA.Sims4.Uint64Value values = 1;
+}
+

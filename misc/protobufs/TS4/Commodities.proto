@@ -1,0 +1,111 @@
+import "ResourceKey.proto";
+import "Localization.proto";
+import "Sims.proto";
+import "UI.proto";
+import "Consts.proto";
+
+package EA.Sims4.Network;
+
+message Skill_Update {
+	required uint64 skill_id = 1;
+	required uint32 curr_points = 2;
+	optional uint64 sim_id = 3;
+}
+
+message SkillProgressUpdate {
+	required fixed64 skill_id = 1;
+	required float change_rate = 2;
+	optional uint32 curr_points = 3;
+}
+
+message RelationshipTrack {
+	required float track_score = 1;
+	required uint32 track_bit_id = 2;
+	required fixed64 track_id = 3;
+	required uint32 track_popup_priority = 4;
+	optional float change_rate = 5;
+	optional float delta = 7 [default = 0];
+}
+
+message RelationshipUpdate {
+	optional float score = 1;
+	repeated uint64 bit_ids = 2 [packed = true];
+	repeated uint64 track_bit_ids = 5 [packed = true];
+	required uint64 actor_sim_id = 3;
+	optional uint64 target_sim_id = 4;
+	repeated uint64 handshake_bit_ids = 6 [packed = true];
+	repeated .EA.Sims4.Network.RelationshipTrack tracks = 7;
+	repeated uint64 known_trait_ids = 8 [packed = true];
+	optional .EA.Sims4.Network.ManagerObjectId target_id = 9;
+	optional uint64 target_instance_id = 10;
+	optional fixed64 target_sim_significant_other_id = 11;
+	optional uint32 num_traits = 12;
+}
+
+message RelationshipDelete {
+	required uint64 actor_sim_id = 1;
+	required uint64 target_id = 2;
+}
+
+message RelHandshakeUpdate {
+	enum HandshakeStatus {
+		NONE = 0;
+		PENDING = 1;
+		ACCEPTED = 2;
+		DENIED = 3;
+		PENDING_RECIEVER = 4;
+	}
+
+	required uint64 actor_sim_id = 1;
+	required uint64 target_sim_id = 2;
+	repeated uint32 bit_ids = 3 [packed = true];
+	repeated .EA.Sims4.Network.RelHandshakeUpdate.HandshakeStatus bit_status = 4 [packed = true];
+}
+
+message CommodityStaticData {
+	required uint32 commodity_id = 1;
+	optional .EA.Sims4.Network.IconInfo pos_icon_info = 2;
+	optional .EA.Sims4.Network.IconInfo neutral_icon_info = 3;
+	optional .EA.Sims4.Network.IconInfo neg_icon_info = 4;
+	optional .EA.Sims4.Network.LocalizedString commodity_name = 5;
+	repeated .EA.Sims4.Network.IconInfo commodity_states = 6;
+	optional uint32 threshold_index = 7;
+}
+
+message CommodityStaticDataList {
+	repeated .EA.Sims4.Network.CommodityStaticData commodity_data = 1;
+}
+
+message CommodityUpdate {
+	repeated uint32 commodity_ids = 1 [packed = true];
+	repeated float change_rate = 2 [packed = true];
+	repeated uint32 commodity_image_index = 3 [packed = true];
+	repeated uint64 commodity_guids = 4 [packed = true];
+}
+
+message CommodityProgressUpdate {
+	required fixed64 commodity_id = 1;
+	required float current_value = 2;
+	required float rate_of_change = 3;
+	required uint32 commodity_state_index = 4;
+	optional bool is_rate_change = 5;
+}
+
+message MoodUpdate {
+	optional uint64 sim_id = 3;
+	optional uint64 mood_key = 4;
+	optional uint32 mood_intensity = 5;
+}
+
+message GenderPreferenceUpdate {
+	enum GenderPreference {
+		PREFER_NEITHER = 0;
+		PREFER_GUYS = 1;
+		PREFER_GIRLS = 2;
+		PREFER_BOTH = 3;
+	}
+
+	required uint64 sim_id = 1;
+	required .EA.Sims4.Network.GenderPreferenceUpdate.GenderPreference gender_preference = 2 [default = PREFER_NEITHER];
+}
+

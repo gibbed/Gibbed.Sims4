@@ -1,0 +1,101 @@
+import "ResourceKey.proto";
+import "Localization.proto";
+import "UI.proto";
+
+package EA.Sims4.Network;
+
+message Interactable {
+	required bool is_interactable = 1;
+	required fixed64 object_id = 2;
+}
+
+message PieMenuItem {
+	required uint32 id = 1;
+	required .EA.Sims4.Network.LocalizedString loc_string = 2;
+	repeated uint64 related_skills = 3 [packed = true];
+	repeated uint64 target_ids = 4 [packed = true];
+	optional .EA.Sims4.Network.ResourceKey icon = 5;
+	optional .EA.Sims4.Network.LocalizedString disabled_text = 6;
+	optional .EA.Sims4.Network.ResourceKey score_icon = 7;
+	optional uint64 category_key = 9;
+	optional bool is_super = 10;
+	optional float score = 11;
+	repeated .EA.Sims4.Network.ResourceKey icons = 12;
+	optional fixed64 mood = 13;
+	optional uint32 mood_intensity = 14;
+	optional uint32 pie_menu_priority = 15;
+	optional .EA.Sims4.Network.LocalizedString success_tooltip = 16;
+	repeated .EA.Sims4.Network.IconInfo icon_infos = 17;
+}
+
+message PieMenuCreate {
+	required uint64 sim = 1;
+	repeated .EA.Sims4.Network.PieMenuItem items = 2;
+	optional uint32 client_reference_id = 3;
+	optional uint32 server_reference_id = 4;
+	repeated .EA.Sims4.Network.LocalizedStringToken category_tokens = 5;
+	optional .EA.Sims4.Network.LocalizedString disabled_tooltip = 6;
+}
+
+message TravelMenuCreate {
+	required uint64 sim_id = 1;
+	optional uint64 selected_lot_id = 2;
+	optional uint32 selected_world_id = 3;
+	optional string selected_lot_name = 4;
+	optional string friend_account = 5;
+}
+
+message TravelMenuInfo {
+	repeated uint64 sim_ids = 1 [packed = true];
+}
+
+message TravelMenuResponse {
+	required bool reserved = 1;
+}
+
+message TravelInitiate {
+	required uint64 zoneId = 1;
+}
+
+message MoveInMoveOutInfo {
+}
+
+message TravelSimsToZone {
+	required fixed64 zone_id = 1;
+	repeated fixed64 sim_ids = 2 [packed = true];
+}
+
+message CASAvailableZonesInfo {
+	repeated .EA.Sims4.Network.WorldZonesInfo zones = 1;
+}
+
+message WorldZonesInfo {
+	optional string name = 1;
+	optional .EA.Sims4.Network.LocalizedString defaultName = 2;
+	repeated .EA.Sims4.Network.ZoneInfo zones = 3;
+	optional uint32 worldId = 4;
+}
+
+message ZoneInfo {
+	optional uint64 id = 1;
+	optional string name = 3;
+	optional .EA.Sims4.Network.LocalizedString defaultName = 4;
+	optional uint32 world_id = 5;
+	optional uint32 lot_template_id = 6;
+	optional fixed64 lot_description_id = 7;
+}
+
+message InteractionProgressUpdate {
+	optional fixed64 sim_id = 1;
+	optional .EA.Sims4.Network.LocalizedString name = 2;
+	optional float percent = 3;
+	optional float rate_change = 4;
+	optional uint64 interaction_id = 5;
+}
+
+message SimTransferRequest {
+	optional fixed64 source_household_id = 1;
+	optional fixed64 target_household_id = 2;
+	optional fixed64 active_sim_id = 3;
+}
+

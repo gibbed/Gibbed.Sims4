@@ -1,0 +1,14 @@
+import "Consts.proto";
+import "DistributorOps.proto";
+
+package EA.Sims4.Network;
+
+message ViewUpdateEntry {
+	required .EA.Sims4.Network.OperationChannel primary_channel = 1;
+	required .EA.Sims4.Network.OperationList operation_list = 2;
+}
+
+message ViewUpdate {
+	repeated .EA.Sims4.Network.ViewUpdateEntry entries = 1;
+}
+

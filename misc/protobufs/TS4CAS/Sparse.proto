@@ -1,0 +1,33 @@
+import "Localization.proto";
+
+package EA.Sims4.Network;
+
+message SparseMessageData {
+	enum FieldNumbers {
+		kFN_0 = 1;
+		kFN_1 = 15;
+		kFN_2 = 2002;
+	}
+
+	repeated int32 set_fields = 1 [packed = true];
+}
+
+message TestSparseMessage {
+	optional .EA.Sims4.Network.SparseMessageData sparse_data = 1;
+	optional int32 int_field_a = 2 [default = 0];
+	optional int32 int_field_b = 3 [default = 0];
+	optional int32 int_field_c = 4 [default = 10];
+	optional int32 int_field_d = 5 [default = 10];
+	repeated int32 int_rep_a = 6 [packed = true];
+	repeated int32 int_rep_b = 7 [packed = true];
+	optional string str_field = 20;
+	repeated string str_rep = 21;
+	optional .EA.Sims4.Network.TestSparseMessage2 sparse_msg_opt = 10;
+	repeated .EA.Sims4.Network.TestSparseMessage2 sparse_msg_rep = 11;
+}
+
+message TestSparseMessage2 {
+	optional .EA.Sims4.Network.SparseMessageData sparse_data = 2002;
+	optional string str_field = 2;
+}
+

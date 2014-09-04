@@ -1,0 +1,73 @@
+import "S4Common.proto";
+import "Localization.proto";
+
+package EA.Sims4.Network;
+
+enum SocialNotificationType {
+	CHAT = 0;
+	BUDDYLIST = 1;
+	BUDDYLIST_INVITE = 2;
+	WALL = 3;
+	GAMEPLAY = 4;
+	MTX = 5;
+	IMMEDIATE = 6;
+	GAMEPLAY_ASPIRATION = 7;
+	SYSTEM = 8;
+	EXCHANGE = 9;
+}
+
+message ZoneConnectedLotVersionData {
+	required uint32 lotID = 1;
+	required uint64 version = 2;
+}
+
+message ConnectedNeighborhoodLot {
+	required uint32 lotId = 1;
+	required uint64 zoneInstanceId = 2;
+}
+
+message ZoneConnectedData {
+	required .EA.Sims4.GameInstanceInfoPB instance_info = 1;
+	required uint32 active_lot_template_id = 2;
+	repeated .EA.Sims4.Network.ZoneConnectedLotVersionData lot_versions = 3;
+	repeated .EA.Sims4.Network.ConnectedNeighborhoodLot neighborhood_lots = 4;
+}
+
+message GSI_Open {
+	required string ip = 1;
+	required uint32 port = 2;
+	optional uint64 zone_id = 3;
+	optional string additional_params = 4;
+}
+
+message AchievementTrackerUpdate {
+	optional uint64 account_id = 1;
+	repeated uint64 achievements_completed = 2 [packed = true];
+	repeated uint64 objectives_completed = 3 [packed = true];
+	optional bool init_message = 4;
+}
+
+message AcctGoalsStatusUpdate {
+	optional uint64 account_id = 1;
+	repeated uint64 goals_updated = 2 [packed = true];
+	repeated int64 goal_values = 3 [packed = true];
+	repeated int64 goal_objectives = 4 [packed = true];
+	repeated bool goals_that_are_money = 5 [packed = true];
+}
+
+message GameTimeCommand {
+	required uint32 clock_speed = 1;
+	required float game_speed = 2;
+	required uint64 server_time = 3;
+	required uint64 sync_game_time = 4;
+	required uint64 monotonic_time = 5;
+}
+
+message SocialNotification {
+	required .EA.Sims4.Network.SocialNotificationType type = 1 [default = CHAT];
+	required .EA.Sims4.Network.LocalizedString localized_string = 2;
+	optional uint64 account_id = 3;
+	optional uint64 sim_id = 4;
+	optional uint32 event_uid = 6;
+}
+
