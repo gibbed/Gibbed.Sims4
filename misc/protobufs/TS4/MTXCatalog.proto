@@ -26,6 +26,8 @@ message Product {
 	optional bool isPurchasable = 16 [default = true];
 	optional uint32 celebrationPriority = 17 [default = 400];
 	optional bool localizedImages = 18 [default = false];
+	optional bool show_variants = 19 [default = false];
+	optional uint64 keyImage = 20 [default = 0];
 }
 
 message Catalog {
@@ -52,8 +54,16 @@ message ViewedEntitlements {
 }
 
 message EntitlementNotification {
+	enum ViewedState {
+		VIEWED_INVALID = 0;
+		VIEWED_NEW = 1;
+		VIEWED_CELEBRATED = 2;
+		VIEWED_USED = 4;
+		VIEWED_ALL = 255;
+	}
+
 	optional uint64 entitlement_id = 1;
-	optional bool viewed = 2;
+	optional uint32 viewed_state = 2 [default = 1];
 	optional uint64 product_id = 3;
 }
 

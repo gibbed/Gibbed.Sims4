@@ -1,5 +1,6 @@
 import "Consts.proto";
 import "SimObjectAttributes.proto";
+import "ResourceKey.proto";
 
 package EA.Sims4.Network;
 
@@ -25,6 +26,28 @@ message TrayRoomBlueprintMetadata {
 	optional uint32 price_level = 6;
 }
 
+message WebTraitTracker {
+	optional uint32 name_hash = 1;
+	optional string name_string = 2;
+	optional uint32 description_hash = 3;
+	optional string description_string = 4;
+	optional .EA.Sims4.Network.ResourceKey icon_key = 5;
+	optional int64 trait_type = 6;
+	optional uint32 description_origin_hash = 7;
+	optional string description_origin_string = 8;
+	optional .EA.Sims4.Network.ResourceKey cas_selected_icon_key = 9;
+}
+
+message WebAspirationInfo {
+	optional uint32 display_hash = 1;
+	optional string display_string = 2;
+	optional uint32 description_hash = 3;
+	optional string description_string = 4;
+	optional .EA.Sims4.Network.ResourceKey icon = 5;
+	optional .EA.Sims4.Network.ResourceKey icon_high_res = 6;
+	optional .EA.Sims4.Network.WebTraitTracker primary_trait = 7;
+}
+
 message TraySimMetadata {
 	optional .EA.Sims4.Persistence.PersistableTraitTracker trait_tracker = 1;
 	optional .EA.Sims4.Persistence.PersistableGenealogyTracker genealogy_tracker = 2;
@@ -35,11 +58,14 @@ message TraySimMetadata {
 	optional uint64 aspirationId = 7;
 	repeated .EA.Sims4.Persistence.FamilyRelation sim_relationships = 8;
 	optional uint32 age = 9;
+	repeated .EA.Sims4.Network.WebTraitTracker web_trait_tracker = 10;
+	optional .EA.Sims4.Network.WebAspirationInfo web_aspiration_info = 11;
 }
 
 message TrayHouseholdMetadata {
 	optional uint32 family_size = 1;
 	repeated .EA.Sims4.Network.TraySimMetadata sim_data = 2;
+	optional uint32 pending_babies = 3;
 }
 
 message TrayMetadata {

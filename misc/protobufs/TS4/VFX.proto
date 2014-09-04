@@ -8,6 +8,7 @@ message VFXStart {
 	optional uint64 target_actor_id = 5;
 	optional uint32 target_joint_name_hash = 6;
 	optional bool mirror_effect = 7 [default = false];
+	optional bool auto_on_effect = 8 [default = false];
 }
 
 message VFXStop {

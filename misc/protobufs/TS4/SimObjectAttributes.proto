@@ -81,12 +81,13 @@ message PersistableSimInfoAttributes {
 	optional .EA.Sims4.Persistence.PersistableDeathTracker death_tracker = 7;
 	optional .EA.Sims4.Persistence.PersistablePregnancyTracker pregnancy_tracker = 8;
 	optional .EA.Sims4.Persistence.PersistableSimPermissions sim_permissions = 9;
-	optional .EA.Sims4.Persistence.PersistableTraitTracker trait_tracker = 10 [(persist_for_new_game) = true];
+	optional .EA.Sims4.Persistence.PersistableTraitTracker trait_tracker = 10;
 	optional .EA.Sims4.Persistence.PersistableAdventureTracker adventure_tracker = 11;
-	optional .EA.Sims4.Persistence.PersistableSimCareers sim_careers = 12 [(persist_for_new_game) = true];
-	optional .EA.Sims4.Persistence.PersistableSkillTracker skill_tracker = 13 [(persist_for_new_game) = true];
-	optional .EA.Sims4.Persistence.PersistableGenealogyTracker genealogy_tracker = 14 [(persist_for_new_game) = true];
+	optional .EA.Sims4.Persistence.PersistableSimCareers sim_careers = 12;
+	optional .EA.Sims4.Persistence.PersistableSkillTracker skill_tracker = 13;
+	optional .EA.Sims4.Persistence.PersistableGenealogyTracker genealogy_tracker = 14;
 	optional .EA.Sims4.Persistence.PersistableUnlockTracker unlock_tracker = 15;
+	optional .EA.Sims4.Persistence.PersistableRoyaltyTracker royalty_tracker = 16;
 }
 
 message PersistableStateComponent {
@@ -539,5 +540,21 @@ message PersistableSpawnerComponent {
 	repeated uint64 spawned_obj_ids = 1 [packed = true];
 	optional bool spawner_initialized = 2;
 	optional int32 spawner_data_spawn_index = 3;
+}
+
+message PersistableRoyaltyTracker {
+	message Royalty {
+		optional uint32 royalty_type = 1;
+		optional uint64 royalty_guid64 = 2;
+		optional .EA.Sims4.Network.LocalizedString entry_name = 3;
+		optional float multiplier = 4;
+		optional uint32 current_payment = 5;
+	}
+
+	extend .EA.Sims4.Persistence.PersistenceMaster.PersistableData {
+		required .EA.Sims4.Persistence.PersistableRoyaltyTracker persistable_data = 21032;
+	}
+
+	repeated .EA.Sims4.Persistence.PersistableRoyaltyTracker.Royalty royalties = 1;
 }
 
