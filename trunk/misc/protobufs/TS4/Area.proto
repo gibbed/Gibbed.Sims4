@@ -61,6 +61,7 @@ message GameTimeCommand {
 	required uint64 server_time = 3;
 	required uint64 sync_game_time = 4;
 	required uint64 monotonic_time = 5;
+	optional bool super_speed = 6 [default = false];
 }
 
 message SocialNotification {

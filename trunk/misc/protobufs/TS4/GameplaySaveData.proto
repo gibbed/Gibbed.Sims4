@@ -1,3 +1,4 @@
+import "ResourceKey.proto";
 import "SimObjectAttributes.proto";
 import "Dialog.proto";
 import "Math.proto";
@@ -42,6 +43,7 @@ message GameplayHouseholdData {
 	repeated .EA.Sims4.Persistence.SituationEarnedMedals highest_earned_situation_medals = 14;
 	repeated uint64 build_buy_unlocks = 15 [packed = true];
 	optional bool situation_scoring_enabled = 16 [default = true];
+	optional .EA.Sims4.Network.ResourceKeyList build_buy_unlock_list = 17;
 }
 
 message SituationEarnedMedals {
@@ -76,6 +78,7 @@ message GameplaySaveSlotData {
 	optional .EA.Sims4.Persistence.GameplayCameraData camera_data = 3;
 	optional bool is_phone_silenced = 4 [default = false];
 	optional fixed64 career_choices_seed = 5;
+	optional bool enable_autogeneration_same_sex_preference = 6 [default = false];
 }
 
 message GameplayCameraData {
@@ -308,5 +311,7 @@ message GameplaySimData {
 	optional uint32 serialization_option = 15 [default = 0];
 	optional uint64 time_alive = 16 [default = 0];
 	optional string creation_source = 17;
+	optional .EA.Sims4.Network.ResourceKeyList build_buy_unlock_list = 18;
+	optional fixed64 old_household_id = 19;
 }
 

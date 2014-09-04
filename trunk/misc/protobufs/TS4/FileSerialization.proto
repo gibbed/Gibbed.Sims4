@@ -165,6 +165,7 @@ message ObjectData {
 	optional .EA.Sims4.Network.ResourceKey model_override_resource_key = 29;
 	optional uint64 guid = 30;
 	optional .EA.Sims4.Persistence.ObjectList unique_inventory = 31;
+	optional bool needs_post_bb_fixup = 32;
 }
 
 message ObjectList {
@@ -251,38 +252,38 @@ message SimData {
 		SIMCREATION_PRE_MADE = 4;
 	}
 
-	required fixed64 sim_id = 1 [(persist_for_new_game) = true];
+	required fixed64 sim_id = 1;
 	optional fixed64 zone_id = 2;
 	optional uint32 world_id = 3;
 	optional string zone_name = 25;
-	optional fixed64 household_id = 4 [(persist_for_new_game) = true];
-	optional string first_name = 5 [(persist_for_new_game) = true];
-	optional string last_name = 6 [(persist_for_new_game) = true];
-	optional uint32 gender = 7 [(persist_for_new_game) = true];
-	optional uint32 age = 8 [(persist_for_new_game) = true];
-	optional float voice_pitch = 9 [(persist_for_new_game) = true];
-	optional uint64 skin_tone = 10 [(persist_for_new_game) = true];
-	optional uint32 voice_actor = 11 [(persist_for_new_game) = true];
-	optional string physique = 12 [(persist_for_new_game) = true];
-	optional float age_progress = 13 [(persist_for_new_game) = true];
-	optional fixed64 significant_other = 15 [(persist_for_new_game) = true];
+	optional fixed64 household_id = 4;
+	optional string first_name = 5;
+	optional string last_name = 6;
+	optional uint32 gender = 7;
+	optional uint32 age = 8;
+	optional float voice_pitch = 9;
+	optional uint64 skin_tone = 10;
+	optional uint32 voice_actor = 11;
+	optional string physique = 12;
+	optional float age_progress = 13;
+	optional fixed64 significant_other = 15;
 	optional bytes deprecated_attributes = 17;
-	optional bytes facial_attr = 18 [(persist_for_new_game) = true];
+	optional bytes facial_attr = 18;
 	optional uint64 created = 19;
 	optional .EA.Sims4.Persistence.ObjectList inventory = 20;
-	optional .EA.Sims4.Persistence.OutfitList outfits = 21 [(persist_for_new_game) = true];
-	optional string household_name = 22 [(persist_for_new_game) = true];
+	optional .EA.Sims4.Persistence.OutfitList outfits = 21;
+	optional string household_name = 22;
 	optional fixed64 nucleus_id = 23;
 	optional string persona = 24;
 	optional uint32 deprecated_money = 14;
 	optional uint64 money = 27;
-	optional .EA.Sims4.Persistence.GeneticData genetic_data = 28 [(persist_for_new_game) = true];
+	optional .EA.Sims4.Persistence.GeneticData genetic_data = 28;
 	optional uint32 flags = 29;
 	optional .EA.Sims4.Persistence.PersistableSimInfoAttributes attributes = 30;
 	optional uint32 revision = 31;
 	optional .EA.Sims4.Persistence.LotCoord location = 32;
 	optional uint32 deprecated_change_number = 33;
-	optional uint64 primary_aspiration = 34 [(persist_for_new_game) = true];
+	optional uint64 primary_aspiration = 34;
 	optional uint64 last_instantiated_time = 35;
 	optional uint64 additional_bonus_days = 36;
 	optional .EA.Sims4.Persistence.SuperInteractionSaveState interaction_state = 37;
@@ -300,9 +301,11 @@ message SimData {
 	optional uint32 full_name_key = 49;
 	optional uint32 last_inzone_outfit_type = 50;
 	optional uint32 last_inzone_outfit_index = 51;
-	optional .EA.Sims4.Persistence.SimData.SimCreationPath sim_creation_path = 52 [default = SIMCREATION_NONE, (persist_for_new_game) = true];
+	optional .EA.Sims4.Persistence.SimData.SimCreationPath sim_creation_path = 52 [default = SIMCREATION_NONE];
 	optional float initial_fitness_value = 53;
-	optional uint64 voice_effect = 54 [(persist_for_new_game) = true];
+	optional uint64 voice_effect = 54;
+	optional uint32 first_name_key = 55;
+	optional uint32 last_name_key = 56;
 }
 
 message SimList {

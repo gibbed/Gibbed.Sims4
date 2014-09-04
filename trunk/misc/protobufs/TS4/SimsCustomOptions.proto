@@ -1,8 +1,0 @@
-import "google/protobuf/descriptor.proto";
-
-package EA.Sims4.Persistence;
-
-extend .google.protobuf.FieldOptions {
-	optional bool persist_for_new_game = 50000 [default = false];
-}
-
