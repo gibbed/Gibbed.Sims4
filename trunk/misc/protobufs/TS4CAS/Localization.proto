@@ -1,0 +1,70 @@
+import "Consts.proto";
+
+package EA.Sims4.Network;
+
+message LocalizedStringToken {
+	enum TokenType {
+		INVALID = 0;
+		SIM = 1;
+		STRING = 2;
+		RAW_TEXT = 3;
+		NUMBER = 4;
+		OBJECT = 5;
+		DATE_AND_TIME = 6;
+		RICHDATA = 7;
+	}
+
+	required .EA.Sims4.Network.LocalizedStringToken.TokenType type = 1 [default = INVALID];
+	optional .EA.Sims4.Network.SocialRichDataType rdl_type = 2 [default = RDL_PLAINTEXT];
+	optional string first_name = 3;
+	optional string last_name = 4;
+	optional uint32 full_name_key = 5;
+	optional bool is_female = 6;
+	optional uint64 sim_id = 7;
+	optional .EA.Sims4.Network.LocalizedString text_string = 8;
+	optional float number = 9;
+	optional uint64 persona_id = 10;
+	optional uint64 account_id = 11;
+	optional string persona_string = 12;
+	optional uint64 zone_id = 13;
+	optional uint32 world_id = 14;
+	optional string zone_name = 15;
+	optional uint64 event_id = 16;
+	optional uint32 event_type_hash = 17;
+	optional uint32 skill_name_hash = 18;
+	optional uint32 skill_level = 19;
+	optional uint64 skill_guid = 20;
+	optional uint32 trait_name_hash = 21;
+	optional uint64 trait_guid = 22;
+	optional uint32 bit_name_hash = 23;
+	optional uint64 bit_guid = 24;
+	optional uint32 catalog_name_key = 25;
+	optional uint32 catalog_description_key = 26;
+	optional string custom_name = 27;
+	optional string custom_description = 28;
+	optional uint64 career_uid = 29;
+	optional uint64 memory_id = 30;
+	optional uint32 memory_string_hash = 31;
+	optional string raw_text = 32;
+	optional .EA.Sims4.Network.LocalizedDateAndTimeData date_and_time = 33;
+}
+
+message LocalizedDateAndTimeData {
+	optional uint32 seconds = 1;
+	optional uint32 minutes = 2;
+	optional uint32 hours = 3;
+	optional uint32 date = 4;
+	optional uint32 month = 5;
+	optional uint32 full_year = 6;
+	optional uint32 date_and_time_format_hash = 7;
+}
+
+message LocalizedString {
+	required uint32 hash = 1;
+	repeated .EA.Sims4.Network.LocalizedStringToken tokens = 2;
+}
+
+message LocalizedStringValidate {
+	repeated .EA.Sims4.Network.LocalizedString localized_strings = 1;
+}
+

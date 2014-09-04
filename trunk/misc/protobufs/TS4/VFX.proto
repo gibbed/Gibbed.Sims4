@@ -1,0 +1,23 @@
+package EA.Sims4.Network;
+
+message VFXStart {
+	required uint64 object_id = 1;
+	required string effect_name = 2;
+	required uint64 actor_id = 3;
+	required uint32 joint_name_hash = 4;
+	optional uint64 target_actor_id = 5;
+	optional uint32 target_joint_name_hash = 6;
+	optional bool mirror_effect = 7 [default = false];
+}
+
+message VFXStop {
+	enum VFXStopTransitionType {
+		SOFT_TRANSITION = 0;
+		HARD_TRANSITION = 1;
+	}
+
+	required uint64 object_id = 1;
+	required uint64 actor_id = 2;
+	optional .EA.Sims4.Network.VFXStop.VFXStopTransitionType transition_type = 3 [default = SOFT_TRANSITION];
+}
+

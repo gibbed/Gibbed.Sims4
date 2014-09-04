@@ -1,0 +1,50 @@
+import "Math.proto";
+
+package EA.Sims4.Network;
+
+message DebugViz_LineSet {
+	message Line {
+		required .EA.Sims4.Network.Vector3 begin = 1;
+		required .EA.Sims4.Network.Vector3 end = 2;
+		required uint32 color = 3;
+	}
+
+	repeated .EA.Sims4.Network.DebugViz_LineSet.Line lines = 1;
+}
+
+message DebugViz_Text {
+	enum Alignment {
+		ALIGN_LEFT = 0;
+		ALIGN_CENTER = 1;
+		ALIGN_RIGHT = 2;
+	}
+
+	enum VertAlign {
+		VERTALIGN_TOP = 0;
+		VERTALIGN_MIDDLE = 1;
+		VERTALIGN_BOTTOM = 2;
+	}
+
+	optional .EA.Sims4.Network.Vector2 position_2d = 1;
+	optional .EA.Sims4.Network.Vector3 position_3d = 2;
+	optional uint32 color_fg = 3;
+	optional uint32 color_bg = 4;
+	required string text = 5;
+	optional .EA.Sims4.Network.DebugViz_Text.Alignment alignment = 6 [default = ALIGN_LEFT];
+	optional .EA.Sims4.Network.DebugViz_Text.VertAlign vertalign = 7 [default = VERTALIGN_TOP];
+	optional fixed64 object_id = 8;
+	optional int32 bone_index = 9;
+}
+
+message DebugViz_Layer {
+	required string name = 1;
+	optional bytes lines_data = 2;
+	optional uint64 zoneId = 3;
+	repeated .EA.Sims4.Network.DebugViz_Text text_set = 4;
+}
+
+message DebugViz_LayerUpdateNotification {
+	required string layerName = 1;
+	optional uint64 zoneId = 2;
+}
+

@@ -1,0 +1,34 @@
+package EA.Sims4.Network;
+
+message Vector2 {
+	required float x = 1;
+	required float y = 2;
+}
+
+message Vector3 {
+	required float x = 1;
+	required float y = 2;
+	required float z = 3;
+}
+
+message Quaternion {
+	required float x = 1;
+	required float y = 2;
+	required float z = 3;
+	required float w = 4;
+}
+
+message Transform {
+	optional .EA.Sims4.Network.Vector3 translation = 1;
+	optional .EA.Sims4.Network.Quaternion orientation = 2;
+}
+
+message LinearCurve {
+	message CurvePoint {
+		required float x = 1;
+		required float y = 2;
+	}
+
+	repeated .EA.Sims4.Network.LinearCurve.CurvePoint points = 1;
+}
+

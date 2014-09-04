@@ -1,0 +1,16 @@
+package EA.Sims4.Chat;
+
+message ChatPersistancy {
+	message ChatGroup {
+		message ChatGroupUser {
+			required uint64 nucleusId = 1;
+			optional string name = 2;
+		}
+
+		required string groupName = 1;
+		repeated .EA.Sims4.Chat.ChatPersistancy.ChatGroup.ChatGroupUser users = 2;
+	}
+
+	repeated .EA.Sims4.Chat.ChatPersistancy.ChatGroup groups = 1;
+}
+

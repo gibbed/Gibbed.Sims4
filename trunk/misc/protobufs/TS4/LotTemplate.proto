@@ -1,0 +1,37 @@
+import "Math.proto";
+import "ResourceKey.proto";
+
+package EA.Sims4.Network;
+
+option java_outer_classname = "LotTemplatePB";
+
+message LotObject {
+	optional uint64 id = 1;
+	optional .EA.Sims4.Network.Transform quat_pos = 3;
+	optional uint32 object_def_guid = 4;
+	optional int32 level = 5;
+	optional uint64 parent_id = 6;
+	optional uint32 slot_hash = 7;
+	optional uint32 slot_index = 8;
+	optional uint32 object_state_idx = 9;
+	optional uint32 parent_type = 10;
+	optional uint64 parent_location = 11;
+	optional .EA.Sims4.Network.Vector3 light_color = 12;
+	optional float scale = 13;
+	optional float light_dimmer_value = 14;
+	optional uint64 object_def_guid64 = 15;
+	optional uint32 geo_state_id = 16;
+	optional .EA.Sims4.Network.ResourceKey model_override_key = 17;
+	optional uint32 material_state_id = 18;
+}
+
+message LotObjectList {
+	optional uint32 lot_id = 1;
+	repeated .EA.Sims4.Network.LotObject lot_objects = 2;
+}
+
+message LotTemplate {
+	optional .EA.Sims4.Network.LotObjectList lot_object_list = 1;
+	optional bytes architecture = 2;
+}
+

@@ -1,0 +1,312 @@
+import "SimObjectAttributes.proto";
+import "Dialog.proto";
+import "Math.proto";
+
+package EA.Sims4.Persistence;
+
+message ZoneBedInfoData {
+	optional uint32 num_beds = 1;
+	optional bool double_bed_exist = 2;
+	optional bool kid_bed_exist = 3;
+	optional uint32 alternative_sleeping_spots = 4;
+}
+
+message GameplayZoneData {
+	optional uint64 game_time = 1;
+	optional uint32 clock_speed_mode = 2;
+	optional .EA.Sims4.Persistence.AllSituationData situations_data = 3;
+	optional .EA.Sims4.Persistence.VenueData venue_data = 4;
+	optional fixed64 active_household_id_on_save = 5;
+	optional fixed64 lot_owner_household_id_on_save = 6;
+	optional fixed64 venue_type_id_on_save = 7;
+	optional .EA.Sims4.Persistence.ZoneBedInfoData bed_info_data = 8;
+	optional .EA.Sims4.Persistence.PersistableCommodityTracker commodity_tracker = 9;
+	optional .EA.Sims4.Persistence.PersistableStatisticsTracker statistics_tracker = 10;
+	optional .EA.Sims4.Persistence.PersistableSkillTracker skill_tracker = 11;
+}
+
+message GameplayHouseholdData {
+	optional bool cheats_enabled = 1;
+	optional uint32 owned_object_count = 2;
+	repeated .EA.Sims4.Persistence.ServiceNpcRecord service_npc_records = 3;
+	repeated uint32 delinquent_utilities = 4 [packed = true];
+	optional bool can_deliver_bill = 5;
+	optional uint64 current_payment_owed = 6;
+	optional uint64 bill_timer = 7;
+	optional uint64 shutoff_timer = 8;
+	optional uint64 warning_timer = 9;
+	repeated .EA.Sims4.Persistence.AdditionalBillCost additional_bill_costs = 10;
+	repeated .EA.Sims4.Persistence.CollectionData collection_data = 11;
+	optional bool put_bill_in_hidden_inventory = 12;
+	optional uint64 billable_household_value = 13;
+	repeated .EA.Sims4.Persistence.SituationEarnedMedals highest_earned_situation_medals = 14;
+	repeated uint64 build_buy_unlocks = 15 [packed = true];
+	optional bool situation_scoring_enabled = 16 [default = true];
+}
+
+message SituationEarnedMedals {
+	optional fixed64 situation_id = 1;
+	optional uint32 medal = 2;
+}
+
+message CollectionData {
+	required uint64 collectible_def_id = 1;
+	required uint64 collection_id = 2;
+}
+
+message ServiceNpcRecord {
+	optional uint64 service_type = 1;
+	repeated fixed64 preferred_sim_ids = 2 [packed = true];
+	repeated fixed64 fired_sim_ids = 3 [packed = true];
+	optional bool hired = 4;
+	optional uint64 time_last_started_service = 5;
+	optional bool recurring = 6;
+	optional uint64 time_last_finished_service = 7;
+	optional uint64 user_specified_data_id = 8;
+}
+
+message AdditionalBillCost {
+	optional uint32 bill_source = 1;
+	optional uint64 cost = 2;
+}
+
+message GameplaySaveSlotData {
+	optional uint64 world_game_time = 1;
+	optional .EA.Sims4.Persistence.SituationSeedData travel_situation_seed = 2;
+	optional .EA.Sims4.Persistence.GameplayCameraData camera_data = 3;
+	optional bool is_phone_silenced = 4 [default = false];
+	optional fixed64 career_choices_seed = 5;
+}
+
+message GameplayCameraData {
+	optional fixed64 target_id = 1;
+	optional .EA.Sims4.Network.Vector3 target_position = 2;
+	optional .EA.Sims4.Network.Vector3 camera_position = 3;
+	optional bool follow_mode = 4;
+	optional fixed64 zone_id = 5;
+	optional fixed64 household_id = 6;
+}
+
+message GameplayNeighborhoodData {
+	enum NpcPopulationState {
+		NOT_STARTED = 0;
+		STARTED = 1;
+		DIALOG_DISPLAYED = 2;
+		COMPLETED = 3;
+	}
+
+	optional .EA.Sims4.Persistence.GameplayNeighborhoodData.NpcPopulationState npc_population_state = 1 [default = NOT_STARTED];
+}
+
+message GameplayAccountData {
+	optional .EA.Sims4.Persistence.AccountEventDataTracker achievement_data = 1;
+	optional .EA.Sims4.Persistence.GameplayOptions gameplay_options = 2;
+	repeated .EA.Sims4.Network.UiDialogMessage game_notification = 8;
+}
+
+message AccountEventDataTracker {
+	repeated uint32 milestones_completed = 1 [packed = true];
+	repeated uint32 objectives_completed = 2 [packed = true];
+	optional .EA.Sims4.Persistence.EventDataObject data = 3;
+}
+
+message GameplayOptions {
+	enum AutonomyLevel {
+		OFF = 0;
+		LIMITED = 1;
+		MEDIUM = 2;
+		FULL = 3;
+		UNDEFINED = 4;
+	}
+
+	enum SimLifeSpan {
+		SHORT = 0;
+		NORMAL = 1;
+		LONG = 2;
+	}
+
+	enum SimAgeEnabled {
+		DISABLED = 0;
+		ENABLED = 1;
+		FOR_ACTIVE_FAMILY = 2;
+	}
+
+	optional .EA.Sims4.Persistence.GameplayOptions.AutonomyLevel autonomy_level = 1 [default = FULL];
+	optional bool selected_sim_autonomy_enabled = 2 [default = true];
+	optional .EA.Sims4.Persistence.GameplayOptions.SimLifeSpan sim_life_span = 3 [default = NORMAL];
+	optional bool aging_enabled = 4 [default = true];
+	optional bool lessons_enabled = 5 [default = true];
+	optional bool tutorial_situation_enabled = 6 [default = true];
+	optional bool reset_lessons = 7 [default = false];
+	optional .EA.Sims4.Persistence.GameplayOptions.SimAgeEnabled allow_aging = 8 [default = ENABLED];
+	optional bool unplayed_aging_enabled = 9 [default = true];
+	optional bool npc_population_enabled = 10 [default = true];
+}
+
+message SituationGoalData {
+	required fixed64 goal_type_id = 1;
+	optional fixed64 actor_id = 2;
+	optional uint32 count = 3;
+	optional bool completed = 4;
+	optional fixed64 chain_id = 5;
+	optional bytes custom_data = 6;
+}
+
+message SituationGoalChainData {
+	optional fixed64 starting_goal_set_type_id = 1;
+	optional fixed64 chosen_goal_set_type_id = 2;
+	optional fixed64 chain_id = 3;
+}
+
+message SituationGoalTrackerData {
+	optional bool has_offered_goals = 1;
+	optional fixed64 inherited_target_id = 2;
+	repeated .EA.Sims4.Persistence.SituationGoalChainData chains = 3;
+	repeated .EA.Sims4.Persistence.SituationGoalData minor_goals = 4;
+	optional .EA.Sims4.Persistence.SituationGoalData main_goal = 5;
+}
+
+message SituationAssignmentData {
+	required fixed64 sim_id = 1;
+	required fixed64 job_type_id = 2;
+	optional uint32 purpose = 3;
+	optional fixed64 role_state_type_id = 4;
+	optional uint32 spawning_option = 5;
+	optional uint32 request_priority = 6;
+	optional bool expectation_preference = 7;
+	optional bool accept_alternate_sim = 8;
+	optional uint32 common_blacklist_categories = 9;
+}
+
+message SituationSimpleSeedlingData {
+	optional uint32 phase_index = 1;
+	optional float remaining_phase_time = 2;
+}
+
+message SituationComplexSeedlingData {
+	optional bytes situation_custom_data = 1;
+	optional bytes state_custom_data = 2;
+}
+
+message SituationJobAndRoleState {
+	required fixed64 job_type_id = 1;
+	required fixed64 role_state_type_id = 2;
+	optional fixed64 emotional_loot_actions_type_id = 3;
+}
+
+message SituationSeedData {
+	required fixed64 situation_type_id = 1;
+	required fixed64 situation_id = 2;
+	optional uint32 seed_purpose = 3;
+	optional bool invite_only = 4;
+	optional fixed64 host_sim_id = 5;
+	repeated .EA.Sims4.Persistence.SituationAssignmentData assignments = 6;
+	optional bool user_facing = 7;
+	optional float duration = 8;
+	optional fixed64 zone_id = 9;
+	repeated .EA.Sims4.Persistence.SituationJobAndRoleState jobs_and_role_states = 10;
+	optional uint64 create_time = 11;
+	optional float score = 12;
+	optional .EA.Sims4.Persistence.SituationSimpleSeedlingData simple_data = 13;
+	optional .EA.Sims4.Persistence.SituationComplexSeedlingData complex_data = 14;
+	optional fixed64 filter_requesting_sim_id = 15;
+	optional .EA.Sims4.Persistence.SituationGoalTrackerData goal_tracker_data = 16;
+	optional uint64 start_time = 17;
+	optional fixed64 active_household_id = 18;
+	optional bool scoring_enabled = 19;
+}
+
+message AllSituationData {
+	repeated .EA.Sims4.Persistence.SituationSeedData seeds = 1;
+	optional fixed64 leave_situation_id = 2;
+	optional fixed64 leave_now_situation_id = 3;
+}
+
+message VenueData {
+	optional fixed64 background_situation_id = 1;
+	optional fixed64 special_event_id = 2;
+}
+
+message InteractionSaveData {
+	required fixed64 interaction = 1;
+	optional fixed64 target_id = 2;
+	optional uint32 source = 3;
+	optional uint32 priority = 4;
+	optional uint32 target_part_group_index = 5;
+	optional uint64 start_time = 6;
+}
+
+message TransitioningInteraction {
+	optional .EA.Sims4.Persistence.InteractionSaveData base_interaction_data = 1;
+	optional fixed64 posture_aspect_body = 2;
+	optional fixed64 posture_carry_left = 3;
+	optional fixed64 posture_carry_right = 4;
+}
+
+message SuperInteractionSaveState {
+	repeated .EA.Sims4.Persistence.InteractionSaveData interactions = 1;
+	optional .EA.Sims4.Persistence.TransitioningInteraction transitioning_interaction = 2;
+	repeated .EA.Sims4.Persistence.InteractionSaveData queued_interactions = 3;
+}
+
+message WorldLocation {
+	optional float x = 1;
+	optional float y = 2;
+	optional float z = 3;
+	optional float rot_x = 4;
+	optional float rot_y = 5;
+	optional float rot_z = 6;
+	optional float rot_w = 7;
+	optional uint32 level = 8;
+}
+
+message ZoneTimeStamp {
+	optional fixed64 game_time_expire = 1;
+	optional fixed64 time_sim_info_was_saved = 2;
+	optional fixed64 time_sim_was_saved = 3;
+}
+
+message WhimTargetPair {
+	optional fixed64 whim_guid64 = 1;
+	optional fixed64 target_id = 2;
+}
+
+message WhimWhimsetPair {
+	optional fixed64 whim_guid64 = 1;
+	optional fixed64 whimset_guid64 = 2;
+}
+
+message WhimsetTrackerData {
+	repeated .EA.Sims4.Persistence.SituationGoalData whim_goals = 1;
+	repeated .EA.Sims4.Persistence.WhimTargetPair whims_to_targets = 2;
+	repeated .EA.Sims4.Persistence.WhimWhimsetPair whims_to_whimsets = 3;
+}
+
+message AwayActionData {
+	optional fixed64 away_action_id = 1;
+	optional fixed64 target_sim_id = 2;
+}
+
+message AwayActionTrackerData {
+	optional .EA.Sims4.Persistence.AwayActionData away_action = 1;
+}
+
+message GameplaySimData {
+	optional .EA.Sims4.Persistence.WorldLocation location = 1;
+	optional uint64 inventory_value = 2;
+	optional .EA.Sims4.Persistence.ZoneTimeStamp zone_time_stamp = 4;
+	optional uint64 additional_bonus_days = 5;
+	optional .EA.Sims4.Persistence.SuperInteractionSaveState interaction_state = 6;
+	optional uint32 whim_bucks = 7;
+	optional fixed64 spawn_point_id = 8;
+	repeated uint32 spawner_tags = 9 [packed = true];
+	optional uint32 spawn_point_option = 10;
+	optional .EA.Sims4.Persistence.WhimsetTrackerData whim_tracker = 11;
+	repeated .EA.Sims4.Persistence.CollectionData collection_data = 12;
+	repeated uint64 build_buy_unlocks = 13 [packed = true];
+	optional .EA.Sims4.Persistence.AwayActionTrackerData away_action_tracker = 14;
+	optional uint32 serialization_option = 15 [default = 0];
+	optional uint64 time_alive = 16 [default = 0];
+	optional string creation_source = 17;
+}
+

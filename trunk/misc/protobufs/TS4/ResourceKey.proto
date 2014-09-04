@@ -1,0 +1,14 @@
+package EA.Sims4.Network;
+
+option java_outer_classname = "ResourceKeys";
+
+message ResourceKey {
+	required uint32 type = 1;
+	required uint32 group = 2;
+	required uint64 instance = 3;
+}
+
+message ResourceKeyList {
+	repeated .EA.Sims4.Network.ResourceKey resource_keys = 1;
+}
+

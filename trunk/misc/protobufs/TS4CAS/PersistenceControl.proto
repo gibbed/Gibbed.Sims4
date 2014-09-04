@@ -1,0 +1,19 @@
+import "Consts.proto";
+import "FileSerialization.proto";
+
+package EA.Sims4.Network;
+
+message PersistenceControlMessageData {
+	repeated .EA.Sims4.Persistence.SaveGameSlotMetaData slot_meta_data = 1;
+	optional .EA.Sims4.Persistence.SaveGameData save_data = 2;
+	repeated .EA.Sims4.Persistence.ZoneObjectData zone_object_data = 3;
+	optional .EA.Sims4.Persistence.FeedbackContext errors = 4;
+}
+
+message PersistenceControlMessage {
+	optional uint64 callback = 1;
+	optional uint64 userdata = 2;
+	optional .EA.Sims4.Network.PersistenceOpTypes opcode = 4 [default = PERSISTENCE_OP_LOAD_SLOTS];
+	optional .EA.Sims4.Network.PersistenceControlMessageData data = 5;
+}
+

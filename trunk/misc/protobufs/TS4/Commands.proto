@@ -1,0 +1,45 @@
+package EA.Sims4.Commands;
+
+message RemoteArgs {
+	message Arg {
+		optional bool bool = 1;
+		optional int32 int32 = 2;
+		optional int64 int64 = 3;
+		optional uint32 uint32 = 4;
+		optional uint64 uint64 = 5;
+		optional float float = 6;
+		optional string string = 7;
+	}
+
+	repeated .EA.Sims4.Commands.RemoteArgs.Arg args = 1;
+}
+
+message RemoteUpdate {
+	message Command {
+		required string name = 1;
+		optional string desc = 2;
+		optional string usage = 3;
+	}
+
+	repeated .EA.Sims4.Commands.RemoteUpdate.Command commands = 1;
+}
+
+message CommandResponse {
+	required bool resultcode = 1;
+	optional string resultString = 2;
+}
+
+message KeyValResponse {
+	message KeyVal {
+		required string key = 1;
+		required string value = 2;
+	}
+
+	repeated .EA.Sims4.Commands.KeyValResponse.KeyVal keyvals = 1;
+}
+
+message SimTravelCommand {
+	required uint64 destZoneID = 1;
+	required string selectedSims = 2;
+}
+

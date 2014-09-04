@@ -1,0 +1,91 @@
+import "Math.proto";
+
+package EA.Sims4.Network;
+
+message SurfaceId {
+	optional uint64 primary_id = 1 [default = 0];
+	optional int32 secondary_id = 2 [default = 0];
+	optional uint32 type = 3 [default = 1];
+}
+
+message RouteNodeData {
+	enum DataType {
+		DATA_STAIRS = 1;
+		DATA_ANIMATE = 2;
+	}
+
+	required .EA.Sims4.Network.RouteNodeData.DataType type = 1 [default = DATA_STAIRS];
+	optional bytes data = 2;
+}
+
+message RouteStairsData {
+	required bool traversing_up = 1;
+	required uint32 stair_count = 2;
+	optional uint32 walkstyle = 3 [default = 0];
+	optional uint32 stairs_per_cycle = 4 [default = 1];
+}
+
+message RouteAnimateData {
+	required bytes arb_data = 1;
+}
+
+message RouteNode {
+	required .EA.Sims4.Network.Transform location = 1;
+	required float time = 2;
+	optional uint32 action = 3 [default = 0];
+	optional uint32 walkstyle = 4 [default = 0];
+	optional .EA.Sims4.Network.SurfaceId routing_surface_id = 5;
+	optional uint64 portal_object_id = 6 [default = 0];
+	optional .EA.Sims4.Network.RouteNodeData node_data = 7;
+}
+
+message GoalPoint {
+	required .EA.Sims4.Network.Transform location = 1;
+	optional float weight = 2 [default = 1];
+}
+
+message RoutePoint {
+	required .EA.Sims4.Network.Vector2 pos = 1;
+}
+
+message RoutePolygon {
+	repeated .EA.Sims4.Network.RoutePoint points = 1;
+	optional .EA.Sims4.Network.SurfaceId routing_surface_id = 2;
+}
+
+message RoutePolygons {
+	repeated .EA.Sims4.Network.RoutePolygon polygons = 1;
+}
+
+message RouteEvent {
+	enum Type {
+		PORTAL_ENTER = 0;
+		PORTAL_EXIT = 1;
+	}
+
+	required .EA.Sims4.Network.RouteEvent.Type type = 1 [default = PORTAL_ENTER];
+	required float time = 2;
+	optional bytes data = 3;
+}
+
+message PortalEnterEvent {
+	required uint64 portal_object_id = 1;
+	optional bool entering_front = 2 [default = true];
+}
+
+message PortalExitEvent {
+	required uint64 portal_object_id = 1;
+}
+
+message Route {
+	required uint64 id = 1;
+	repeated .EA.Sims4.Network.RouteNode nodes = 2;
+	optional float time = 3;
+	optional uint64 absolute_time_ms = 4;
+	repeated .EA.Sims4.Network.GoalPoint goals = 5;
+	repeated .EA.Sims4.Network.RouteEvent events = 6;
+	repeated .EA.Sims4.Network.RoutePolygon bounds_polygons = 7;
+	optional uint32 track = 8 [default = 10000];
+	repeated .EA.Sims4.Network.RoutePolygons obstacle_polygons = 9;
+}
+

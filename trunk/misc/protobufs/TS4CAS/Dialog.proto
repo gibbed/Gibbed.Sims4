@@ -1,0 +1,342 @@
+import "ResourceKey.proto";
+import "Localization.proto";
+import "UI.proto";
+import "Consts.proto";
+import "Exchange.proto";
+import "Social.proto";
+
+package EA.Sims4.Network;
+
+message UiDialogChoiceMessage {
+	enum UiDialogChoiceUiRequest {
+		NO_REQUEST = 0;
+		SHOW_LESSONS = 1;
+		SHOW_ACHIEVEMENTS = 2;
+		SHOW_GALLERY = 3;
+		SHOW_FAMILY_INVENTORY = 4;
+		SHOW_SKILL_PANEL = 5;
+		SHOW_SUMMARY_PANEL = 6;
+		SHOW_ASPIRATION_PANEL = 7;
+		SHOW_ASPIRATION_UI = 8;
+		SHOW_EVENT_UI = 9;
+		SHOW_CAREER_PANEL = 10;
+		SHOW_RELATIONSHIP_PANEL = 11;
+		SHOW_SIM_INVENTORY = 12;
+		SHOW_REWARD_STORE = 13;
+		SHOW_MOTIVE_PANEL = 14;
+		SHOW_STATS = 15;
+		SHOW_COLLECTIBLES = 16;
+		SHOW_CAREER_UI = 17;
+		TRANSITION_TO_NEIGHBORHOOD_SAVE = 18;
+		TRANSITION_TO_MAIN_MENU_NO_SAVE = 19;
+		SHOW_SHARE_PLAYER_PROFILE = 20;
+		SHOW_ASPIRATION_SELECTOR = 21;
+	}
+
+	required uint32 choice_id = 1;
+	optional .EA.Sims4.Network.LocalizedString text = 2;
+	optional .EA.Sims4.Network.UiDialogChoiceMessage.UiDialogChoiceUiRequest ui_request = 3 [default = NO_REQUEST];
+	optional .EA.Sims4.Network.UiExchangeArgs exchange_args = 4;
+	optional .EA.Sims4.Network.UiTutorialArgs tutorial_args = 5;
+}
+
+message UiExchangeArgs {
+	optional uint64 item_id = 1;
+	optional .EA.Sims4.Network.ExchangeItemTypes item_type = 2 [default = EXCHANGE_INVALIDTYPE];
+	optional bool is_favorite = 3;
+	optional uint64 creator_id = 4;
+	optional string creator_name = 5;
+	optional .EA.Sims4.Network.TrayMetadata item_data = 6;
+	optional bytes feed_id = 7;
+	optional .EA.Sims4.Network.SocialFeedItemType feed_type = 8 [default = SFI_ITEM_DOWNLOADED];
+	optional uint64 quantity = 9;
+	optional uint64 timestamp = 10;
+}
+
+message UiTutorialArgs {
+	optional uint64 tutorial_id = 1;
+}
+
+message UiDialogTextInputMessage {
+	required string text_input_name = 1;
+	optional .EA.Sims4.Network.LocalizedString default_text = 2;
+	optional .EA.Sims4.Network.LocalizedString initial_value = 3;
+	optional int32 min_length = 4;
+	optional int32 max_length = 5;
+	optional .EA.Sims4.Network.LocalizedString restricted_characters = 6;
+	optional .EA.Sims4.Network.LocalizedString input_too_short_tooltip = 10;
+	optional .EA.Sims4.Network.LocalizedString title = 11;
+}
+
+message UiDialogMessage {
+	enum Type {
+		DEFAULT = 1;
+		OBJECT_PICKER = 2;
+		NOTIFICATION = 3;
+		OK_CANCEL_ICONS = 4;
+	}
+
+	required uint64 dialog_id = 1;
+	repeated .EA.Sims4.Network.UiDialogChoiceMessage choices = 2;
+	required .EA.Sims4.Network.LocalizedString text = 3;
+	optional float timeout_duration = 4;
+	optional uint64 owner_id = 5;
+	optional uint64 target_id = 6;
+	optional .EA.Sims4.Network.UiDialogPicker picker_data = 7;
+	required .EA.Sims4.Network.UiDialogMessage.Type dialog_type = 8 [default = DEFAULT];
+	repeated .EA.Sims4.Network.UiDialogTextInputMessage text_input = 9;
+	optional .EA.Sims4.Network.LocalizedString title = 10;
+	optional uint32 dialog_options = 11;
+	optional .EA.Sims4.Network.ResourceKey icon = 12;
+	optional .EA.Sims4.Network.IconInfo icon_info = 13;
+	optional .EA.Sims4.Network.IconInfo secondary_icon_info = 14;
+	optional uint64 timestamp = 15;
+
+	extensions 100 to max;
+}
+
+message UiDialogResponseMessage {
+	required uint64 dialog_id = 1;
+	required uint32 choice_id = 2;
+}
+
+message UiDialogCloseRequest {
+	required uint64 dialog_id = 1;
+}
+
+message PickerColumn {
+	enum ColumnType {
+		TEXT = 1;
+		ICON = 2;
+		ICON_AND_TEXT = 3;
+	}
+
+	required .EA.Sims4.Network.PickerColumn.ColumnType type = 1 [default = ICON_AND_TEXT];
+	optional string column_data_name = 2 [default = "name"];
+	optional string column_icon_name = 3 [default = "icon"];
+	optional .EA.Sims4.Network.LocalizedString label = 4;
+	optional .EA.Sims4.Network.ResourceKey icon = 5;
+	optional .EA.Sims4.Network.LocalizedString tooltip = 6;
+	optional float width = 7;
+	optional bool sortable = 8;
+}
+
+message PickerBaseRowData {
+	required uint32 option_id = 1;
+	optional bool is_enable = 2 [default = true];
+	optional .EA.Sims4.Network.LocalizedString name = 3;
+	optional .EA.Sims4.Network.ResourceKey icon = 4;
+	optional .EA.Sims4.Network.LocalizedString description = 5;
+	optional .EA.Sims4.Network.IconInfo icon_info = 6;
+}
+
+message RecipeIngredientData {
+	required .EA.Sims4.Network.LocalizedString ingredient_name = 1;
+	optional bool in_inventory = 2 [default = true];
+}
+
+message RecipePickerRowData {
+	required .EA.Sims4.Network.PickerBaseRowData base_data = 1;
+	optional uint32 price = 2;
+	optional uint32 skill_level = 3;
+	repeated uint32 linked_option_ids = 4 [packed = true];
+	optional .EA.Sims4.Network.ResourceKey event_icon = 5;
+	optional bool visible_as_subrow = 6 [default = true];
+	repeated .EA.Sims4.Network.RecipeIngredientData ingredients = 7;
+	optional uint32 price_with_ingredients = 8;
+	optional fixed64 mtx_id = 9;
+	optional .EA.Sims4.Network.LocalizedString serving_display_name = 10;
+}
+
+message SimPickerRowData {
+	required .EA.Sims4.Network.PickerBaseRowData base_data = 1;
+	optional uint64 sim_id = 2;
+}
+
+message ObjectPickerRowData {
+	required .EA.Sims4.Network.PickerBaseRowData base_data = 1;
+	optional uint64 object_id = 2;
+	optional uint64 def_id = 3;
+	optional uint32 count = 4;
+}
+
+message CareerPickerRowData {
+	message CareerWorkDay {
+		required .EA.Sims4.Network.UiDayAndTime start_time = 1;
+		required .EA.Sims4.Network.UiDayAndTime end_time = 2;
+	}
+
+	required .EA.Sims4.Network.PickerBaseRowData base_data = 1;
+	repeated .EA.Sims4.Network.CareerPickerRowData.CareerWorkDay work_days = 2;
+}
+
+message OutfitPickerRowData {
+	required .EA.Sims4.Network.PickerBaseRowData base_data = 1;
+	optional uint32 buff_id = 2;
+}
+
+message PurchasePickerRowData {
+	required .EA.Sims4.Network.PickerBaseRowData base_data = 1;
+	optional uint64 def_id = 2;
+	optional uint32 num_owned = 3;
+	repeated uint32 tag_list = 4 [packed = true];
+}
+
+message LotInfoItem {
+	optional fixed64 zone_id = 1;
+	optional string name = 2;
+	optional uint32 world_id = 3;
+	optional uint32 lot_template_id = 4;
+	optional fixed64 lot_description_id = 5;
+	optional .EA.Sims4.Network.LocalizedString venue_type_name = 6;
+	optional string household_name = 7;
+}
+
+message LotPickerRowData {
+	required .EA.Sims4.Network.PickerBaseRowData base_data = 1;
+	optional .EA.Sims4.Network.LotInfoItem lot_info_item = 2;
+}
+
+message RecipePickerData {
+	repeated .EA.Sims4.Network.PickerColumn column_list = 1;
+	repeated .EA.Sims4.Network.RecipePickerRowData row_data = 2;
+	optional uint64 skill_id = 3;
+	repeated uint32 column_sort_list = 4 [packed = true];
+}
+
+message SimPickerData {
+	repeated .EA.Sims4.Network.SimPickerRowData row_data = 1;
+	optional bool should_show_names = 2 [default = true];
+	repeated uint32 rel_bit_collection_ids = 11 [packed = true];
+}
+
+message ObjectPickerData {
+	repeated .EA.Sims4.Network.ObjectPickerRowData row_data = 1;
+}
+
+message CareerPickerData {
+	repeated .EA.Sims4.Network.CareerPickerRowData row_data = 1;
+}
+
+message OutfitPickerData {
+	repeated .EA.Sims4.Network.OutfitPickerRowData row_data = 1;
+}
+
+message PurchasePickerData {
+	repeated .EA.Sims4.Network.PurchasePickerRowData row_data = 1;
+	optional fixed64 object_id = 2;
+	optional bool show_description = 3;
+	optional bool mailman_purchase = 4;
+	repeated .EA.Sims4.Network.PurchasePickerCategory categories = 5;
+}
+
+message PurchasePickerCategory {
+	required uint32 tag_type = 1;
+	optional .EA.Sims4.Network.IconInfo icon_info = 2;
+	optional .EA.Sims4.Network.LocalizedString description = 3;
+}
+
+message LotPickerData {
+	repeated .EA.Sims4.Network.LotPickerRowData row_data = 1;
+}
+
+message UiDialogPicker {
+	enum ObjectPickerType {
+		RECIPE = 1;
+		INTERACTION = 2;
+		SIM = 3;
+		OBJECT = 4;
+		PIE_MENU = 5;
+		CAREER = 6;
+		OUTFIT = 7;
+		PURCHASE = 8;
+		LOT = 9;
+	}
+
+	required .EA.Sims4.Network.UiDialogPicker.ObjectPickerType type = 1 [default = RECIPE];
+	required .EA.Sims4.Network.LocalizedString title = 2;
+	optional uint64 owner_sim_id = 3;
+	optional uint64 target_sim_id = 4;
+	optional bool multi_select = 5;
+	optional .EA.Sims4.Network.RecipePickerData recipe_picker_data = 6;
+	optional .EA.Sims4.Network.SimPickerData sim_picker_data = 7;
+	optional .EA.Sims4.Network.ObjectPickerData object_picker_data = 8;
+	optional .EA.Sims4.Network.CareerPickerData career_picker_data = 9;
+	optional .EA.Sims4.Network.OutfitPickerData outfit_picker_data = 10;
+	optional uint32 max_selectable = 11;
+	optional .EA.Sims4.Network.PurchasePickerData shop_picker_data = 12;
+	optional .EA.Sims4.Network.LotPickerData lot_picker_data = 13;
+	optional bool is_sortable = 14;
+}
+
+message UiPhoneRing {
+	enum PhoneRingType {
+		NONE = 0;
+		BUZZ = 1;
+		RING = 2;
+	}
+
+	optional .EA.Sims4.Network.UiPhoneRing.PhoneRingType phone_ring_type = 1 [default = NONE];
+	optional .EA.Sims4.Network.UiDialogMessage dialog = 2;
+}
+
+message UiDialogNotification {
+	extend .EA.Sims4.Network.UiDialogMessage {
+		required .EA.Sims4.Network.UiDialogNotification dialog = 102;
+	}
+
+	enum NotificationExpandBehavior {
+		USER_SETTING = 0;
+		FORCE_EXPAND = 1;
+	}
+
+	enum NotificationCriticality {
+		DEFAULT = 0;
+		URGENT = 1;
+	}
+
+	enum NotificationLevel {
+		PLAYER = 0;
+		SIM = 1;
+		GALLERY = 2;
+	}
+
+	enum NotificationVisualType {
+		INFORMATION = 0;
+		SPEECH = 1;
+		SPECIAL_MOMENT = 2;
+	}
+
+	optional .EA.Sims4.Network.UiDialogNotification.NotificationExpandBehavior expand_behavior = 1 [default = USER_SETTING];
+	optional .EA.Sims4.Network.UiDialogNotification.NotificationCriticality criticality = 2 [default = DEFAULT];
+	optional .EA.Sims4.Network.UiDialogNotification.NotificationLevel information_level = 3 [default = PLAYER];
+	optional .EA.Sims4.Network.UiDialogNotification.NotificationVisualType visual_type = 4 [default = INFORMATION];
+	optional .EA.Sims4.Network.UiDialogChoiceMessage primary_icon_response = 5;
+	optional .EA.Sims4.Network.UiDialogChoiceMessage secondary_icon_response = 6;
+	optional uint64 save_uid = 7;
+	optional bool does_persist = 8 [default = true];
+	optional .EA.Sims4.Network.UiCareerNotificationArgs career_args = 9;
+}
+
+message UiCareerNotificationArgs {
+	optional uint64 career_uid = 1;
+	optional uint32 career_level = 2;
+	optional uint64 career_track = 3;
+	optional uint32 user_career_level = 4;
+	optional uint64 sim_id = 5;
+}
+
+message SimPersonalityAssignmentDialog {
+	required uint64 sim_id = 1;
+	required .EA.Sims4.Network.UiDialogMessage dialog = 2;
+	required .EA.Sims4.Network.LocalizedString secondary_title = 3;
+	required .EA.Sims4.Network.LocalizedString age_description = 4;
+	optional .EA.Sims4.Network.LocalizedString naming_title_text = 5;
+	optional .EA.Sims4.Network.LocalizedString aspirations_and_trait_assignment_text = 6;
+	optional uint64 available_trait_slots = 7;
+	repeated uint64 current_personality_trait_ids = 8 [packed = true];
+	repeated uint64 available_personality_trait_ids = 9 [packed = true];
+	repeated uint64 available_aspiration_ids = 10 [packed = true];
+	optional bool is_female = 11;
+}
+

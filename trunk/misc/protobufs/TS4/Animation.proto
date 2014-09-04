@@ -1,0 +1,46 @@
+import "Consts.proto";
+import "Math.proto";
+
+package EA.Sims4.Network;
+
+message AnimationEventHandler {
+	required uint32 event_type = 1;
+	required uint32 event_id = 2;
+	required uint64 tag = 3;
+}
+
+message AnimationRequestBlock {
+	required bytes arb_data = 1;
+	repeated .EA.Sims4.Network.AnimationEventHandler event_handlers = 2;
+	repeated .EA.Sims4.Network.ManagerObjectId objects_to_reset = 3;
+}
+
+message CurveData {
+	required float input_value = 1;
+	required float output_value = 2;
+}
+
+message FocusEvent {
+	enum EventType {
+		FOCUS_ADD = 0;
+		FOCUS_DELETE = 1;
+		FOCUS_CLEAR = 2;
+		FOCUS_MODIFY_SCORE = 3;
+		FOCUS_DISABLE = 4;
+		FOCUS_FORCE_UPDATE = 5;
+		FOCUS_PRINT = 6;
+	}
+
+	required .EA.Sims4.Network.FocusEvent.EventType type = 1 [default = FOCUS_ADD];
+	optional uint32 id = 2;
+	optional uint32 layer = 3;
+	optional uint32 flags = 4;
+	optional float score = 5;
+	optional uint32 joint_name_hash = 6;
+	optional uint64 target_id = 7;
+	optional .EA.Sims4.Network.Vector3 offset = 8;
+	repeated .EA.Sims4.Network.CurveData distance_curve = 9;
+	repeated .EA.Sims4.Network.CurveData facing_curve = 10;
+	optional uint64 source_id = 11;
+}
+
