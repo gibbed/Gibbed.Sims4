@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F2FA705E-04F0-410F-8BBE-5DF14E0672A7}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Gibbed.Sims4.SwarmFormats</RootNamespace>
+    <AssemblyName>Gibbed.Sims4.SwarmFormats</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="BinaryFile.cs" />
+    <Compile Include="Auxiliaries\MapsAuxiliary.cs" />
+    <Compile Include="Auxiliaries\MaterialAuxiliary.cs" />
+    <Compile Include="AuxiliaryGroup.cs" />
+    <Compile Include="AuxiliaryType.cs" />
+    <Compile Include="BaseGroup.cs" />
+    <Compile Include="Binary.cs" />
+    <Compile Include="ComponentGroup.cs" />
+    <Compile Include="Components\CameraComponent.cs" />
+    <Compile Include="Components\DecalComponent.cs" />
+    <Compile Include="Components\DistributeComponent.cs" />
+    <Compile Include="Components\FastParticlesComponent.cs" />
+    <Compile Include="Components\GameComponent.cs" />
+    <Compile Include="Components\MetaParticlesComponent.cs" />
+    <Compile Include="Components\ModelComponent.cs" />
+    <Compile Include="Components\ParticlesComponent.cs" />
+    <Compile Include="Components\RibbonComponent.cs" />
+    <Compile Include="Components\ScreenComponent.cs" />
+    <Compile Include="Components\SequenceComponent.cs" />
+    <Compile Include="Components\ShakeComponent.cs" />
+    <Compile Include="Components\SoundComponent.cs" />
+    <Compile Include="ComponentType.cs" />
+    <Compile Include="IAuxiliary.cs" />
+    <Compile Include="IAuxiliaryGroup.cs" />
+    <Compile Include="IComponent.cs" />
+    <Compile Include="IComponentGroup.cs" />
+    <Compile Include="IDescription.cs" />
+    <Compile Include="ISerializable.cs" />
+    <Compile Include="IVersionedSerializable.cs" />
+    <Compile Include="Misc\AnimationCurve.cs" />
+    <Compile Include="Misc\Attractor.cs" />
+    <Compile Include="Misc\BoundingBox.cs" />
+    <Compile Include="Misc\DrawInfo.cs" />
+    <Compile Include="Misc\Filter.cs" />
+    <Compile Include="Misc\FilterChain.cs" />
+    <Compile Include="Misc\FilterTemporaryBuffer.cs" />
+    <Compile Include="Misc\Matrix33.cs" />
+    <Compile Include="Misc\PathPoint.cs" />
+    <Compile Include="Misc\RandomWalk.cs" />
+    <Compile Include="Misc\Rectangle.cs" />
+    <Compile Include="Misc\SurfaceInfo.cs" />
+    <Compile Include="Misc\Transform.cs" />
+    <Compile Include="Misc\Vector2.cs" />
+    <Compile Include="Misc\Vector3.cs" />
+    <Compile Include="Misc\Vector4.cs" />
+    <Compile Include="Misc\Wiggle.cs" />
+    <Compile Include="VisualEffect.cs" />
+    <Compile Include="VisualEffectGroup.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Gibbed.IO\Gibbed.IO.csproj">
+      <Project>{047857BA-DAA3-4CA7-AFB8-A1B082B28C6A}</Project>
+      <Name>Gibbed.IO</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
