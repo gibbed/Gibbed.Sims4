@@ -1,0 +1,51 @@
+//--------------------------------------
+//--- 010 Editor v5.0.2 Binary Template
+//
+// File: StringTable Template.bt
+// Revision: 1.0
+// Purpose: Document The Sims 4 String Table Resource
+//--------------------------------------
+
+LittleEndian();
+BitfieldRightToLeft();
+
+// Header
+char mnFileIdentifier[4];
+if (mnFileIdentifier != "STBL")
+{
+    Warning("Not a String Table file!");
+    return -1;
+}
+
+// The Sims 4 base game version is 5.
+uint16 mnVersion;
+if (mnVersion != 5)
+{
+    Warning("Only version 5 is supported.");
+    return -1;
+}
+
+// Compression is not currently used by The Sims 4.
+byte mbCompressed;
+uint64 mnNumEntries;
+byte mReserved[2];
+uint32 mnStringLength;
+
+typedef struct
+{
+    uint32 mnKeyHash;
+    byte mnFlags;
+    uint16 mnLength;
+    if (mnLength > 0)
+        char mString[mnLength];
+} StringEntry <read=GetStringValue>;
+
+wstring GetStringValue(StringEntry &entry)
+{
+    if (entry.mnLength > 0)
+        return StringToWString(entry.mString, CHARSET_UTF8);
+    return L"";
+}
+
+// The rest of the file comprises the string table.
+StringEntry mStrings[mnNumEntries] <optimize=false>;
