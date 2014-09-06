@@ -1,0 +1,386 @@
+//--------------------------------------
+//--- 010 Editor v5.0.2 Binary Template
+//
+// File: simdata Template
+// Revision: 1.0
+// Purpose: Document simdata format
+//--------------------------------------
+
+LittleEndian();
+BitfieldRightToLeft();
+
+// Zero can be a valid offset, so use 0x8000000 to represent
+// a NULL relative offset.
+const local int32 RELOFFSET_NULL = (int32)(-0x7FFFFFFF) - 1;
+
+// Iteration variables
+local int32 i, j, k;
+
+// Seek to the next byte with alignment given by alignmentMask
+void SeekToAlignment(uint32 alignmentMask)
+{
+    local int32 nCurPos = FTell();
+    local int32 nPadAmount = -nCurPos & alignmentMask;
+    FSeek(nCurPos + nPadAmount);
+}
+
+// Information about each data table.
+typedef struct {
+    int32 mnNameOffset;
+    uint32 mnNameHash;
+    int32 mnSchemaOffset;
+    uint32 mnDataType;
+    uint32 mnRowSize;
+    int32 mnRowOffset;
+    uint32 mnRowCount;
+} TableInfo <read=ReadTableInfo, name="TableInfo">;
+
+// Information about each column in a schema.
+typedef struct {
+    int32 mnNameOffset;
+    uint32 mnNameHash;
+    uint16 mnDataType;
+    uint16 mnFlags;
+    uint32 mnOffset;
+    int32 mnSchemaOffset;
+} SchemaColumn <read=ReadSchemaColumn, name="Column">;
+
+// Information about each schema.
+local int64 schemaEndPos;
+local int64 lastColumnEndPos;
+typedef struct {
+    int32 mnNameOffset;
+    uint32 mnNameHash;
+    uint32 mnSchemaHash;
+    uint32 mnSchemaSize;
+    int32 mnColumnOffset;
+    uint32 mnNumColumns;
+
+    // Load the schema columns inside the schema.
+    schemaEndPos = FTell();
+
+    FSeek(startof(mnColumnOffset) + mnColumnOffset);
+    for (j = 0; j < mSchema[i].mnNumColumns; ++j)
+    {
+        SchemaColumn mColumn;
+    }
+
+    // Remember the end of the final column.
+    lastColumnEndPos = FTell();
+    FSeek(schemaEndPos);
+
+} Schema <read=ReadSchema, name="Schema">;
+
+string ReadTableInfo(TableInfo &ti)
+{
+    if (ti.mnNameOffset == RELOFFSET_NULL)
+        return "Unnamed";
+    return ReadString(startof(ti.mnNameOffset) + ti.mnNameOffset);
+}
+
+string ReadSchema(Schema &schema)
+{
+    if (schema.mnNameOffset == RELOFFSET_NULL)
+        return "Unnamed";
+    return ReadString(startof(schema.mnNameOffset) + schema.mnNameOffset);
+}
+
+string ReadSchemaColumn(SchemaColumn &column)
+{
+    if (column.mnNameOffset == RELOFFSET_NULL)
+        return "Unnamed";
+    return ReadString(startof(column.mnNameOffset) + column.mnNameOffset);
+}
+
+// This enumeration defines the data types serialized by each column.
+enum DataType
+{
+    TYPE_BOOL,
+    TYPE_CHAR8,
+    TYPE_INT8,
+    TYPE_UINT8,
+    TYPE_INT16,
+    TYPE_UINT16,
+    TYPE_INT32,
+    TYPE_UINT32,
+    TYPE_INT64,
+    TYPE_UINT64,
+    TYPE_FLOAT,
+    TYPE_STRING8,
+    TYPE_HASHEDSTRING8,
+    TYPE_OBJECT,
+    TYPE_VECTOR,
+    TYPE_FLOAT2,
+    TYPE_FLOAT3,
+    TYPE_FLOAT4, 
+    TYPE_TABLESETREFERENCE,
+    TYPE_RESOURCEKEY,
+    TYPE_LOCKEY,
+    TYPE_UNDEFINED
+};
+
+// Types must be aligned.
+uint32 GetAlignmentForType(int32 code)
+{
+    switch (code)
+    {
+        case TYPE_BOOL:         return 1;
+        case TYPE_CHAR8:        return 1;
+        case TYPE_INT8:         return 1;
+        case TYPE_UINT8:        return 1;
+        case TYPE_INT16:        return 2;
+        case TYPE_UINT16:       return 2;
+        case TYPE_INT32:        return 4;
+        case TYPE_UINT32:       return 4;
+        case TYPE_INT64:        return 8;
+        case TYPE_UINT64:       return 8;
+        case TYPE_FLOAT:        return 4;
+        case TYPE_STRING8:      return 4;
+        case TYPE_HASHEDSTRING8: return 4;
+        case TYPE_OBJECT:       return 4;
+        case TYPE_VECTOR:       return 4;
+        case TYPE_FLOAT2:       return 4;
+        case TYPE_FLOAT3:       return 4;
+        case TYPE_FLOAT4:       return 4;
+        case TYPE_TABLESETREFERENCE: return 8;
+        case TYPE_RESOURCEKEY:  return 8;
+        case TYPE_LOCKEY:       return 4;
+        case TYPE_UNDEFINED:    return 1;
+        default: return 1;
+    }
+}
+
+typedef struct
+{
+    float x;
+    float y;
+} Vector2;
+
+typedef struct
+{
+    float x;
+    float y;
+    float z;
+} Vector3;
+
+typedef struct
+{
+    float x;
+    float y;
+    float z;
+    float w;
+} Vector4;
+
+typedef struct
+{
+    uint32 mDataOffset;
+} String;
+
+typedef struct
+{
+    uint32 mDataOffset;
+    uint32 mHash;
+} HashedString;
+
+typedef struct
+{
+    uint32 mKey;
+} LocKey;
+
+typedef struct
+{
+    uint64 mInstance;
+    uint32 mType;
+    uint32 mGroup;
+} ResourceKey;
+
+typedef struct
+{
+    uint32 mDataOffset;
+} ObjectRef;
+
+typedef struct
+{
+    uint64 mValue;
+} TableSetRef;
+
+typedef struct
+{
+    uint32 mDataOffset;
+    uint32 mCount;
+} Vector;
+
+// Read a single data field with the given type code.
+void ReadData(int32 typeCode)
+{
+    switch (typeCode)
+    {
+        case TYPE_BOOL:     ubyte mValue; break;
+        case TYPE_UINT8:    ubyte mValue; break;
+        case TYPE_CHAR8:    char mValue; break;
+        case TYPE_INT8:     byte mValue; break;
+        case TYPE_INT16:    int16 mValue; break;
+        case TYPE_UINT16:   uint16 mValue; break;
+        case TYPE_INT32:    int32 mValue; break;
+        case TYPE_UINT32:   uint32 mValue; break;
+        case TYPE_INT64:    int64 mValue; break;
+        case TYPE_UINT64:   uint64 mValue; break;
+        case TYPE_FLOAT:    float mValue; break;
+        case TYPE_STRING8:  String mValue; break;
+        case TYPE_HASHEDSTRING8: HashedString mValue; break;
+        case TYPE_OBJECT:   ObjectRef mValue; break;
+        case TYPE_VECTOR:   Vector mValue; break;
+        case TYPE_FLOAT2:   Vector2 mValue; break;
+        case TYPE_FLOAT3:   Vector3 mValue; break;
+        case TYPE_FLOAT4:   Vector4 mValue; break;
+        case TYPE_TABLESETREFERENCE:    TableSetRef mValue; break;
+        case TYPE_RESOURCEKEY: ResourceKey mValue; break;
+        case TYPE_LOCKEY:   LocKey mValue; break;
+        case TYPE_UNDEFINED:
+            Printf("Unknown type code %d", code);
+            break;
+    };
+}
+
+// Header
+// There are a few unused or deprecated fields in the header. Most of these
+// should be set to 0 unless marked otherwise.
+char mnFileIdentifier[4];
+
+if (mnFileIdentifier != "DATA")
+{
+    Warning("Not a simdata file!");
+    return -1;
+}
+
+// Base game version is 0x100
+uint32 mnVersion;
+
+// Offset of table header data
+local uint32 nTableHeaderPos = FTell();
+int32 mnTableHeaderOffset;
+
+// Number of table headers
+int32 mnNumTables;
+
+// Offset of schema data
+local int64 nSchemaPos = FTell();
+int32 mnSchemaOffset;
+
+// Number of schemas
+int32 mnNumSchemas;
+
+// Skip to the beginning of the table header block
+FSeek(nTableHeaderPos + mnTableHeaderOffset);
+
+// Load the tables
+TableInfo mTable [mnNumTables];
+
+// We need to read schemas before we can load data, so
+// just remember the position at which row data starts.
+local int64 rowDataPos = FTell();
+
+// Read schemas.  Because schemas are variable-sized,
+// and reading them is complex, we cannot use the
+// array syntax (even with <optimize=false>).
+FSeek(nSchemaPos + mnSchemaOffset);
+for (i = 0; i < mnNumSchemas; ++i)
+{
+    Schema mSchema;
+}
+
+// Get the schema with the given offset
+int GetSchemaIndex(int64 offset)
+{
+    local int i;
+    for (i = 0; i < mnNumSchemas; ++i)
+    {
+        if (offset == startof(mSchema[i]))
+        {
+            return i;
+        }
+    }
+    Printf("Unknown schema offset %x", offset);
+    return 0;
+}
+
+// Now, jump past the columns that were read above.
+FSeek(lastColumnEndPos);
+
+// Read the string table, which consists of NULL separated
+// UTF-8 encoded strings, and comprises the rest of the file.
+local string strTableStr;
+typedef struct
+{
+    while (!FEof())
+    {
+        strTableStr = ReadString(FTell());
+        typedef struct
+        {
+            char mString[Strlen(strTableStr) + 1];
+        } StringEntry <read=GetStringValue, name="string">;
+        StringEntry mStringEntry;
+    }
+} StringTable <name="StringTable">;
+StringTable mStringTable;
+
+string GetStringValue(StringEntry & entry)
+{
+    return entry.mString;
+}
+
+// Now, we can jump back and read data.  Note that the start of the
+// row data must be aligned (mask == 15).
+FSeek(rowDataPos);
+
+local int schemaIndex;
+local uint32 alignment, columnAlignment;
+local uint64 rowStart;
+local string schemaColumnName;
+for (i = 0; i < mnNumTables; ++i)
+{
+    SeekToAlignment(15);
+    SeekToAlignment(mTable[i].mnRowSize - 1);
+
+    typedef struct
+    {
+        alignment = 1;
+        for (j = 0; j < mTable[i].mnRowCount; ++j)
+        {
+            // Some tables have no schema; these support only one
+            // data type.
+            if (mTable[i].mnSchemaOffset == RELOFFSET_NULL)
+            {
+                ReadData(mTable[i].mnDataType);
+                alignment = GetAlignmentForType(mTable[i].mnDataType);
+            }
+            else
+            {
+                schemaIndex = GetSchemaIndex(startof(mTable[i].mnSchemaOffset) + mTable[i].mnSchemaOffset);
+                typedef struct
+                {
+                    // Read each column.  The order of column data does not match the column
+                    // order (columns are sorted by name hash).
+                    for (k = 0; k < mSchema[schemaIndex].mnNumColumns; ++k)
+                    {
+                        schemaColumnName = ReadSchemaColumn(mSchema[schemaIndex].mColumn[k]);
+                        FSeek(rowStart + mSchema[schemaIndex].mColumn[k].mnOffset);
+                        ReadData(mSchema[schemaIndex].mColumn[k].mnDataType);
+                        columnAlignment = GetAlignmentForType(mTable[i].mnDataType);
+                        if (columnAlignment > alignment)
+                            alignment = columnAlignment;
+                    }
+                } Row <name="Row">;
+
+                // Reading the rows will modify the file position.  We need to save the current row start
+                // and then manually increment the position after loading the column data.
+                rowStart = FTell();
+                Row mRow;
+                FSeek(rowStart + mSchema[schemaIndex].mnSchemaSize);
+            }
+            SeekToAlignment(alignment - 1);
+        }
+    } TableData <name="TableData">;
+    TableData mTableData;
+    SeekToAlignment(15);
+}

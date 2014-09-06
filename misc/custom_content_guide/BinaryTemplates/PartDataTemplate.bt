@@ -1,0 +1,260 @@
+//--------------------------------------
+//--- 010 Editor v5.0 Binary Template
+//
+// File: PartDataTemplate.bt
+// Revision: 2.1
+// Purpose: Binary template for PartDataResource (type 0x034aeecb)
+//--------------------------------------
+
+LittleEndian();
+BitfieldLeftToRight();
+
+// ResourceKey and ResourceKey array
+typedef struct
+{
+    UINT64 instance <format=hex>;
+    UINT32 group <format=hex>;
+    UINT32 type <format=hex>;
+} ResourceKey <read=ReadResourceKey>;
+
+string ReadResourceKey(ResourceKey& key)
+{
+    string s;
+    SPrintf(s, "%08x:%08x:%016Lx", key.type, key.group, key.instance);
+    return s;
+}
+
+typedef struct
+{
+    BYTE count;
+    ResourceKey key[count];
+} ResourceKeyArray <read=ReadResourceKeyArray>;
+
+string ReadResourceKeyArray(ResourceKeyArray& keyArray)
+{
+    if(keyArray.count == 1)
+        return ReadResourceKey(keyArray.key[0]);
+    else
+    {
+        string s;
+        SPrintf(s, "%d keys", keyArray.count);
+        return s;
+    }
+}
+
+string ReadIndexedKey(BYTE& index)
+{
+    string s;
+    if(keyTable.key[index].type == 0)
+    {
+        SPrintf(s, "[%d]: none", index);
+    }
+    else
+    {
+        SPrintf(s, "[%d]: %08x:%08x:%016Lx", index, keyTable.key[index].type, keyTable.key[index].group, keyTable.key[index].instance);
+    }
+    return s;
+}
+
+// Managed string
+typedef struct
+{
+    // The size is varlength value. Name strings are short so 1-2 bytes should be enough
+    local int size;
+    BYTE sizeLow;
+    size = sizeLow;
+    if(sizeLow > 127)
+    {
+        BYTE sizeHigh;
+        size = (sizeHigh<<7)|(sizeLow&0x7f);
+    }
+
+    local int isLittleEndian = IsLittleEndian();
+    BigEndian();
+    wchar_t text[size/2];
+    if(isLittleEndian)
+        LittleEndian();
+} ManagedString <read=ReadManagedString>;
+
+wstring ReadManagedString(ManagedString& s)
+{
+    return s.text;
+}
+
+// Other helpers
+typedef struct
+{
+    UINT16 category;
+    UINT16 tagValue;
+} Tag;
+
+typedef struct
+{
+    UINT32 tagCount;
+    Tag tags[tagCount];
+} TagMultimap;
+
+typedef struct
+{
+// SwatchColorSet::ReadFromStream
+    BYTE usedColorCount;
+    UINT32 rawData[usedColorCount];
+} SwatchColorSet <read=ReadSwatchColorSet>;
+
+string ReadSwatchColorSet(SwatchColorSet& sw)
+{
+    string s;
+    SPrintf(s, "%d color(s)", sw.usedColorCount);
+    return s;
+}
+
+typedef struct
+{
+    INT32 sorting;
+    INT32 specLevel;
+    INT32 castShadow;
+} LODAsset;
+
+typedef struct
+{
+    BYTE level;
+    UINT32 unused;
+    BYTE numAssets;
+    LODAsset assets[numAssets];
+
+    BYTE numLodKeys;
+    BYTE lodKey[numLodKeys] <read=ReadIndexedKey>;
+
+} LOD <read=ReadLOD>;
+
+string ReadLOD(LOD& lod)
+{
+    string s;
+    SPrintf(s, "LOD %d", lod.level);
+    return s;
+}
+
+// Presets support, not used in Sims4
+typedef enum<int> eType
+{
+    TYPE_UINT32 = 1,
+    TYPE_FLOAT = 2,
+    TYPE_RESKEY = 3,
+    TYPE_REF = 4
+} Type;
+
+typedef struct
+{
+    UINT32 paramNameId;
+    BYTE paramType;
+    switch(paramType)
+    {
+    case TYPE_UINT32:
+        UINT32 val;
+        break;
+    case TYPE_FLOAT:
+        FLOAT val;
+        break;
+    case TYPE_RESKEY:
+        ResourceKey val;
+        break;
+    case TYPE_REF:
+        UINT32 val;
+        break;
+    }
+} PresetParam;
+
+typedef struct
+{
+    UINT64 mComplateId;
+    BYTE numParams;
+    PresetParam mParams[numParams] <optimize=false>;
+} Preset;
+
+// PartDataResource::Load
+
+UINT32 version;
+if(version != 26)
+{
+    Warning("Unknown version of PartDataResource detected. Please update the template");
+    return -1;
+}
+
+UINT32 dataSize;
+
+// Jump to the key table, read it, and return
+local int64 curPos = FTell();
+FSkip(dataSize);
+ResourceKeyArray keyTable;
+FSeek(curPos);
+
+UINT32 numPresets;
+if(numPresets)
+{
+    Preset mPresets[numPresets] <optimize=false>;
+}
+
+ManagedString mName;
+
+FLOAT mDisplayIndex;
+
+UINT16 mSecondaryDisplayIndex;
+UINT32 mPrototypeId <format=hex>;
+
+UINT32 mAuralMaterialHash <format=hex>;
+
+typedef struct
+{
+    BYTE not_used : 2;
+    BYTE ShowInCasDemo : 1;
+    BYTE ShowInSimInfoPanel : 1;
+    BYTE ShowInUI : 1;
+    BYTE AllowForRandom : 1;
+    BYTE DefaultThumbnailPart : 1;
+    BYTE DefaultForBodyType : 1;
+} ParmFlags;
+
+ParmFlags mPartFlags;
+
+UINT64 mExcludePartFlags <format=hex>;
+UINT32 mExcludeModifierRegionFlags <format=hex>;
+TagMultimap mTags;
+UINT32 mSimoleonPrice;
+UINT32 mPartTitleKey <format=hex>;
+UINT32 mPartDescKey <format=hex>;
+BYTE mbUniqueTextureSpace;
+INT32 mBodyType;
+INT32 unused;
+UINT32 mAgeGender <format=hex>;
+BYTE unused2;
+if(unused2 > 0)
+    BYTE unused3;
+SwatchColorSet mSwatchColors;
+BYTE mBuffResKey <read=ReadIndexedKey>;
+BYTE mVariantThumbKey <read=ReadIndexedKey>;
+BYTE mNakedKey <read=ReadIndexedKey>;
+BYTE mParentKey <read=ReadIndexedKey>;
+INT32 mSortLayer;
+BYTE numLODs;
+LOD mLODs[numLODs] <optimize=false>;
+
+BYTE numSlotKeys;
+BYTE mSlotKey[numSlotKeys] <read=ReadIndexedKey>;
+
+BYTE mDiffuseKey <read=ReadIndexedKey>;
+BYTE mShadowKey <read=ReadIndexedKey>;
+BYTE mCompositionMethod;
+BYTE mRegionMapKey <read=ReadIndexedKey>;
+
+typedef struct
+{
+    BYTE region;
+    FLOAT layer;
+} Override;
+
+BYTE nOverrides;
+if(nOverrides > 0)
+    Override mRegionLayerOverrides[nOverrides];
+BYTE mNormalMapKey <read=ReadIndexedKey>;
+BYTE mSpecularMapKey <read=ReadIndexedKey>;
+

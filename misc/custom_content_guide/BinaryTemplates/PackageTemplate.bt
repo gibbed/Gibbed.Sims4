@@ -1,0 +1,175 @@
+//--------------------------------------
+//--- 010 Editor v5.0 Binary Template
+//
+// File: PackageTemplate.bt
+// Revision: 1
+// Purpose: Binary template for .package files
+//--------------------------------------
+
+LittleEndian();
+BitfieldRightToLeft();
+
+// Header
+// There are a few unused or deprecated fields in the header. Most of these
+// should be set to 0 unless marked otherwise.
+char mnFileIdentifier[4];
+
+if(mnFileIdentifier != "DBPF")
+{
+    Warning("Not a package file!");
+    return -1;
+}
+
+typedef struct
+{
+// Note that older versions had some endianness issues here
+    UINT32 major;
+    UINT32 minor;
+} Version <read=ReadVersion>;
+
+string ReadVersion(Version& v)
+{
+    string s;
+    SPrintf(s, "%d.%d", v.major, v.minor);
+    return s;
+}
+
+Version mnFileVersion;
+Version mnUserVersion;
+UINT32 unused1; 
+time_t mnCreationTime; // typically, not set
+time_t mnUpdatedTime; // typically, not set
+UINT32 unused2;
+UINT32 mnIndexRecordEntryCount;
+UINT32 mnIndexRecordPositionLow;
+UINT32 mnIndexRecordSize;
+UINT32 unused3[3];
+UINT32 unused4; // always 3 for historical reasons
+UINT64 mnIndexRecordPosition;
+UINT32 unused5[6];
+
+// Index
+FSeek(mnIndexRecordPosition != 0 ? mnIndexRecordPosition : mnIndexRecordPositionLow);
+
+typedef struct
+{
+    UINT32 constantType : 1;
+    UINT32 constantGroup : 1;
+    UINT32 constantInstanceEx : 1;
+    UINT32 reserved: 29;
+} Flags;
+
+Flags flags;
+
+if(flags.constantType)
+    UINT32 constantTypeId <format=hex>;
+
+if(flags.constantGroup)
+    UINT32 constantGroupId <format=hex>;
+
+if(flags.constantInstanceEx)
+    UINT32 constantInstanceIdEx <format=hex>;
+
+typedef struct
+{
+    if(!flags.constantType)
+        UINT32 mType <format=hex>;
+    if(!flags.constantGroup)
+        UINT32 mGroup <format=hex>;
+    if(!flags.constantInstanceEx)
+        UINT32 mInstanceEx <format=hex>;
+
+    UINT32 mInstance <format=hex>;
+    UINT32 mnPosition;
+    UINT32 mnSize : 31;
+    UINT32 mbExtendedCompressionType : 1;
+    UINT32 mnSizeDecompressed;
+
+    if(mbExtendedCompressionType)
+    {
+        UINT16 mnCompressionType <read=ReadCompressionType>;
+        UINT16 mnCommitted; // typically 1
+    }
+
+} IndexEntry <read=ReadIndexEntry>;
+
+string ReadCompressionType(UINT16& t)
+{
+    switch(t)
+    {
+    case 0x0000: return "Uncompressed";
+    case 0xfffe: return "Streamable compression";
+    case 0xffff: return "Internal compression";
+    case 0xffe0: return "Deleted record";
+    case 0x5a42: return "ZLIB";
+    }
+    return "Unknown"; 
+}
+
+string ReadIndexEntry(IndexEntry& entry)
+{
+    string s;
+    UINT32 type, group, instanceEx;
+    if(flags.constantType)
+        type = constantTypeId;
+    else
+        type = entry.mType;
+    if(flags.constantGroup)
+        group = constantGroupId;
+    else
+        group = entry.mGroup;
+    if(flags.constantInstanceEx)
+        instanceEx = constantInstanceIdEx;
+    else
+        instanceEx = entry.mInstanceEx;
+
+    if(entry.mbExtendedCompressionType && entry.mnCompressionType == 0xffe0)
+        SPrintf(s, "%08x:%08x:%08x'%08x DELETED", type, group, instanceEx, entry.mInstance);
+    else
+        SPrintf(s, "%08x:%08x:%08x'%08x pos:%d,len:%d", type, group, instanceEx, entry.mInstance, entry.mnPosition, entry.mnSize);
+    return s;
+}
+
+typedef struct
+{
+    IndexEntry entries[mnIndexRecordEntryCount] <optimize=false>;
+} Index <read=ReadIndex>;
+
+string ReadIndex(Index& i)
+{
+    string s;
+    SPrintf(s, "%d entries", mnIndexRecordEntryCount);
+    return s;
+}
+
+Index index;
+
+// Actual compressed data
+typedef struct (UINT32 index, UINT32 size)
+{
+    local UINT32 mIndex = index;
+    local UINT32 mSize = size;
+    BYTE data[size];
+} RawRecord <read = ReadRecord, name=NameRecord>;
+
+string ReadRecord(RawRecord& r)
+{
+    string s;
+    SPrintf(s, "%d bytes", r.mSize);
+    return s;
+}
+
+string NameRecord(RawRecord& r)
+{
+    string s;
+    SPrintf(s, "Record #%d ", r.mIndex);
+    return s;
+}
+
+local UINT32 i;
+for(i=0; i<mnIndexRecordEntryCount; i++)
+{
+    FSeek(index.entries[i].mnPosition);
+    if(index.entries[i].mnSize > 0)
+        RawRecord record(i, index.entries[i].mnSize);
+}
