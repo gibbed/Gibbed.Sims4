@@ -40,8 +40,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CASPartFile.cs" />
+    <Compile Include="PartFile.cs" />
     <Compile Include="DatabasePackedFile.cs" />
+    <Compile Include="PartFlags.cs" />
     <Compile Include="ProjectHelpers.cs" />
     <Compile Include="SimDataFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
