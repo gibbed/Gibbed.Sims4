@@ -133,6 +133,12 @@ namespace RebuildInstanceLists
                 var discoveredPaths = Directory.GetFiles(combinedPath, "*.package", SearchOption.AllDirectories);
                 inputPaths.AddRange(discoveredPaths);
             }
+            foreach (var findPath in findPaths)
+            {
+                var combinedPath = Path.Combine(installPath, findPath);
+                var discoveredPaths = Directory.GetFiles(combinedPath, "*.world", SearchOption.AllDirectories);
+                inputPaths.AddRange(discoveredPaths);
+            }
 
             var outputPaths = new List<string>();
 
