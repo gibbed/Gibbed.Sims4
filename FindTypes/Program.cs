@@ -94,7 +94,7 @@ namespace FindTypes
                 }
             }
 
-            foreach (var typeId in typeIds.OrderBy(ti => ti))
+            foreach (var typeId in typeIds.Distinct().OrderBy(ti => ti))
             {
                 Console.WriteLine("{0:X8}", typeId);
             }
