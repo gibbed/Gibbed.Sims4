@@ -46,6 +46,10 @@ namespace Gibbed.Sims4.Unpack
             bool showHelp = false;
             bool extractUnknowns = true;
             string filterPattern = null;
+            ulong? filterInstance = null;
+            uint? filterType = null;
+            uint? filterGroup = null;
+            bool matching = true;
             bool overwriteFiles = false;
             bool verbose = false;
 
@@ -54,6 +58,10 @@ namespace Gibbed.Sims4.Unpack
                 { "o|overwrite", "overwrite existing files", v => overwriteFiles = v != null },
                 { "nu|no-unknowns", "don't extract unknown files", v => extractUnknowns = v == null },
                 { "f|filter=", "only extract files using pattern", v => filterPattern = v },
+                { "t|type=", "only extract files that are of type", v => filterType = ParseUInt32(v) },
+                { "g|group=", "only extract files that have specified group", v => filterGroup = ParseUInt32(v) },
+                { "i|instance=", "only extract files that have specified instance", v => filterInstance = ParseUInt64(v) },
+                { "x|exclude", "exclude when matching rather than include", v => matching = v == null },
                 { "v|verbose", "be verbose", v => verbose = v != null },
                 { "h|help", "show this message and exit", v => showHelp = v != null },
             };
@@ -175,6 +183,27 @@ namespace Gibbed.Sims4.Unpack
                         {
                             current++;
 
+                            if (filterInstance != null &&
+                                entry.Key.Instance != filterInstance &&
+                                matching == true)
+                            {
+                                continue;
+                            }
+
+                            if (filterType != null &&
+                                entry.Key.Type != filterType &&
+                                matching == true)
+                            {
+                                continue;
+                            }
+
+                            if (filterGroup != null &&
+                                entry.Key.Group != filterGroup &&
+                                matching == true)
+                            {
+                                continue;
+                            }
+
                             var typeInfo = typeLookup.GetTypeInfo(entry.Key.Type);
 
                             bool isUnknown = false;
@@ -236,7 +265,7 @@ namespace Gibbed.Sims4.Unpack
                             }
 
                             if (filter != null &&
-                                filter.IsMatch(entryName) == false)
+                                filter.IsMatch(entryName) != matching)
                             {
                                 continue;
                             }
@@ -319,6 +348,36 @@ namespace Gibbed.Sims4.Unpack
                     xml.WriteEndDocument();
                 }
             }
+        }
+
+        private static uint? ParseUInt32(string text)
+        {
+            if (text == null)
+            {
+                return null;
+            }
+
+            if (text.StartsWith("0x") == false)
+            {
+                return text.HashFNV32();
+            }
+
+            return uint.Parse(text.Substring(2), NumberStyles.AllowHexSpecifier);
+        }
+
+        private static ulong? ParseUInt64(string text)
+        {
+            if (text == null)
+            {
+                return null;
+            }
+
+            if (text.StartsWith("0x") == false)
+            {
+                return text.HashFNV64();
+            }
+
+            return ulong.Parse(text.Substring(2), NumberStyles.AllowHexSpecifier);
         }
 
         private static string ToHex(uint value)
